@@ -90,7 +90,9 @@ BOSS还有特殊debuff。例子：
 
 玩家作为一名不死人，必须通过牌局挑战来收集足够的初火碎片，最终面对葛温王，决定是延续火之时代还是迎来黑暗时代。
 
-[ ] 完成README.md
-[ ] 修复GameManager的bug
-[ ] godot引擎调整场景ui
-[ ] ...
+## 待办
+
+- [ ] 完成README.md
+- [ ] 修复GameManager的bug
+- [ ] godot引擎调整场景ui
+- [ ] ...
