@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://cbbjeifc56056"]
+
+[ext_resource type="Script" uid="uid://bqa0whjic5p4d" path="res://addons/simple_card_pile_ui/card_ui.gd" id="1_i5axx"]
+[ext_resource type="Script" uid="uid://dfbei5shayfo7" path="res://scripts/core/shop_system.gd" id="2_mi1d8"]
+
+[node name="ShopScene" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_i5axx")
+metadata/_custom_type_script = "uid://bqa0whjic5p4d"
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ShopSystem" type="Node" parent="."]
+script = ExtResource("2_mi1d8")

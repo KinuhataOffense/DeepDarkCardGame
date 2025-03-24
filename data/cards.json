@@ -1,0 +1,34 @@
+[  
+  {  
+	"nice_name": "红桃A",  
+	"texture_path": "res://assets/cards/hearts_1.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 1,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "红桃2",  
+	"texture_path": "res://assets/cards/hearts_2.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 2,  
+	"card_type": 0  
+  },  
+  // ... 添加更多普通扑克牌  
+  
+  {  
+	"nice_name": "锻造石牌",  
+	"texture_path": "res://assets/cards/forge_stone.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "special",  
+	"value": 5,  
+	"card_type": 1,  
+	"effect_id": "forge_stone",  
+	"effect_description": "打出后此牌不移除，可再次使用，但每次使用后降低1点符值",  
+	"power_decrease_rate": 1  
+  }  
+]  

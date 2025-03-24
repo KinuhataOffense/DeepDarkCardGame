@@ -1,0 +1,40 @@
+[  
+  {  
+	"id": "minion_1",  
+	"name": "失落的骑士",  
+	"description": "曾经的王国守卫，现在只是空洞的躯壳。",  
+	"health": 100,  
+	"round_limit": 5,  
+	"required_score": 150,  
+	"effects": [  
+	  {  
+		"trigger": "round_start",  
+		"frequency": 3,  
+		"type": "mark_card",  
+		"description": "标记一张手牌，若该轮未使用则受到10点伤害"  
+	  }  
+	]  
+  },  
+  {  
+	"id": "boss_1",  
+	"name": "失落的王",  
+	"description": "被初火腐蚀的统治者，他的力量源自破碎的王冠。",  
+	"health": 250,  
+	"round_limit": 8,  
+	"required_score": 400,  
+	"effects": [  
+	  {  
+		"trigger": "round_start",  
+		"frequency": 3,  
+		"type": "disable_magic_cards",  
+		"description": "使用"祈祷"，使你下一轮无法使用魔法牌"  
+	  },  
+	  {  
+		"trigger": "round_end",  
+		"frequency": 5,  
+		"type": "reduce_multiplier",  
+		"description": "所有手牌倍率减半"  
+	  }  
+	]  
+  }  
+]  
