@@ -60,7 +60,6 @@ max_hand_size = 7
 max_hand_spread = 800
 hand_rotation_curve = SubResource("Curve_b5spy")
 hand_vertical_curve = SubResource("Curve_utbpp")
-metadata/_custom_type_script = "uid://pxehq7pkni7q"
 
 [node name="CombinationDropzone" type="Control" parent="."]
 modulate = Color(0.804596, 0.934213, 0.842941, 1)
