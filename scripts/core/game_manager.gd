@@ -2,115 +2,159 @@ extends Node
 class_name GameManager  
 
 # 引用到核心节点  
-@onready var card_pile_ui: CardPileUI = $CardPileUI  
-@onready var combination_area: CombinationDropzone = $CombinationArea  
-@onready var enemy_display: EnemyDisplay = $EnemyDisplay  
-@onready var player_stats: PlayerStats = $PlayerStats  
+@onready var card_pile_ui: CardPileUI = $"../CardPileUI"  
+@onready var combination_area: CombinationDropzone = $"../CombinationDropzone"  
+@onready var enemy_ui = $"../EnemyDisplay"  # 注意这里应该是EnemyDisplay而非EnemyUI  
+@onready var player_stats = $"../PlayerStats"
 
 # 游戏状态  
 enum GameState { PLAYER_TURN, ENEMY_TURN, SHOP, GAME_OVER }  
 var current_state: GameState = GameState.PLAYER_TURN  
 var current_enemy = null  
 var current_round: int = 1  
-var turns_remaining: int = 0  
+var turns_remaining: int = 3  
 var score_required: int = 0  
 
 # 倍率和奖励系统  
-var multiplier: float = 1.0  
+var score_multiplier: float = 1.0  
 var currency: int = 0  
+
+# 信号  
+signal enemy_defeated  
+signal game_over(win)  
+signal enter_shop_requested  
+signal return_to_game_requested  
 
 # 游戏初始化  
 func _ready():  
 	initialize_game()  
 	
 func initialize_game():  
-	# 初始化牌堆和玩家状态  
-	load_initial_deck()  
-	player_stats.reset()  
-	# 生成第一个敌人  
-	spawn_enemy()  
-	
-# 回合管理  
-func start_player_turn():  
+	# 初始化游戏状态  
 	current_state = GameState.PLAYER_TURN  
-	turns_remaining = 3  # 默认每回合3次出牌机会  
-	apply_round_effects()  
+	current_round = 1  
+	turns_remaining = 3  
+	score_multiplier = 1.0  
 	
-# 组合检测和得分  
-func check_combination(cards: Array) -> Dictionary:  
-	# 检测出牌组合并返回结果  
-	var result = {  
-		"type": "INVALID",  
-		"base_score": 0,  
-		"multiplier": multiplier,  
-		"total_score": 0,  
-		"effects": []  
+	# 设置组合区域引用  
+	combination_area.game_manager = self  
+	
+	# 初始化敌人  
+	spawn_first_enemy()  
+	
+	# 初始化牌堆（使用CardPileUI的API）  
+	# 这里不需要手动加载牌组，CardPileUI会自动从JSON加载  
+	
+# 初始化第一个敌人  
+func spawn_first_enemy():  
+	var enemy_data = {  
+		"name": "失落的骑士",  
+		"description": "曾经的王国守卫，现在只是空洞的躯壳。",  
+		"health": 100,  
+		"round_limit": 5,  
+		"required_score": 150,  
+		"effects": [  
+			{  
+				"trigger": "round_start",  
+				"frequency": 3,  
+				"type": "mark_card",  
+				"description": "标记一张手牌，若该轮未使用则受到10点伤害"  
+			}  
+		]  
 	}  
 	
-	# 组合类型检测  
-	if cards.size() == 1:  
-		# 灰烬组合 - 单张牌  
-		result.type = "ASH"  
-		result.base_score = 10  
-	elif cards.size() == 2 and is_same_value(cards):  
-		# 魂组 - 两张相同点数  
-		result.type = "SOUL_PAIR"  
-		result.base_score = 15  
-	elif cards.size() == 3 and is_consecutive_same_suit(cards):  
-		# 魂链 - 三张连续同花色  
-		result.type = "SOUL_CHAIN"  
-		result.base_score = 25  
-	elif cards.size() == 3 and is_same_value(cards):  
-		# 刻印 - 三张相同点数  
-		result.type = "IMPRINT"  
-		result.base_score = 40  
-	elif cards.size() == 4 and is_same_value(cards):  
-		# 王印 - 四张相同点数  
-		result.type = "KING_SEAL"  
-		result.base_score = 60  
+	current_enemy = Enemy.new()  
+	current_enemy.initialize(enemy_data)  
+	score_required = current_enemy.required_score  
+	
+	# 更新UI  
+	update_enemy_ui()  
+	
+# 开始玩家回合  
+func start_player_turn():  
+	current_state = GameState.PLAYER_TURN  
+	turns_remaining = 3  
+	# 应用回合开始效果  
+	if current_enemy:  
+		current_enemy.apply_round_start_effects(self)  
+	
+# 结束玩家回合  
+func end_player_turn():  
+	if current_state != GameState.PLAYER_TURN:  
+		return  
 		
-	# 应用特殊卡牌效果和装备效果  
-	apply_card_effects(cards, result)  
+	# 应用回合结束效果  
+	if current_enemy:  
+		current_enemy.apply_round_end_effects(self)  
+		
+	# 检查游戏是否结束  
+	check_game_state()  
 	
-	# 计算最终得分  
-	result.total_score = int(result.base_score * result.multiplier)  
+	# 进入下一回合  
+	current_round += 1  
+	start_player_turn()  
 	
-	return result  
+# 检查游戏状态  
+func check_game_state():  
+	# 检查是否击败敌人  
+	if player_stats.current_score >= score_required:  
+		emit_signal("enemy_defeated")  
+		return  
+		
+	# 检查回合限制  
+	if current_round >= current_enemy.round_limit:  
+		emit_signal("game_over", false)  # 失败  
+		
+# 检查敌人是否已击败  
+func check_enemy_defeated() -> bool:  
+	return player_stats.current_score >= score_required  
 	
-# 辅助函数  
-func is_same_value(cards: Array) -> bool:  
-	var first_value = cards[0].card_data.value  
-	for card in cards:  
-		if card.card_data.value != first_value:  
-			return false  
-	return true  
+# 降低得分倍率（用于敌人效果）  
+func reduce_score_multiplier(factor: float):  
+	score_multiplier *= factor  
 	
-func is_consecutive_same_suit(cards: Array) -> bool:  
-	# 确保是同花色  
-	var suit = cards[0].card_data.suit  
-	for card in cards:  
-		if card.card_data.suit != suit:  
-			return false  
-			
-	# 排序并检查是否连续  
-	var values = []  
-	for card in cards:  
-		values.append(card.card_data.value)  
-	values.sort()  
-	
-	for i in range(1, values.size()):  
-		if values[i] != values[i-1] + 1:  
-			return false  
-	
-	return true  
-	
-# 敌人系统  
-func spawn_enemy():  
-	# 生成新敌人并设置其属性  
-	pass  
-	
-# 商店系统  
+# 进入商店  
 func enter_shop():  
 	current_state = GameState.SHOP  
-	# 显示商店界面  
-	pass  
+	emit_signal("enter_shop_requested")  
+	
+# 离开商店  
+func leave_shop():  
+	current_state = GameState.PLAYER_TURN  
+	# 生成新敌人  
+	spawn_next_enemy()  
+	emit_signal("return_to_game_requested")  
+	
+# 生成下一个敌人  
+func spawn_next_enemy():  
+	# 简化起见，这里只实现一个示例敌人  
+	var enemy_data = {  
+		"name": "失落的王",  
+		"description": "被初火腐蚀的统治者，他的力量源自破碎的王冠。",  
+		"health": 250,  
+		"round_limit": 8,  
+		"required_score": 400,  
+		"effects": [  
+			{  
+				"trigger": "round_start",  
+				"frequency": 3,  
+				"type": "disable_magic_cards",  
+				"description": "使你下一轮无法使用魔法牌"  
+			}  
+		]  
+	}  
+	
+	current_enemy = Enemy.new()  
+	current_enemy.initialize(enemy_data)  
+	score_required = current_enemy.required_score  
+	
+	# 更新UI  
+	update_enemy_ui()  
+	
+# 更新敌人UI  
+func update_enemy_ui():  
+	if current_enemy and enemy_ui:  
+		enemy_ui.get_node("EnemyName").text = current_enemy.enemy_name  
+		enemy_ui.get_node("EnemyDescription").text = current_enemy.description  
+		enemy_ui.get_node("EnemyHealth").max_value = current_enemy.max_health  
+		enemy_ui.get_node("EnemyHealth").value = current_enemy.health  

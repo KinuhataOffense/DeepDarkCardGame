@@ -6,7 +6,7 @@ extends Control
 @onready var leave_button = $LeaveShopButton  
 
 var game_manager = null  
-var item_card_scene = preload("res://scenes/shop/item_card.tscn")  
+var item_card_scene = preload("res://scenes/item_card.tscn")  
 
 func _ready():  
 	# 连接按钮信号  

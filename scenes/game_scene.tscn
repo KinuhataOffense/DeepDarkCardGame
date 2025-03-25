@@ -56,28 +56,28 @@ metadata/_custom_type_script = "uid://4iorfpt6j2me"
 [node name="PlayerStats" type="Node" parent="."]
 script = ExtResource("5_y3j0m")
 
-[node name="Control" type="Control" parent="."]
+[node name="EnemyDisplay" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="EnemyImage" type="TextureRect" parent="Control"]
+[node name="EnemyImage" type="TextureRect" parent="EnemyDisplay"]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="EnemyName" type="Label" parent="Control"]
+[node name="EnemyName" type="Label" parent="EnemyDisplay"]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
 
-[node name="EnemyHealth" type="ProgressBar" parent="Control"]
+[node name="EnemyHealth" type="ProgressBar" parent="EnemyDisplay"]
 layout_mode = 0
 offset_right = 4.0
 offset_bottom = 27.0
 
-[node name="EnemyDescription" type="RichTextLabel" parent="Control"]
+[node name="EnemyDescription" type="RichTextLabel" parent="EnemyDisplay"]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0

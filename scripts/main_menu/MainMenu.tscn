@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://domr3f0kivnb"]
+
+[ext_resource type="Script" uid="uid://bbao1bufc7d36" path="res://scripts/core/scene_manager.gd" id="1_t07bc"]
+
+[node name="Main" type="Node2D"]
+
+[node name="MainMenu" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 24.0
+offset_top = 8.0
+offset_right = 64.0
+offset_bottom = 48.0
+
+[node name="StartButton" type="Button" parent="MainMenu"]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 27.0
+offset_right = 138.0
+offset_bottom = 58.0
+text = "StartButton"
+
+[node name="QuitButton" type="Button" parent="MainMenu"]
+layout_mode = 0
+offset_left = 42.0
+offset_top = 67.0
+offset_right = 137.0
+offset_bottom = 98.0
+text = "QuitButton"
+
+[node name="Title" type="Label" parent="MainMenu"]
+layout_mode = 0
+offset_left = 72.0
+offset_right = 112.0
+offset_bottom = 23.0
+text = "Title"
+
+[node name="SceneManager" type="Node" parent="."]
+script = ExtResource("1_t07bc")

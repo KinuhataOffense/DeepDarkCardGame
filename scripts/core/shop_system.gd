@@ -1,94 +1,56 @@
-extends Node  
-class_name ShopSystem  
+extends Control  
 
-var available_items: Array = []  
-@onready var game_manager: GameManager = get_node("/root/GameManager")  
+@onready var shop_system = $ShopSystem  
+@onready var item_container = $ItemContainer  
+@onready var player_currency = $PlayerCurrency  
+@onready var leave_button = $LeaveShopButton  
 
-# 初始化商店  
-func initialize_shop():  
-	# 生成可购买的道具  
-	generate_available_items()  
+var game_manager = null  
+
+# 由于我们现在还没有item_card.tscn，我们将使用简化实现  
+# 可以临时使用Button替代，后续创建proper item_card  
+
+func _ready():  
+	# 连接按钮信号  
+	leave_button.pressed.connect(_on_leave_shop_pressed)  
 	
-# 生成商店物品  
-func generate_available_items():  
-	available_items.clear()  
+	# 初始化商店  
+	refresh_shop_display()  
+
+func initialize(new_game_manager):  
+	game_manager = new_game_manager  
+	shop_system.game_manager = game_manager  
+	refresh_shop_display()  
 	
-	# 根据游戏进度选择可用物品  
-	var shop_tier = calculate_shop_tier()  
+func refresh_shop_display():  
+	# 清空现有物品显示  
+	for child in item_container.get_children():  
+		child.queue_free()  
 	
-	# 添加随机道具  
-	add_random_deck_modifiers(shop_tier)  
-	add_random_consumables(shop_tier)  
-	add_random_permanent_upgrades(shop_tier)  
-	add_random_passive_items(shop_tier)  
+	# 更新货币显示  
+	if game_manager and game_manager.player_stats:  
+		player_currency.text = "货币: " + str(game_manager.player_stats.currency)  
 	
-# 购买物品  
-func purchase_item(item_index: int):  
-	if item_index >= available_items.size():  
-		return false  
+	# 刷新商店物品  
+	shop_system.initialize_shop()  
+	
+	# 临时解决方案：为每个物品创建一个按钮  
+	for i in range(shop_system.available_items.size()):  
+		var item = shop_system.available_items[i]  
+		var button = Button.new()  
+		button.text = item.get("name") + " - " + str(item.get("price")) + "金币"  
+		button.tooltip_text = item.get("description", "")  
+		button.pressed.connect(_on_item_button_pressed.bind(i))  
+		item_container.add_child(button)  
+
+func _on_item_button_pressed(item_index):  
+	var result = shop_system.purchase_item(item_index)  
+	if result:  
+		# 更新显示  
+		refresh_shop_display()  
 		
-	var item = available_items[item_index]  
-	
-	if game_manager.player_stats.currency >= item.price:  
-		game_manager.player_stats.currency -= item.price  
-		
-		# 应用物品效果  
-		match item.category:  
-			"deck_modifier":  
-				apply_deck_modification(item)  
-			"consumable":  
-				game_manager.player_stats.add_item(item)  
-			"permanent":  
-				game_manager.player_stats.add_item(item)  
-			"passive":  
-				game_manager.player_stats.add_item(item)  
-				
-		return true  
-	
-	return false  
-	
-# 应用牌堆修改  
-func apply_deck_modification(item):  
-	match item.effect_id:  
-		"forge":  
-			# 升级普通牌  
-			var selected_cards = [] # 这里需要让玩家选择  
-			for card in selected_cards:  
-				upgrade_card_to_enhanced(card)  
-				
-		"special_card":  
-			# 添加特殊牌  
-			var card_data = create_special_card(item.card_id)  
-			game_manager.card_pile_ui.create_card_in_pile(  
-				card_data.nice_name,   
-				CardPileUI.Piles.draw_pile  
-			)  
-			
-		"remove_cards":  
-			# 移除牌  
-			var selected_cards = [] # 这里需要让玩家选择  
-			for card in selected_cards:  
-				game_manager.card_pile_ui.remove_card_from_game(card)  
-				
-# 创建特殊卡牌  
-func create_special_card(card_id: String) -> Dictionary:  
-	var card_data = {}  
-	
-	match card_id:  
-		"humanity_card":  
-			card_data = {  
-				"nice_name": "人性牌",  
-				"texture_path": "res://cards/humanity_card.png",  
-				"backface_texture_path": "res://cards/card_back.png",  
-				"suit": "special",  
-				"value": 0,  
-				"card_type": DarkCardData.CardType.SPECIAL,  
-				"effect_id": "humanity",  
-				"effect_description": "可作为任意牌参与组合，使用后触发随机事件"  
-			}  
-			
-		"chaos_card":  
-			# 类似地设置混沌牌  
-			pass  
-			
-	return card_data  
+func _on_leave_shop_pressed():  
+	# 离开商店，返回主游戏  
+	if game_manager:  
+		game_manager.leave_shop()  
+	queue_free()  

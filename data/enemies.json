@@ -27,7 +27,7 @@
 		"trigger": "round_start",  
 		"frequency": 3,  
 		"type": "disable_magic_cards",  
-		"description": "使用"祈祷"，使你下一轮无法使用魔法牌"  
+		"description": "使用\"祈祷\"，使你下一轮无法使用魔法牌"  
 	  },  
 	  {  
 		"trigger": "round_end",  

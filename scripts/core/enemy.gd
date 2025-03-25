@@ -1,7 +1,8 @@
 extends Node  
 class_name Enemy  
 
-var name: String  
+# 使用enemy_name避免与Node.name冲突  
+var enemy_name: String  
 var description: String  
 var health: int  
 var max_health: int  
@@ -14,54 +15,48 @@ var round_counter: int = 0
 
 # 初始化敌人  
 func initialize(enemy_data: Dictionary):  
-	name = enemy_data.name  
-	description = enemy_data.description  
-	health = enemy_data.health  
-	max_health = enemy_data.health  
-	round_limit = enemy_data.round_limit  
-	required_score = enemy_data.required_score  
-	effects = enemy_data.effects  
+	enemy_name = enemy_data.get("name", "未知敌人")  
+	description = enemy_data.get("description", "")  
+	health = enemy_data.get("health", 100)  
+	max_health = health  
+	round_limit = enemy_data.get("round_limit", 5)  
+	required_score = enemy_data.get("required_score", 150)  
+	effects = enemy_data.get("effects", [])  
 	
 # 回合开始时应用效果  
 func apply_round_start_effects(game_manager):  
 	round_counter += 1  
 	
 	for effect in effects:  
-		if effect.trigger == "round_start":  
-			if round_counter % effect.frequency == 0:  
+		if effect.get("trigger") == "round_start":  
+			if round_counter % effect.get("frequency", 1) == 0:  
 				execute_effect(effect, game_manager)  
 				
 # 回合结束时应用效果  
 func apply_round_end_effects(game_manager):  
 	for effect in effects:  
-		if effect.trigger == "round_end":  
-			if round_counter % effect.frequency == 0:  
+		if effect.get("trigger") == "round_end":  
+			if round_counter % effect.get("frequency", 1) == 0:  
 				execute_effect(effect, game_manager)  
 				
 # 执行特殊效果  
 func execute_effect(effect, game_manager):  
-	match effect.type:  
+	match effect.get("type"):  
 		"mark_card":  
 			# 标记随机手牌  
 			var hand_cards = game_manager.card_pile_ui.get_cards_in_pile(CardPileUI.Piles.hand_pile)  
 			if hand_cards.size() > 0:  
-				var random_card = hand_cards[randi() % hand_cards.size()]  
-				random_card.card_data.is_marked = true  
+				var random_index = randi() % hand_cards.size()  
+				# 简单地用元数据标记卡牌  
+				hand_cards[random_index].set_meta("marked", true)  
 				
 		"reduce_multiplier":  
-			# 降低倍率  
-			game_manager.multiplier *= 0.5  
+			# 降低倍率（通过游戏管理器）  
+			game_manager.reduce_score_multiplier(0.5)  
 			
 		"disable_magic_cards":  
-			# 禁用魔法牌  
+			# 禁用魔法牌（通过修改卡牌可用性）  
 			var hand_cards = game_manager.card_pile_ui.get_cards_in_pile(CardPileUI.Piles.hand_pile)  
 			for card in hand_cards:  
-				if card.card_data.card_type == DarkCardData.CardType.SPECIAL:  
-					card.card_data.is_locked = true  
-					
-		"randomize_values":  
-			# 随机改变牌值  
-			var hand_cards = game_manager.card_pile_ui.get_cards_in_pile(CardPileUI.Piles.hand_pile)  
-			for card in hand_cards:  
-				if randf() < 0.3:  # 30%几率改变  
-					card.card_data.value = 1 + randi() % 13  
+				if card.card_data.get("card_type", 0) == 2:  # 假设2是魔法牌类型  
+					card.set_disabled(true)  

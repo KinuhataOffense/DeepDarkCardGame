@@ -17,7 +17,471 @@
 	"value": 2,  
 	"card_type": 0  
   },  
-  // ... 添加更多普通扑克牌  
+  {  
+	"nice_name": "红桃3",  
+	"texture_path": "res://assets/cards/hearts_3.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 3,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "红桃4",  
+	"texture_path": "res://assets/cards/hearts_4.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 4,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "红桃5",  
+	"texture_path": "res://assets/cards/hearts_5.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 5,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "红桃6",  
+	"texture_path": "res://assets/cards/hearts_6.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 6,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "红桃7",  
+	"texture_path": "res://assets/cards/hearts_7.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 7,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "红桃8",  
+	"texture_path": "res://assets/cards/hearts_8.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 8,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "红桃9",  
+	"texture_path": "res://assets/cards/hearts_9.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 9,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "红桃10",  
+	"texture_path": "res://assets/cards/hearts_10.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 10,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "红桃J",  
+	"texture_path": "res://assets/cards/hearts_11.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 11,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "红桃Q",  
+	"texture_path": "res://assets/cards/hearts_12.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 12,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "红桃K",  
+	"texture_path": "res://assets/cards/hearts_13.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "hearts",  
+	"value": 13,  
+	"card_type": 0  
+  },  
+  
+  {  
+	"nice_name": "方块A",  
+	"texture_path": "res://assets/cards/diamonds_1.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 1,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块2",  
+	"texture_path": "res://assets/cards/diamonds_2.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 2,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块3",  
+	"texture_path": "res://assets/cards/diamonds_3.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 3,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块4",  
+	"texture_path": "res://assets/cards/diamonds_4.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 4,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块5",  
+	"texture_path": "res://assets/cards/diamonds_5.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 5,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块6",  
+	"texture_path": "res://assets/cards/diamonds_6.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 6,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块7",  
+	"texture_path": "res://assets/cards/diamonds_7.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 7,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块8",  
+	"texture_path": "res://assets/cards/diamonds_8.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 8,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块9",  
+	"texture_path": "res://assets/cards/diamonds_9.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 9,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块10",  
+	"texture_path": "res://assets/cards/diamonds_10.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 10,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块J",  
+	"texture_path": "res://assets/cards/diamonds_11.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 11,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块Q",  
+	"texture_path": "res://assets/cards/diamonds_12.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 12,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "方块K",  
+	"texture_path": "res://assets/cards/diamonds_13.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "diamonds",  
+	"value": 13,  
+	"card_type": 0  
+  },  
+  
+  {  
+	"nice_name": "梅花A",  
+	"texture_path": "res://assets/cards/clubs_1.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 1,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花2",  
+	"texture_path": "res://assets/cards/clubs_2.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 2,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花3",  
+	"texture_path": "res://assets/cards/clubs_3.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 3,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花4",  
+	"texture_path": "res://assets/cards/clubs_4.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 4,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花5",  
+	"texture_path": "res://assets/cards/clubs_5.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 5,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花6",  
+	"texture_path": "res://assets/cards/clubs_6.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 6,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花7",  
+	"texture_path": "res://assets/cards/clubs_7.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 7,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花8",  
+	"texture_path": "res://assets/cards/clubs_8.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 8,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花9",  
+	"texture_path": "res://assets/cards/clubs_9.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 9,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花10",  
+	"texture_path": "res://assets/cards/clubs_10.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 10,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花J",  
+	"texture_path": "res://assets/cards/clubs_11.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 11,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花Q",  
+	"texture_path": "res://assets/cards/clubs_12.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 12,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "梅花K",  
+	"texture_path": "res://assets/cards/clubs_13.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "clubs",  
+	"value": 13,  
+	"card_type": 0  
+  },  
+  
+  {  
+	"nice_name": "黑桃A",  
+	"texture_path": "res://assets/cards/spades_1.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 1,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃2",  
+	"texture_path": "res://assets/cards/spades_2.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 2,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃3",  
+	"texture_path": "res://assets/cards/spades_3.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 3,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃4",  
+	"texture_path": "res://assets/cards/spades_4.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 4,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃5",  
+	"texture_path": "res://assets/cards/spades_5.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 5,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃6",  
+	"texture_path": "res://assets/cards/spades_6.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 6,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃7",  
+	"texture_path": "res://assets/cards/spades_7.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 7,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃8",  
+	"texture_path": "res://assets/cards/spades_8.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 8,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃9",  
+	"texture_path": "res://assets/cards/spades_9.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 9,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃10",  
+	"texture_path": "res://assets/cards/spades_10.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 10,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃J",  
+	"texture_path": "res://assets/cards/spades_11.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 11,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃Q",  
+	"texture_path": "res://assets/cards/spades_12.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 12,  
+	"card_type": 0  
+  },  
+  {  
+	"nice_name": "黑桃K",  
+	"texture_path": "res://assets/cards/spades_13.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "spades",  
+	"value": 13,  
+	"card_type": 0  
+  },  
+  
+  {  
+	"nice_name": "小丑",  
+	"texture_path": "res://assets/cards/joker.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "special",  
+	"value": 0,  
+	"card_type": 0,  
+	"effect_id": "joker",  
+	"effect_description": "可以替代任意一张普通牌"  
+  },  
   
   {  
 	"nice_name": "锻造石牌",  
@@ -30,5 +494,106 @@
 	"effect_id": "forge_stone",  
 	"effect_description": "打出后此牌不移除，可再次使用，但每次使用后降低1点符值",  
 	"power_decrease_rate": 1  
+  },  
+  {  
+	"nice_name": "魂之牌",  
+	"texture_path": "res://assets/cards/soul_card.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "special",  
+	"value": 7,  
+	"card_type": 1,  
+	"effect_id": "soul_card",  
+	"effect_description": "可以吸收相邻牌的特性，但每回合结束时会消耗1点生命"  
+  },  
+  {  
+	"nice_name": "黑火牌",  
+	"texture_path": "res://assets/cards/black_fire.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "special",  
+	"value": 9,  
+	"card_type": 1,  
+	"effect_id": "black_fire",  
+	"effect_description": "使包含它的组合分数翻倍，但结算后永久烧毁，并对玩家造成5点伤害",  
+	"burn_after_use": true  
+  },  
+  {  
+	"nice_name": "人性牌",  
+	"texture_path": "res://assets/cards/humanity.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "special",  
+	"value": 0,  
+	"card_type": 2,  
+	"effect_id": "humanity",  
+	"effect_description": "可作为任意牌参与组合，但使用后会触发随机事件"  
+  },  
+  {  
+	"nice_name": "混沌牌",  
+	"texture_path": "res://assets/cards/chaos.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "special",  
+	"value": 0,  
+	"card_type": 2,  
+	"effect_id": "chaos",  
+	"effect_description": "每回合开始时变为此牌左侧的牌，结算时有20%几率产生额外收益"  
+  },  
+  {  
+	"nice_name": "龙契牌",  
+	"texture_path": "res://assets/cards/dragon_pact.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "special",  
+	"value": 13,  
+	"card_type": 2,  
+	"effect_id": "dragon_pact",  
+	"effect_description": "打出后行动次数+1，但下回合开始时手牌上限-1"  
+  },  
+  {  
+	"nice_name": "暗月牌",  
+	"texture_path": "res://assets/cards/dark_moon.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "special",  
+	"value": 11,  
+	"card_type": 2,  
+	"effect_id": "dark_moon",  
+	"effect_description": "可同时参与两个不同组合的结算，但使用后永久离场",  
+	"burn_after_use": true  
+  },  
+  {  
+	"nice_name": "初火牌",  
+	"texture_path": "res://assets/cards/first_flame.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "special",  
+	"value": 1,  
+	"card_type": 2,  
+	"effect_id": "first_flame",  
+	"effect_description": "每回合首次使用时获得额外30%分数，但每次使用会消耗等同于其数值的生命值"  
+  },  
+  {  
+	"nice_name": "灵魂之环",  
+	"texture_path": "res://assets/cards/soul_ring.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "special",  
+	"value": 3,  
+	"card_type": 2,  
+	"effect_id": "soul_ring",  
+	"effect_description": "可以将任意一张牌复制到手牌中，但复制出的牌结算后立即消失"  
+  },  
+  {  
+	"nice_name": "时间沙漏",  
+	"texture_path": "res://assets/cards/time_hourglass.png",  
+	"backface_texture_path": "res://assets/cards/card_back.png",  
+	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
+	"suit": "special",  
+	"value": 12,  
+	"card_type": 2,  
+	"effect_id": "time_hourglass",  
+	"effect_description": "结算后返回到上回合的手牌状态，但接下来两回合不能再使用特殊牌"  
   }  
 ]  
