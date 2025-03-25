@@ -1,24 +1,23 @@
 [gd_scene load_steps=15 format=3 uid="uid://bt2x5ecxjo2vu"]
 
-[ext_resource type="Script" path="res://example_2/example.gd" id="1_xx0ud"]
+[ext_resource type="Script" uid="uid://cpkiy2olf3e4o" path="res://example_2/example.gd" id="1_xx0ud"]
 [ext_resource type="Texture2D" uid="uid://bddymiv4rv8kw" path="res://assets/white-circle.png" id="2_7nbk5"]
-[ext_resource type="Script" path="res://example_2/example__dropzone__enemy.gd" id="3_xajcs"]
+[ext_resource type="Script" uid="uid://bc2u1lvmk8a3n" path="res://example_2/example__dropzone__enemy.gd" id="3_xajcs"]
 [ext_resource type="Texture2D" uid="uid://b0ymf1fwfgbss" path="res://assets/enemy_crab.png" id="4_61gq4"]
 [ext_resource type="Texture2D" uid="uid://3sjbqh1m34dc" path="res://assets/enemy_bee.png" id="5_hv7g6"]
-[ext_resource type="Script" path="res://example_2/example__dropzone__upgrade.gd" id="6_lc55u"]
-[ext_resource type="Script" path="res://example_2/example__dropzone__non-attack.gd" id="7_tllj1"]
+[ext_resource type="Script" uid="uid://bf428b4387dsw" path="res://example_2/example__dropzone__upgrade.gd" id="6_lc55u"]
+[ext_resource type="Script" uid="uid://ccvn32v8k385r" path="res://example_2/example__dropzone__non-attack.gd" id="7_tllj1"]
 [ext_resource type="Texture2D" uid="uid://bpjxsk1mxfl77" path="res://assets/1x1_#ffffffff.png" id="8_7o08i"]
-[ext_resource type="Script" path="res://addons/simple_card_pile_ui/card_pile_ui.gd" id="9_kjsa2"]
+[ext_resource type="Script" uid="uid://tbka1du0xcml" path="res://addons/simple_card_pile_ui/card_pile_ui.gd" id="9_kjsa2"]
 [ext_resource type="PackedScene" uid="uid://dn2ej8wtxey2u" path="res://example_2/example__card_ui.tscn" id="10_nkrx5"]
 
 [sub_resource type="Curve" id="Curve_noha0"]
-min_value = -15.0
-max_value = 15.0
+_limits = [-15.0, 15.0, 0.0, 1.0]
 _data = [Vector2(0, -15), 0.0, 30.0, 0, 1, Vector2(1, 15), 30.0, 0.0, 1, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_7lcs2"]
-max_value = 40.0
+_limits = [0.0, 40.0, 0.0, 1.0]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.504464, 35.3344), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 

@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://ben7qqx34vpkq" path="res://assets/card_back.png" id="2_rb3h5"]
 [ext_resource type="Texture2D" uid="uid://g3plv60jpgat" path="res://assets/card_attack.png" id="3_cihxm"]
-[ext_resource type="Script" path="res://example_2/example__card_ui.gd" id="3_hpl47"]
+[ext_resource type="Script" uid="uid://d1e8p0246i6lb" path="res://example_2/example__card_ui.gd" id="3_hpl47"]
 [ext_resource type="Texture2D" uid="uid://bddymiv4rv8kw" path="res://assets/white-circle.png" id="4_t0rpj"]
 
 [node name="CardUI" type="Control"]

@@ -1,14 +1,12 @@
-@tool
 extends CardUI  
 
 @onready var label = $Frontface/Label  
-@onready var card_image = $Frontface  
 
 func _ready():  
+	super()
+	label.text = card_data.nice_name
 	# 设置卡牌文本  
 	if card_data:  
-		label.text = str(card_data.value)  
-		
 		# 根据卡牌类型设置样式  
 		if card_data is DarkCardData:  
 			var dark_data = card_data as DarkCardData  

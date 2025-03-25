@@ -2,36 +2,27 @@ extends Node2D
 
 @onready var card_pile_ui = $CardPileUI  
 @onready var combination_zone = $CombinationDropzone  
-@onready var enemy_ui = $EnemyUI  
+@onready var enemy_ui = $EnemyDisplay  
 @onready var game_manager = $GameManager  
 @onready var player_stats = $PlayerStats  
 @onready var ui = $UI  
 
 # 在场景加载时连接信号  
 func _ready():  
-	# 连接来自CardPileUI的信号  
-	if card_pile_ui:  
-		card_pile_ui.card_clicked.connect(_on_card_ui_clicked)  
-	
-	# 连接组合区域的信号(假设CombinationDropzone有自己的信号)  
-	if combination_zone and combination_zone.has_signal("combination_resolved"):  
-		combination_zone.combination_resolved.connect(_on_combination_resolved)  
+	randomize()
+	# 连接组合区域的信号  
+	if combination_zone:  
+		combination_zone.connect("combination_resolved", _on_combination_resolved)  
 	
 	# 连接按钮信号  
 	if ui.has_node("ActionButtons/EndTurnButton"):  
-		ui.get_node("ActionButtons/EndTurnButton").pressed.connect(_on_end_turn_pressed)  
-	
-	# 连接游戏管理器信号  
-	if game_manager:  
-		game_manager.enemy_defeated.connect(_on_enemy_defeated)  
-		game_manager.game_over.connect(_on_game_over)  
-	
+		ui.get_node("ActionButtons/EndTurnButton").connect("pressed", _on_end_turn_pressed)  
+		
 	# 初始化游戏  
-	if game_manager:  
-		game_manager.initialize_game()  
-	
+	game_manager.initialize_game()
+		
 	# 更新UI初始状态  
-	update_ui()  
+	call_deferred("update_ui")
 
 # 更新UI显示  
 func update_ui():  
@@ -44,24 +35,16 @@ func update_ui():
 	if ui.has_node("PlayerHealth"):  
 		ui.get_node("PlayerHealth").value = player_stats.health  
 		ui.get_node("PlayerHealth").max_value = player_stats.max_health  
-	
-	# 更新敌人显示已在game_manager.update_enemy_ui()中处理  
 
 # 信号处理函数  
-func _on_card_ui_clicked(card):  
-	# 当卡牌被点击时的处理  
-	pass  
-
 func _on_combination_resolved(combination_result):  
 	# 显示组合结果  
 	if ui.has_node("CombinationResult"):  
-		ui.get_node("CombinationResult").text = "组合: " + combination_result.type + "\n得分: " + str(combination_result.score)  
+		var result_text = "组合: " + combination_result.type + "\n得分: " + str(combination_result.score)  
+		ui.get_node("CombinationResult").text = result_text  
 	
 	# 更新得分  
 	player_stats.add_score(combination_result.score)  
-	
-	# 减少剩余行动次数  
-	game_manager.turns_remaining -= 1  
 	
 	# 更新UI  
 	update_ui()  

@@ -3,4 +3,5 @@ extends CardDropzone
 @export var accept_suit : String
 
 func can_drop_card(card_ui : CardUI):
+	print("play by suit zone Triggered")
 	return card_ui.card_data.suit == accept_suit

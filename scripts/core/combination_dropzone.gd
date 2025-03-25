@@ -4,8 +4,17 @@ class_name CombinationDropzone
 # 游戏管理器引用  
 var game_manager = null  
 
+# 自定义信号  
+signal combination_resolved(result)  
+
+# 初始化  
+func _ready():  
+	# 获取CardPileUI引用  
+	await get_tree().process_frame  
+	card_pile_ui = get_node("../CardPileUI")  
+
 # 覆盖卡牌放置规则  
-func can_drop_card(_card_ui: CardUI) -> bool:  
+func can_drop_card(card_ui: CardUI) -> bool:  
 	# 默认允许放置任何卡牌  
 	return true  
 	
@@ -53,9 +62,18 @@ func check_and_resolve_combination():
 		# 计算得分  
 		var total_score = base_score  
 		
+		# 应用倍率  
+		if game_manager:  
+			total_score = int(total_score * game_manager.score_multiplier)  
+		
 		# 处理卡牌(移到弃牌堆)  
 		for card in cards:  
-			card_pile_ui.set_card_pile(card, CardPileUI.Piles.discard_pile)  
+			if card.card_data.has("burn_after_use") and card.card_data.burn_after_use:  
+				# 永久移除牌  
+				card_pile_ui.remove_card_from_game(card)  
+			else:  
+				# 移到弃牌堆  
+				card_pile_ui.set_card_pile(card, CardPileUI.Piles.discard_pile)  
 		
 		# 抽取新卡牌  
 		card_pile_ui.draw(cards.size())  
@@ -66,6 +84,10 @@ func check_and_resolve_combination():
 			"score": total_score,  
 			"cards": cards  
 		})  
+		
+		# 减少回合行动次数  
+		if game_manager:  
+			game_manager.turns_remaining -= 1  
 	else:  
 		# 无效组合，返回手牌  
 		move_cards_to_hand(cards)  
@@ -124,6 +146,3 @@ func is_consecutive_same_suit(cards: Array) -> bool:
 			return false  
 	
 	return true  
-
-# 添加自定义信号  
-signal combination_resolved(result)  

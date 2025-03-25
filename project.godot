@@ -17,13 +17,13 @@ config/icon="res://icon.svg"
 
 [display]
 
-window/size/viewport_width=1440
-window/size/viewport_height=720
+window/size/viewport_width=2480
+window/size/viewport_height=1470
 window/stretch/mode="viewport"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/simple_card_pile_ui/plugin.cfg")
+enabled=PackedStringArray("res://addons/animatedbutton/plugin.cfg", "res://addons/simple_card_pile_ui/plugin.cfg")
 
 [rendering]
 

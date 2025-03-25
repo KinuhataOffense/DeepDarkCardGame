@@ -79,6 +79,7 @@ var spread_curve := Curve.new()
 
 # this is really the only way we should move cards between piles
 func set_card_pile(card : CardUI, pile : Piles):
+	print("setting card pile")
 	_maybe_remove_card_from_any_piles(card)
 	_maybe_remove_card_from_any_dropzones(card)
 	if pile == Piles.discard_pile:

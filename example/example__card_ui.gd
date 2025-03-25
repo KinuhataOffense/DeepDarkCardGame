@@ -7,4 +7,3 @@ extends CardUI
 func _ready():
 	super()
 	label.text = card_data.nice_name
-

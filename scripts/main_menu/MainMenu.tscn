@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://domr3f0kivnb"]
+[gd_scene load_steps=4 format=3 uid="uid://domr3f0kivnb"]
 
+[ext_resource type="Script" uid="uid://dmodhdsujgk7f" path="res://addons/animatedbutton/AnimatedButton.gd" id="1_mtydo"]
 [ext_resource type="Script" uid="uid://bbao1bufc7d36" path="res://scripts/core/scene_manager.gd" id="1_t07bc"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mtydo"]
+font_size = 100
 
 [node name="Main" type="Node2D"]
 
@@ -12,28 +16,34 @@ offset_top = 8.0
 offset_right = 64.0
 offset_bottom = 48.0
 
-[node name="StartButton" type="Button" parent="MainMenu"]
+[node name="Title" type="Label" parent="MainMenu"]
 layout_mode = 0
-offset_left = 39.0
-offset_top = 27.0
-offset_right = 138.0
-offset_bottom = 58.0
-text = "StartButton"
+offset_left = 615.0
+offset_top = 111.0
+offset_right = 824.0
+offset_bottom = 248.0
+text = "Title"
+label_settings = SubResource("LabelSettings_mtydo")
 
 [node name="QuitButton" type="Button" parent="MainMenu"]
 layout_mode = 0
-offset_left = 42.0
-offset_top = 67.0
-offset_right = 137.0
-offset_bottom = 98.0
-text = "QuitButton"
+offset_left = 614.0
+offset_top = 534.0
+offset_right = 816.0
+offset_bottom = 612.0
+text = "Quit"
+script = ExtResource("1_mtydo")
+metadata/_custom_type_script = "uid://dmodhdsujgk7f"
 
-[node name="Title" type="Label" parent="MainMenu"]
+[node name="StartButton" type="Button" parent="MainMenu"]
 layout_mode = 0
-offset_left = 72.0
-offset_right = 112.0
-offset_bottom = 23.0
-text = "Title"
+offset_left = 613.0
+offset_top = 346.0
+offset_right = 813.0
+offset_bottom = 430.0
+text = "Start"
+script = ExtResource("1_mtydo")
+metadata/_custom_type_script = "uid://dmodhdsujgk7f"
 
 [node name="SceneManager" type="Node" parent="."]
 script = ExtResource("1_t07bc")

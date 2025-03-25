@@ -2,10 +2,10 @@ extends Node
 class_name GameManager  
 
 # 引用到核心节点  
-@onready var card_pile_ui: CardPileUI = $"../CardPileUI"  
+@onready var card_pile_ui: CardPileUI = $"../CardPileUI"   
 @onready var combination_area: CombinationDropzone = $"../CombinationDropzone"  
-@onready var enemy_ui = $"../EnemyDisplay"  # 注意这里应该是EnemyDisplay而非EnemyUI  
-@onready var player_stats = $"../PlayerStats"
+@onready var enemy_ui = $"../EnemyDisplay"  
+@onready var player_stats = $"../PlayerStats"  
 
 # 游戏状态  
 enum GameState { PLAYER_TURN, ENEMY_TURN, SHOP, GAME_OVER }  
@@ -27,7 +27,13 @@ signal return_to_game_requested
 
 # 游戏初始化  
 func _ready():  
-	initialize_game()  
+	# 连接卡牌相关信号  
+	if card_pile_ui:  
+		card_pile_ui.connect("card_clicked", _on_card_clicked)  
+		card_pile_ui.connect("card_dropped", _on_card_dropped)  
+		
+	# 初始化游戏  
+	call_deferred("initialize_game")  # 使用call_deferred确保所有节点都已准备好  
 	
 func initialize_game():  
 	# 初始化游戏状态  
@@ -42,9 +48,76 @@ func initialize_game():
 	# 初始化敌人  
 	spawn_first_enemy()  
 	
-	# 初始化牌堆（使用CardPileUI的API）  
-	# 这里不需要手动加载牌组，CardPileUI会自动从JSON加载  
+	# 加载并重置牌堆  
+	print("Loading card pile data...")  
+	card_pile_ui.load_json_path()  
+	print("Resetting card pile...")  
+	card_pile_ui.reset()  
+	print("Card pile initialized.")  
 	
+	# 抽取初始手牌  
+	print("Drawing initial hand...")  
+	card_pile_ui.draw(5)  
+	print("Initial hand drawn.")
+	
+# 卡牌操作的信号响应函数  
+func _on_card_clicked(card: CardUI):  
+	if current_state != GameState.PLAYER_TURN:  
+		return  
+	
+	# 这里可以添加卡牌点击的特殊效果处理  
+	var card_data = card.card_data  
+	if card_data.has("effect_id"):  
+		apply_card_effect(card_data)  
+
+func _on_card_dropped(card: CardUI):  
+	# 处理卡牌被放下的逻辑  
+	pass  
+	
+# 应用卡牌效果  
+func apply_card_effect(card_data):  
+	if not card_data.has("effect_id"):  
+		return  
+		
+	match card_data.effect_id:  
+		"joker":  
+			# 小丑牌效果处理...  
+			pass  
+			
+		"forge_stone":  
+			# 锻造石牌效果...  
+			if card_data.has("power_decrease_rate") and card_data.has("value"):  
+				card_data.value = max(1, card_data.value - card_data.power_decrease_rate)  
+			
+		"black_fire":  
+			# 黑火牌效果...  
+			score_multiplier *= 2.0  
+			player_stats.take_damage(5)  
+			
+		"dragon_pact":  
+			# 龙契牌效果...  
+			turns_remaining += 1  
+			# 下回合手牌上限-1的效果需要单独存储状态并在回合开始时应用  
+			
+		"humanity":  
+			# 人性牌效果...  
+			trigger_random_event()  
+			
+		# 添加其他卡牌效果...  
+
+# 随机事件触发  
+func trigger_random_event():  
+	var random_value = randf()  
+	if random_value < 0.25:  
+		# 正面事件  
+		player_stats.heal(10)  
+	elif random_value < 0.5:  
+		# 中性事件  
+		card_pile_ui.draw(1)  
+	else:  
+		# 负面事件  
+		player_stats.take_damage(5)  
+
 # 初始化第一个敌人  
 func spawn_first_enemy():  
 	var enemy_data = {  
@@ -74,6 +147,12 @@ func spawn_first_enemy():
 func start_player_turn():  
 	current_state = GameState.PLAYER_TURN  
 	turns_remaining = 3  
+	
+	# 抽牌到手牌上限  
+	var cards_to_draw = card_pile_ui.max_hand_size - card_pile_ui.get_card_pile_size(CardPileUI.Piles.hand_pile)  
+	if cards_to_draw > 0:  
+		card_pile_ui.draw(cards_to_draw)  
+	
 	# 应用回合开始效果  
 	if current_enemy:  
 		current_enemy.apply_round_start_effects(self)  
@@ -87,7 +166,7 @@ func end_player_turn():
 	if current_enemy:  
 		current_enemy.apply_round_end_effects(self)  
 		
-	# 检查游戏是否结束  
+	# 检查游戏状态  
 	check_game_state()  
 	
 	# 进入下一回合  
