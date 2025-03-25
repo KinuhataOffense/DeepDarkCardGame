@@ -18,29 +18,29 @@ offset_bottom = 48.0
 
 [node name="Title" type="Label" parent="MainMenu"]
 layout_mode = 0
-offset_left = 615.0
-offset_top = 111.0
-offset_right = 824.0
-offset_bottom = 248.0
+offset_left = 1104.0
+offset_top = 453.0
+offset_right = 1313.0
+offset_bottom = 590.0
 text = "Title"
 label_settings = SubResource("LabelSettings_mtydo")
 
 [node name="QuitButton" type="Button" parent="MainMenu"]
 layout_mode = 0
-offset_left = 614.0
-offset_top = 534.0
-offset_right = 816.0
-offset_bottom = 612.0
+offset_left = 1103.0
+offset_top = 876.0
+offset_right = 1305.0
+offset_bottom = 954.0
 text = "Quit"
 script = ExtResource("1_mtydo")
 metadata/_custom_type_script = "uid://dmodhdsujgk7f"
 
 [node name="StartButton" type="Button" parent="MainMenu"]
 layout_mode = 0
-offset_left = 613.0
-offset_top = 346.0
-offset_right = 813.0
-offset_bottom = 430.0
+offset_left = 1102.0
+offset_top = 688.0
+offset_right = 1302.0
+offset_bottom = 772.0
 text = "Start"
 script = ExtResource("1_mtydo")
 metadata/_custom_type_script = "uid://dmodhdsujgk7f"

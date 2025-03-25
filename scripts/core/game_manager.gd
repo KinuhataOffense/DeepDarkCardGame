@@ -65,10 +65,10 @@ func _on_card_clicked(card: CardUI):
 	if current_state != GameState.PLAYER_TURN:  
 		return  
 	
-	# 这里可以添加卡牌点击的特殊效果处理  
-	var card_data = card.card_data  
-	if card_data.has("effect_id"):  
-		apply_card_effect(card_data)  
+	## 这里可以添加卡牌点击的特殊效果处理  
+	#var card_data = card.card_data  
+	#if card_data.has("effect_id"):  
+		#apply_card_effect(card_data)  
 
 func _on_card_dropped(card: CardUI):  
 	# 处理卡牌被放下的逻辑  
