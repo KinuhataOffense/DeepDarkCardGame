@@ -96,4 +96,4 @@ BOSS还有特殊debuff。例子：
 - [ ] godot引擎调整场景ui
 - [ ] ...
 
-2025.3.25 MainMenu前所有bug已修复。已生成占位.png资源文件。
+2025.3.25 MainMenu前所有bug已修复。已生成占位.png资源文件。MainMenu的bug已修复，牌堆和手牌正常运行。出牌bug未修复。
