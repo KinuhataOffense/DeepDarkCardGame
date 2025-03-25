@@ -93,6 +93,7 @@ BOSS还有特殊debuff。例子：
 ## 待办
 
 - [ ] 完成README.md
+- [x] 修复MainMenu的bug
 - [ ] 修复GameManager的bug
 - [ ] godot引擎调整场景ui
 - [ ] ...
