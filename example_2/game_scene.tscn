@@ -1,0 +1,182 @@
+[gd_scene load_steps=11 format=3 uid="uid://cxco7l6jgsf2"]
+
+[ext_resource type="Script" uid="uid://bbq3kiis6024t" path="res://scripts/core/game_manager.gd" id="1_bw6k5"]
+[ext_resource type="Script" uid="uid://3l8nh0mxslqc" path="res://scripts/game/game_scene.gd" id="1_kk2rg"]
+[ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="1_rurhu"]
+[ext_resource type="Script" uid="uid://tbka1du0xcml" path="res://addons/simple_card_pile_ui/card_pile_ui.gd" id="2_y3j0m"]
+[ext_resource type="Script" uid="uid://b3vqhxkwjhf6m" path="res://scripts/core/combination_dropzone.gd" id="4_kk2rg"]
+[ext_resource type="Script" uid="uid://ubd65sdk7bbs" path="res://addons/simple_card_pile_ui/card_ui.gd" id="5_kk2rg"]
+[ext_resource type="Script" uid="uid://cuitqesw4sgw4" path="res://scripts/core/player_stats.gd" id="5_y3j0m"]
+
+[sub_resource type="PackedScene" id="PackedScene_b5spy"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("CardUi", "layout_mode", "anchors_preset", "script", "metadata/_custom_type_script", "Control", "Frontface", "offset_right", "offset_bottom", "TextureRect", "Label", "offset_left", "offset_top", "text", "Backface"),
+"node_count": 4,
+"node_paths": [],
+"nodes": PackedInt32Array(-1, -1, 5, 0, -1, 4, 1, 0, 2, 1, 3, 2, 4, 3, 0, 0, 0, 9, 6, -1, 3, 1, 1, 7, 4, 8, 5, 0, 1, 0, 10, 10, -1, 6, 1, 1, 11, 6, 12, 7, 7, 8, 8, 9, 13, 10, 0, 0, 0, 9, 14, -1, 3, 1, 1, 7, 11, 8, 12, 0),
+"variants": [3, 0, ExtResource("5_kk2rg"), "uid://bqa0whjic5p4d", 390.0, 530.0, 98.0, 99.0, 138.0, 122.0, "牌", 413.0, 564.0],
+"version": 3
+}
+
+[sub_resource type="Curve" id="Curve_b5spy"]
+_data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_utbpp"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="GameScene" type="Node2D"]
+script = ExtResource("1_kk2rg")
+
+[node name="Background" type="TextureRect" parent="."]
+z_index = -1
+offset_left = 3.0
+offset_top = 5.0
+offset_right = 2476.0
+offset_bottom = 1466.0
+texture = ExtResource("1_rurhu")
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("1_bw6k5")
+
+[node name="CardPileUI" type="Control" parent="."]
+top_level = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 16.0
+offset_top = 15.0
+offset_right = 16.0
+offset_bottom = 17.0
+script = ExtResource("2_y3j0m")
+json_card_database_path = "res://data/cards.json"
+json_card_collection_path = "res://data/collection.json"
+extended_card_ui = SubResource("PackedScene_b5spy")
+hand_pile_position = Vector2(1030, 960)
+max_hand_size = 7
+max_hand_spread = 800
+hand_rotation_curve = SubResource("Curve_b5spy")
+hand_vertical_curve = SubResource("Curve_utbpp")
+
+[node name="CombinationDropzone" type="Control" parent="."]
+modulate = Color(0.804596, 0.934213, 0.842941, 1)
+self_modulate = Color(0.589122, 0.477859, 0.620659, 1)
+layout_mode = 3
+anchors_preset = 0
+offset_left = 644.0
+offset_top = 232.0
+offset_right = 684.0
+offset_bottom = 272.0
+script = ExtResource("4_kk2rg")
+
+[node name="PlayerStats" type="Node" parent="."]
+script = ExtResource("5_y3j0m")
+
+[node name="EnemyDisplay" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="EnemyImage" type="TextureRect" parent="EnemyDisplay"]
+layout_mode = 0
+offset_left = 549.0
+offset_top = 177.0
+offset_right = 589.0
+offset_bottom = 217.0
+
+[node name="EnemyName" type="Label" parent="EnemyDisplay"]
+layout_mode = 0
+offset_left = 542.0
+offset_top = 70.0
+offset_right = 606.0
+offset_bottom = 93.0
+text = "敌人名称"
+
+[node name="EnemyHealth" type="ProgressBar" parent="EnemyDisplay"]
+layout_mode = 0
+offset_left = 628.0
+offset_top = 70.0
+offset_right = 632.0
+offset_bottom = 97.0
+
+[node name="EnemyDescription" type="RichTextLabel" parent="EnemyDisplay"]
+layout_mode = 0
+offset_left = 537.0
+offset_top = 100.0
+offset_right = 635.0
+offset_bottom = 140.0
+fit_content = true
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="ScoreDisplay" type="Label" parent="UI"]
+offset_left = 183.0
+offset_top = 51.0
+offset_right = 223.0
+offset_bottom = 74.0
+text = "分数"
+
+[node name="TurnsDisplay" type="Label" parent="UI"]
+offset_left = 233.0
+offset_top = 54.0
+offset_right = 281.0
+offset_bottom = 77.0
+text = "回合数"
+
+[node name="PlayerHealth" type="ProgressBar" parent="UI"]
+offset_left = 330.0
+offset_top = 52.0
+offset_right = 334.0
+offset_bottom = 79.0
+
+[node name="ActionButtons" type="HBoxContainer" parent="UI"]
+offset_left = 197.0
+offset_top = 178.0
+offset_right = 283.0
+offset_bottom = 218.0
+
+[node name="EndTurnButton" type="Button" parent="UI/ActionButtons"]
+layout_mode = 2
+text = "结束回合"
+
+[node name="UseItemButton" type="Button" parent="UI/ActionButtons"]
+layout_mode = 2
+text = "使用道具"
+
+[node name="CombinationResult" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 501.0
+offset_top = 121.0
+offset_right = 541.0
+offset_bottom = 161.0
+
+[node name="GameOverPanel" type="Panel" parent="UI"]
+offset_left = 180.0
+offset_top = 210.0
+offset_right = 220.0
+offset_bottom = 250.0
+
+[node name="ResultLabel" type="Label" parent="UI/GameOverPanel"]
+layout_mode = 0
+offset_left = -70.0
+offset_top = 130.0
+offset_right = -30.0
+offset_bottom = 153.0
+
+[node name="VictoryPanel" type="Panel" parent="UI"]
+offset_left = 195.0
+offset_top = 403.0
+offset_right = 235.0
+offset_bottom = 443.0
+
+[node name="ResultLabel" type="Label" parent="UI/VictoryPanel"]
+layout_mode = 0
+offset_left = -99.0
+offset_top = 252.0
+offset_right = -59.0
+offset_bottom = 275.0
