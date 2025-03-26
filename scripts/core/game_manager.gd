@@ -60,19 +60,15 @@ func initialize_game():
 	card_pile_ui.draw(5)  
 	print("Initial hand drawn.")
 	
-# 卡牌操作的信号响应函数  
+
+const MAX_SELECTED_CARDS: int = 1  
+var selected_cards: Array = []  
+
 func _on_card_clicked(card: CardUI):  
-	if current_state != GameState.PLAYER_TURN:  
-		return  
-	
-	## 这里可以添加卡牌点击的特殊效果处理  
-	#var card_data = card.card_data  
-	#if card_data.has("effect_id"):  
-		#apply_card_effect(card_data)  
+	pass
 
 func _on_card_dropped(card: CardUI):  
-	# 处理卡牌被放下的逻辑  
-	pass  
+	pass
 	
 # 应用卡牌效果  
 func apply_card_effect(card_data):  
@@ -148,6 +144,11 @@ func start_player_turn():
 	current_state = GameState.PLAYER_TURN  
 	turns_remaining = 3  
 	
+	# 重置选中状态  
+	for card in selected_cards:  
+		card.set_selected(false)  
+	selected_cards.clear()  
+	
 	# 抽牌到手牌上限  
 	var cards_to_draw = card_pile_ui.max_hand_size - card_pile_ui.get_card_pile_size(CardPileUI.Piles.hand_pile)  
 	if cards_to_draw > 0:  
@@ -155,7 +156,7 @@ func start_player_turn():
 	
 	# 应用回合开始效果  
 	if current_enemy:  
-		current_enemy.apply_round_start_effects(self)  
+		current_enemy.apply_round_start_effects(self)
 	
 # 结束玩家回合  
 func end_player_turn():  
