@@ -1,22 +1,45 @@
-[gd_scene load_steps=3 format=3 uid="uid://dojl5wlg7fjxm"]
+[gd_scene load_steps=6 format=3 uid="uid://dojl5wlg7fjxm"]
 
 [ext_resource type="Script" uid="uid://cq5uofqsi7t43" path="res://scenes/item_card.gd" id="1_ce1kl"]
-[ext_resource type="Texture2D" uid="uid://g3plv60jpgat" path="res://assets/card_attack.png" id="2_4lcok"]
+
+[sub_resource type="Curve" id="Curve_ce1kl"]
+_data = [Vector2(0.0219885, 0.0903214), 0.0, 0.0, 0, 0, Vector2(0.99522, 0.0878494), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_4lcok"]
+_data = [Vector2(0, 0.0952653), 0.0, 0.0, 0, 0, Vector2(0.50956, 0.142232), 0.0, 0.0, 0, 0, Vector2(1, 0.0878494), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_ltbao"]
+_data = [Vector2(0.00669216, 0.0285226), 0.0, 0.0, 0, 0, Vector2(0.511472, 0.199087), 0.0, 0.0, 0, 0, Vector2(0.999044, 0.00380301), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_42m7w"]
+width = 150
+curve_x = SubResource("Curve_ce1kl")
+curve_y = SubResource("Curve_4lcok")
+curve_z = SubResource("Curve_ltbao")
 
 [node name="Control" type="Control"]
+clip_contents = true
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 9.0
+offset_top = 12.0
+offset_right = 246.0
+offset_bottom = 436.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_ce1kl")
 
 [node name="Background" type="TextureRect" parent="."]
+z_index = 1
 layout_mode = 0
-offset_left = 27.0
-offset_top = 32.0
-offset_right = 195.0
-offset_bottom = 272.0
-texture = ExtResource("2_4lcok")
+offset_left = 35.0
+offset_top = 54.0
+offset_right = 185.0
+offset_bottom = 284.0
+texture = SubResource("CurveXYZTexture_42m7w")
 
 [node name="ItemName" type="Label" parent="."]
 layout_mode = 0
@@ -26,7 +49,7 @@ offset_right = 135.0
 offset_bottom = 29.0
 text = "名称"
 
-[node name="Description" type="RichTextLabel" parent="."]
+[node name="ItemDescription" type="RichTextLabel" parent="."]
 layout_mode = 0
 offset_left = 35.0
 offset_top = 287.0
@@ -34,7 +57,7 @@ offset_right = 191.0
 offset_bottom = 354.0
 text = "这是一个道具，它看似普通，却隐藏着不为人知的秘密。"
 
-[node name="Price" type="Label" parent="."]
+[node name="ItemPrice" type="Label" parent="."]
 layout_mode = 0
 offset_left = 52.0
 offset_top = 373.0

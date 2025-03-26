@@ -388,6 +388,7 @@
 	"suit": "spades",  
 	"value": 4,  
 	"card_type": 0  
+	,"burn_after_use": false
   },  
   {  
 	"nice_name": "黑桃5",  
@@ -397,6 +398,7 @@
 	"suit": "spades",  
 	"value": 5,  
 	"card_type": 0  
+	,"burn_after_use": false
   },  
   {  
 	"nice_name": "黑桃6",  
@@ -406,6 +408,7 @@
 	"suit": "spades",  
 	"value": 6,  
 	"card_type": 0  
+	,"burn_after_use": false
   },  
   {  
 	"nice_name": "黑桃7",  
@@ -415,6 +418,7 @@
 	"suit": "spades",  
 	"value": 7,  
 	"card_type": 0  
+	,"burn_after_use": false
   },  
   {  
 	"nice_name": "黑桃8",  
@@ -424,6 +428,7 @@
 	"suit": "spades",  
 	"value": 8,  
 	"card_type": 0  
+	,"burn_after_use": false
   },  
   {  
 	"nice_name": "黑桃9",  
@@ -432,7 +437,8 @@
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
 	"suit": "spades",  
 	"value": 9,  
-	"card_type": 0  
+	"card_type": 0 
+	,"burn_after_use": false 
   },  
   {  
 	"nice_name": "黑桃10",  
@@ -441,7 +447,8 @@
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
 	"suit": "spades",  
 	"value": 10,  
-	"card_type": 0  
+	"card_type": 0 
+	,"burn_after_use": false 
   },  
   {  
 	"nice_name": "黑桃J",  
@@ -450,7 +457,8 @@
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
 	"suit": "spades",  
 	"value": 11,  
-	"card_type": 0  
+	"card_type": 0
+	,"burn_after_use": false  
   },  
   {  
 	"nice_name": "黑桃Q",  
@@ -459,7 +467,8 @@
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
 	"suit": "spades",  
 	"value": 12,  
-	"card_type": 0  
+	"card_type": 0
+	,"burn_after_use": false    
   },  
   {  
 	"nice_name": "黑桃K",  
@@ -468,7 +477,8 @@
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
 	"suit": "spades",  
 	"value": 13,  
-	"card_type": 0  
+	"card_type": 0
+	,"burn_after_use": false    
   },  
   
   {  
@@ -480,7 +490,8 @@
 	"value": 0,  
 	"card_type": 0,  
 	"effect_id": "joker",  
-	"effect_description": "可以替代任意一张普通牌"  
+	"effect_description": "可以替代任意一张普通牌"
+	,"burn_after_use": false    
   },  
   
   {  
@@ -493,7 +504,8 @@
 	"card_type": 1,  
 	"effect_id": "forge_stone",  
 	"effect_description": "打出后此牌不移除，可再次使用，但每次使用后降低1点符值",  
-	"power_decrease_rate": 1  
+	"power_decrease_rate": 1
+	,"burn_after_use": false    
   },  
   {  
 	"nice_name": "魂之牌",  
@@ -504,7 +516,8 @@
 	"value": 7,  
 	"card_type": 1,  
 	"effect_id": "soul_card",  
-	"effect_description": "可以吸收相邻牌的特性，但每回合结束时会消耗1点生命"  
+	"effect_description": "可以吸收相邻牌的特性，但每回合结束时会消耗1点生命"
+	,"burn_after_use": false    
   },  
   {  
 	"nice_name": "黑火牌",  
@@ -527,7 +540,8 @@
 	"value": 0,  
 	"card_type": 2,  
 	"effect_id": "humanity",  
-	"effect_description": "可作为任意牌参与组合，但使用后会触发随机事件"  
+	"effect_description": "可作为任意牌参与组合，但使用后会触发随机事件"
+	,"burn_after_use": false    
   },  
   {  
 	"nice_name": "混沌牌",  
@@ -538,7 +552,8 @@
 	"value": 0,  
 	"card_type": 2,  
 	"effect_id": "chaos",  
-	"effect_description": "每回合开始时变为此牌左侧的牌，结算时有20%几率产生额外收益"  
+	"effect_description": "每回合开始时变为此牌左侧的牌，结算时有20%几率产生额外收益"
+	,"burn_after_use": false    
   },  
   {  
 	"nice_name": "龙契牌",  
@@ -549,7 +564,8 @@
 	"value": 13,  
 	"card_type": 2,  
 	"effect_id": "dragon_pact",  
-	"effect_description": "打出后行动次数+1，但下回合开始时手牌上限-1"  
+	"effect_description": "打出后行动次数+1，但下回合开始时手牌上限-1" 
+	,"burn_after_use": false  
   },  
   {  
 	"nice_name": "暗月牌",  
@@ -572,7 +588,8 @@
 	"value": 1,  
 	"card_type": 2,  
 	"effect_id": "first_flame",  
-	"effect_description": "每回合首次使用时获得额外30%分数，但每次使用会消耗等同于其数值的生命值"  
+	"effect_description": "每回合首次使用时获得额外30%分数，但每次使用会消耗等同于其数值的生命值"
+	,"burn_after_use": false    
   },  
   {  
 	"nice_name": "灵魂之环",  
@@ -583,7 +600,8 @@
 	"value": 3,  
 	"card_type": 2,  
 	"effect_id": "soul_ring",  
-	"effect_description": "可以将任意一张牌复制到手牌中，但复制出的牌结算后立即消失"  
+	"effect_description": "可以将任意一张牌复制到手牌中，但复制出的牌结算后立即消失"
+	,"burn_after_use": false    
   },  
   {  
 	"nice_name": "时间沙漏",  
@@ -594,6 +612,7 @@
 	"value": 12,  
 	"card_type": 2,  
 	"effect_id": "time_hourglass",  
-	"effect_description": "结算后返回到上回合的手牌状态，但接下来两回合不能再使用特殊牌"  
+	"effect_description": "结算后返回到上回合的手牌状态，但接下来两回合不能再使用特殊牌"
+	,"burn_after_use": false    
   }  
 ]  

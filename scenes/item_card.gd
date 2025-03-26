@@ -20,7 +20,7 @@ func setup(data, index = -1):
 	
 	# 更新UI  
 	item_name.text = data.get("name", "未知物品")  
-	item_description.text = data.get("description", "")  
+	item_description.text = data.get("description", "默认描述")  
 	item_price.text = str(data.get("price", 0)) + " 金币"  
 
 func _on_buy_button_pressed():  

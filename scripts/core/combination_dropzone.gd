@@ -28,7 +28,7 @@ func card_ui_dropped(card_ui: CardUI):
 	
 func check_and_resolve_combination():  
 	var cards = get_held_cards()  
-	if cards.empty():  
+	if cards.size() == 0:  
 		return  
 		
 	# 检测组合类型  
@@ -68,7 +68,7 @@ func check_and_resolve_combination():
 		
 		# 处理卡牌(移到弃牌堆)  
 		for card in cards:  
-			if card.card_data.has("burn_after_use") and card.card_data.burn_after_use:  
+			if card.card_data.burn_after_use:  
 				# 永久移除牌  
 				card_pile_ui.remove_card_from_game(card)  
 			else:  
