@@ -1,4 +1,4 @@
-extends Control  
+extends Control
 
 @onready var shop_system = $ShopSystem  
 @onready var item_container = $ItemContainer  
@@ -24,9 +24,11 @@ func refresh_shop_display():
 	# 清空现有物品显示  
 	for child in item_container.get_children():  
 		child.queue_free()  
+	player_currency.text = "114514"
+	# 更新货币显示
+	if game_manager:
+		player_currency.text = "货币: " + str(game_manager.player_stats.currency)  
 	
-	# 更新货币显示  
-	player_currency.text = "货币: " + str(game_manager.player_stats.currency)  
 	
 	# 刷新商店物品  
 	shop_system.initialize_shop()  

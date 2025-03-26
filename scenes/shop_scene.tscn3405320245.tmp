@@ -1,10 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cbbjeifc56056"]
 
-<<<<<<< HEAD
-[ext_resource type="Script" uid="uid://ubd65sdk7bbs" path="res://addons/simple_card_pile_ui/card_ui.gd" id="1_i5axx"]
-=======
 [ext_resource type="Script" uid="uid://bc25qdecel08x" path="res://scripts/shop/shop_scene.gd" id="1_hovpq"]
->>>>>>> c553074 (安置了商店场景，加入了调试性的进入商店按钮。)
 [ext_resource type="Script" uid="uid://dfbei5shayfo7" path="res://scripts/core/shop_system.gd" id="2_mi1d8"]
 [ext_resource type="Texture2D" uid="uid://cyvu066pyl46k" path="res://assets/card_block.png" id="2_ykrk4"]
 [ext_resource type="Script" uid="uid://dmodhdsujgk7f" path="res://addons/animatedbutton/AnimatedButton.gd" id="4_ykrk4"]

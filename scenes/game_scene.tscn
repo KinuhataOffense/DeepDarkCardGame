@@ -134,6 +134,10 @@ text = "结束回合"
 layout_mode = 2
 text = "使用道具"
 
+[node name="EnterShopButton" type="Button" parent="UI/ActionButtons"]
+layout_mode = 2
+text = "（调试）进入商店"
+
 [node name="CombinationResult" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0

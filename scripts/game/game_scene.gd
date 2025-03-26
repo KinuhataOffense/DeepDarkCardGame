@@ -18,6 +18,8 @@ func _ready():
 	if ui.has_node("ActionButtons/EndTurnButton"):  
 		ui.get_node("ActionButtons/EndTurnButton").connect("pressed", _on_end_turn_pressed)  
 		
+	if ui.has_node("ActionButtons/EnterShopButton"):  
+		ui.get_node("ActionButtons/EnterShopButton").connect("pressed", _on_enter_shop_pressed)  		
 	# 初始化游戏  
 	game_manager.initialize_game()
 		
@@ -57,7 +59,10 @@ func _on_combination_resolved(combination_result):
 func _on_end_turn_pressed():  
 	game_manager.end_player_turn()  
 	update_ui()  
-	
+
+func _on_enter_shop_pressed():
+	game_manager.enter_shop()  
+		
 func _on_enemy_defeated():  
 	if ui.has_node("VictoryPanel"):  
 		ui.get_node("VictoryPanel").visible = true  
