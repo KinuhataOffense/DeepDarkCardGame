@@ -57,6 +57,6 @@ func execute_effect(effect, game_manager):
 		"disable_magic_cards":  
 			# 禁用魔法牌（通过修改卡牌可用性）  
 			var hand_cards = game_manager.card_pile_ui.get_cards_in_pile(CardPileUI.Piles.hand_pile)  
-			for card in hand_cards:  
-				if card.card_data.get("card_type", 0) == 2:  # 假设2是魔法牌类型  
-					card.set_disabled(true)  
+			#for card in hand_cards:  
+				#if card.card_data.get("card_type", 0) == 2:  # 假设2是魔法牌类型  
+					#card.set_disabled(true)  

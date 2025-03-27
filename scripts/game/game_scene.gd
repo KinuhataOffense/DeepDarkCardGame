@@ -20,6 +20,8 @@ func _ready():
 		
 	if ui.has_node("ActionButtons/EnterShopButton"):  
 		ui.get_node("ActionButtons/EnterShopButton").connect("pressed", _on_enter_shop_pressed)  		
+	
+
 	# 初始化游戏  
 	game_manager.initialize_game()
 		
@@ -52,9 +54,13 @@ func _on_combination_resolved(combination_result):
 	update_ui()  
 	
 	# 检查是否击败敌人  
-	if game_manager.check_enemy_defeated():  
-		if ui.has_node("VictoryPanel"):  
-			ui.get_node("VictoryPanel").visible = true  
+	if game_manager.check_enemy_defeated(): 
+		_on_enemy_defeated()
+		
+	print("Debug:turns_remaining:", game_manager.turns_remaining)
+	
+	if game_manager.turns_remaining < 0:
+		_on_game_over()
 		
 func _on_end_turn_pressed():  
 	game_manager.end_player_turn()  
@@ -66,15 +72,12 @@ func _on_enter_shop_pressed():
 func _on_enemy_defeated():  
 	if ui.has_node("VictoryPanel"):  
 		ui.get_node("VictoryPanel").visible = true  
-	
+	print("Debug: Game_scene try to enter shop")
 	# 延迟进入商店  
 	await get_tree().create_timer(2.0).timeout  
 	game_manager.enter_shop()  
 	
-func _on_game_over(win):  
+func _on_game_over():  
 	if ui.has_node("GameOverPanel"):  
-		if win:  
-			ui.get_node("GameOverPanel").get_node("ResultLabel").text = "胜利!"  
-		else:  
-			ui.get_node("GameOverPanel").get_node("ResultLabel").text = "失败!"  
+		ui.get_node("GameOverPanel").get_node("ResultLabel").text = "失败!"  
 		ui.get_node("GameOverPanel").visible = true  

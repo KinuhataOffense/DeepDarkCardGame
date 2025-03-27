@@ -5,7 +5,8 @@ class_name GameManager
 @onready var card_pile_ui: CardPileUI = $"../CardPileUI"   
 @onready var combination_area: CombinationDropzone = $"../CombinationDropzone"  
 @onready var enemy_ui = $"../EnemyDisplay"  
-@onready var player_stats = $"../PlayerStats"  
+@onready var player_stats = $"../PlayerStats"
+@onready var game_scene = $".."  
 
 # 游戏状态  
 enum GameState { PLAYER_TURN, ENEMY_TURN, SHOP, GAME_OVER }  
@@ -31,7 +32,7 @@ func _ready():
 	if card_pile_ui:  
 		card_pile_ui.connect("card_clicked", _on_card_clicked)  
 		card_pile_ui.connect("card_dropped", _on_card_dropped)  
-		
+	
 	# 初始化游戏  
 	call_deferred("initialize_game")  # 使用call_deferred确保所有节点都已准备好  
 	
@@ -121,7 +122,7 @@ func spawn_first_enemy():
 		"description": "曾经的王国守卫，现在只是空洞的躯壳。",  
 		"health": 100,  
 		"round_limit": 5,  
-		"required_score": 150,  
+		"required_score": 10,  
 		"effects": [  
 			{  
 				"trigger": "round_start",  
@@ -142,7 +143,6 @@ func spawn_first_enemy():
 # 开始玩家回合  
 func start_player_turn():  
 	current_state = GameState.PLAYER_TURN  
-	turns_remaining = 3  
 	
 	# 重置选中状态  
 	for card in selected_cards:  
@@ -162,7 +162,9 @@ func start_player_turn():
 func end_player_turn():  
 	if current_state != GameState.PLAYER_TURN:  
 		return  
-		
+	
+	turns_remaining = turns_remaining - 1
+	current_round = current_round + 1
 	# 应用回合结束效果  
 	if current_enemy:  
 		current_enemy.apply_round_end_effects(self)  
@@ -178,15 +180,19 @@ func end_player_turn():
 func check_game_state():  
 	# 检查是否击败敌人  
 	if player_stats.current_score >= score_required:  
+		print("Debug: check_game_state detect enemy defeated")
 		emit_signal("enemy_defeated")  
 		return  
 		
 	# 检查回合限制  
 	if current_round >= current_enemy.round_limit:  
-		emit_signal("game_over", false)  # 失败  
+		print("Debug: check_game_state detect player failed")
+		emit_signal("game_over")  # 失败  
 		
 # 检查敌人是否已击败  
-func check_enemy_defeated() -> bool:  
+func check_enemy_defeated() -> bool: 
+	print("Debug: Player score: " + str(player_stats.current_score) + ", Required score: " + str(score_required)) 
+	print("Debug:player_stats.current_score >= score_required: " + str(player_stats.current_score >= score_required)) 
 	return player_stats.current_score >= score_required  
 	
 # 降低得分倍率（用于敌人效果）  
@@ -195,11 +201,14 @@ func reduce_score_multiplier(factor: float):
 	
 # 进入商店  
 func enter_shop():  
+	game_scene.visible = false;
 	current_state = GameState.SHOP  
+	
 	emit_signal("enter_shop_requested")  
 	
 # 离开商店  
 func leave_shop():  
+	game_scene.visible = true;
 	current_state = GameState.PLAYER_TURN  
 	# 生成新敌人  
 	spawn_next_enemy()  
