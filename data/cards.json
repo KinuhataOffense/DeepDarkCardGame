@@ -495,7 +495,7 @@
   },  
   
   {  
-	"nice_name": "锻造石牌",  
+	"nice_name": "楔形石",  
 	"texture_path": "res://assets/cards/forge_stone.png",  
 	"backface_texture_path": "res://assets/cards/card_back.png",  
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
@@ -508,7 +508,7 @@
 	,"burn_after_use": false    
   },  
   {  
-	"nice_name": "魂之牌",  
+	"nice_name": "魂牌",  
 	"texture_path": "res://assets/cards/soul_card.png",  
 	"backface_texture_path": "res://assets/cards/card_back.png",  
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
@@ -520,7 +520,7 @@
 	,"burn_after_use": false    
   },  
   {  
-	"nice_name": "黑火牌",  
+	"nice_name": "黑火",  
 	"texture_path": "res://assets/cards/black_fire.png",  
 	"backface_texture_path": "res://assets/cards/card_back.png",  
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
@@ -532,7 +532,7 @@
 	"burn_after_use": true  
   },  
   {  
-	"nice_name": "人性牌",  
+	"nice_name": "人性",  
 	"texture_path": "res://assets/cards/humanity.png",  
 	"backface_texture_path": "res://assets/cards/card_back.png",  
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
@@ -544,7 +544,7 @@
 	,"burn_after_use": false    
   },  
   {  
-	"nice_name": "混沌牌",  
+	"nice_name": "混沌",  
 	"texture_path": "res://assets/cards/chaos.png",  
 	"backface_texture_path": "res://assets/cards/card_back.png",  
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
@@ -556,7 +556,7 @@
 	,"burn_after_use": false    
   },  
   {  
-	"nice_name": "龙契牌",  
+	"nice_name": "龙契",  
 	"texture_path": "res://assets/cards/dragon_pact.png",  
 	"backface_texture_path": "res://assets/cards/card_back.png",  
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
@@ -568,7 +568,7 @@
 	,"burn_after_use": false  
   },  
   {  
-	"nice_name": "暗月牌",  
+	"nice_name": "暗月",  
 	"texture_path": "res://assets/cards/dark_moon.png",  
 	"backface_texture_path": "res://assets/cards/card_back.png",  
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
@@ -580,7 +580,7 @@
 	"burn_after_use": true  
   },  
   {  
-	"nice_name": "初火牌",  
+	"nice_name": "初火",  
 	"texture_path": "res://assets/cards/first_flame.png",  
 	"backface_texture_path": "res://assets/cards/card_back.png",  
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
@@ -592,7 +592,7 @@
 	,"burn_after_use": false    
   },  
   {  
-	"nice_name": "灵魂之环",  
+	"nice_name": "黑暗之环",  
 	"texture_path": "res://assets/cards/soul_ring.png",  
 	"backface_texture_path": "res://assets/cards/card_back.png",  
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
@@ -604,7 +604,7 @@
 	,"burn_after_use": false    
   },  
   {  
-	"nice_name": "时间沙漏",  
+	"nice_name": "沙漏",  
 	"texture_path": "res://assets/cards/time_hourglass.png",  
 	"backface_texture_path": "res://assets/cards/card_back.png",  
 	"resource_script_path": "res://scripts/data/dark_card_data.gd",  
