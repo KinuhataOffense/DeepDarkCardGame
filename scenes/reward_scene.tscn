@@ -1,0 +1,92 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8c3w6hylc2oj"]
+
+[ext_resource type="Script" path="res://scripts/reward_scene.gd" id="1_hljsn"]
+[ext_resource type="Texture2D" uid="uid://p4j8uohcxhlv" path="res://assets/ui/enhanced_overlay.png" id="2_ykft6"]
+
+[node name="RewardScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hljsn")
+
+[node name="Background" type="ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.141176, 0.141176, 0.141176, 0.780392)
+
+[node name="Panel" type="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="TitleLabel" type="Label"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "战斗胜利!"
+horizontal_alignment = 1
+
+[node name="Decoration" type="TextureRect"]
+layout_mode = 2
+texture = ExtResource("2_ykft6")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="RewardsLabel" type="Label"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "获得奖励:"
+horizontal_alignment = 1
+
+[node name="CurrencyReward" type="HBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "货币: "
+
+[node name="CurrencyValue" type="Label"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94902, 0.862745, 0.317647, 1)
+theme_override_font_sizes/font_size = 22
+text = "0"
+
+[node name="OtherRewards" type="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="HSeparator" type="HSeparator"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="ReturnButton" type="Button"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 22
+text = "返回地图" 

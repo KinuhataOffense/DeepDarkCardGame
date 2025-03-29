@@ -26,6 +26,18 @@ signal game_over(win)
 signal enter_shop_requested  
 signal return_to_game_requested  
 
+# 添加玩家数据
+var player_data = {
+	"max_health": 100,
+	"current_health": 100,
+	"currency": 100
+}
+
+# 添加地图系统相关变量
+var current_map_state = null
+var current_floor_level = 1
+var current_map_node = null
+
 # 游戏初始化  
 func _ready():  
 	# 连接卡牌相关信号  
@@ -46,8 +58,15 @@ func initialize_game():
 	# 设置组合区域引用  
 	combination_area.game_manager = self  
 	
-	# 初始化敌人  
-	spawn_first_enemy()  
+	# 初始化敌人，只有在没有敌人的情况下才初始化第一个敌人  
+	if current_enemy == null:
+		print("未设置敌人，使用默认敌人")
+		spawn_first_enemy()  
+	else:
+		print("使用已设置的敌人:", current_enemy.enemy_name)
+		# 确保score_required是正确的
+		score_required = current_enemy.required_score
+		update_enemy_ui()
 	
 	# 加载并重置牌堆  
 	print("Loading card pile data...")  
@@ -118,11 +137,16 @@ func trigger_random_event():
 # 初始化第一个敌人  
 func spawn_first_enemy():  
 	var enemy_data = {  
-		"name": "失落的骑士",  
-		"description": "曾经的王国守卫，现在只是空洞的躯壳。",  
+		"id": "default_enemy",
+		"name": "默认敌人 - 骑士幽魂",  
+		"description": "这是默认敌人，通常不应该出现在正常游戏中。如果你看到它，说明敌人选择过程有问题。",  
 		"health": 100,  
 		"round_limit": 5,  
 		"required_score": 10,  
+		"difficulty": 1,
+		"rewards": {
+			"currency": 10
+		},
 		"effects": [  
 			{  
 				"trigger": "round_start",  
@@ -132,6 +156,8 @@ func spawn_first_enemy():
 			}  
 		]  
 	}  
+	
+	print("警告：生成默认敌人，这通常表示存在问题")
 	
 	current_enemy = Enemy.new()  
 	current_enemy.initialize(enemy_data)  
@@ -178,22 +204,32 @@ func end_player_turn():
 	
 # 检查游戏状态  
 func check_game_state():  
+	# 打印当前游戏状态
+	print("当前回合:", current_round, "/", current_enemy.round_limit, "，剩余行动:", turns_remaining)
+	print("当前分数:", player_stats.current_score, "，击败要求:", score_required)
+	
 	# 检查是否击败敌人  
 	if player_stats.current_score >= score_required:  
-		print("Debug: check_game_state detect enemy defeated")
-		emit_signal("enemy_defeated")  
+		print("玩家分数达到要求，敌人被击败!")
+		# 确保信号只发送一次
+		if not has_meta("enemy_defeated_emitted"):
+			print("GameManager: 发送enemy_defeated信号")
+			emit_signal("enemy_defeated")
+			set_meta("enemy_defeated_emitted", true)
 		return  
 		
 	# 检查回合限制  
-	if current_round >= current_enemy.round_limit:  
-		print("Debug: check_game_state detect player failed")
-		emit_signal("game_over")  # 失败  
+	if current_round >= current_enemy.round_limit || turns_remaining < 0:  
+		print("玩家失败: 回合用尽或行动结束")
+		emit_signal("game_over", false)  # 失败参数为false
 		
 # 检查敌人是否已击败  
 func check_enemy_defeated() -> bool: 
-	print("Debug: Player score: " + str(player_stats.current_score) + ", Required score: " + str(score_required)) 
-	print("Debug:player_stats.current_score >= score_required: " + str(player_stats.current_score >= score_required)) 
-	return player_stats.current_score >= score_required  
+	var is_defeated = player_stats.current_score >= score_required
+	print("检查敌人是否击败: 玩家分数=", player_stats.current_score, 
+		"，要求分数=", score_required, 
+		"，结果=", is_defeated) 
+	return is_defeated  
 	
 # 降低得分倍率（用于敌人效果）  
 func reduce_score_multiplier(factor: float):  
@@ -201,17 +237,20 @@ func reduce_score_multiplier(factor: float):
 	
 # 进入商店  
 func enter_shop():  
-	game_scene.visible = false;
+	# 移除直接控制game_scene可见性的代码
 	current_state = GameState.SHOP  
+	
+	# 重置回合状态
+	turns_remaining = 3
+	current_round = 1
 	
 	emit_signal("enter_shop_requested")  
 	
 # 离开商店  
 func leave_shop():  
-	game_scene.visible = true;
+	# 移除对game_scene可见性的直接控制
 	current_state = GameState.PLAYER_TURN  
-	# 生成新敌人  
-	spawn_next_enemy()  
+	# 不再生成新敌人，因为会创建新的游戏场景
 	emit_signal("return_to_game_requested")  
 	
 # 生成下一个敌人  
@@ -247,3 +286,232 @@ func update_enemy_ui():
 		enemy_ui.get_node("EnemyDescription").text = current_enemy.description  
 		enemy_ui.get_node("EnemyHealth").max_value = current_enemy.max_health  
 		enemy_ui.get_node("EnemyHealth").value = current_enemy.health  
+
+# 设置游戏的敌人数据
+func set_enemy_data(enemy_data):
+	# 如果没有敌人数据，使用默认数据
+	if not enemy_data:
+		print("警告: 未提供敌人数据，使用默认敌人")
+		spawn_first_enemy()
+		return
+		
+	# 创建新敌人
+	current_enemy = Enemy.new()
+	current_enemy.initialize(enemy_data)
+	score_required = current_enemy.required_score
+	
+	# 打印敌人信息
+	print("加载敌人:", current_enemy.enemy_name)
+	print("击败条件: 需要", score_required, "分")
+	print("回合限制:", current_enemy.round_limit, "回合")
+	
+	# 重置游戏状态
+	current_round = 1
+	turns_remaining = 3
+	
+	# 更新UI
+	update_enemy_ui()
+	
+# 加载敌人数据
+func load_enemy_by_id(enemy_id: String):
+	var file = FileAccess.open("res://data/enemies.json", FileAccess.READ)
+	if not file:
+		print("无法打开敌人数据文件")
+		return null
+	
+	var json_text = file.get_as_text()
+	file.close()
+	
+	var json = JSON.new()
+	var error = json.parse(json_text)
+	if error == OK:
+		var enemies = json.data
+		for enemy in enemies:
+			if enemy.id == enemy_id:
+				return enemy
+	
+	print("未找到ID为" + enemy_id + "的敌人")
+	return null
+
+# 游戏胜利时的奖励处理
+func process_victory_rewards():
+	# 检查敌人对象和rewards属性是否存在
+	if current_enemy == null:
+		print("警告: 当前没有敌人对象")
+		return
+		
+	# 检查是否达到击败敌人所需分数
+	if player_stats.current_score < score_required:
+		print("警告: 未达到击败敌人所需分数，不能领取奖励")
+		return
+		
+	print("玩家击败敌人，处理奖励")
+		
+	# 检查敌人的rewards属性并添加到玩家数据
+	if current_enemy.has_method("get_rewards"):
+		# 如果敌人类有获取奖励的方法
+		var rewards = current_enemy.get_rewards()
+		if rewards and rewards.has("currency"):
+			player_stats.currency += rewards.currency
+			print("玩家获得", rewards.currency, "货币")
+	elif typeof(current_enemy) == TYPE_DICTIONARY and current_enemy.has("rewards"):
+		# 如果敌人是字典形式
+		if current_enemy.rewards.has("currency"):
+			player_stats.currency += current_enemy.rewards.currency
+			print("玩家获得", current_enemy.rewards.currency, "货币")
+	else:
+		# 如果没有奖励属性，给予固定奖励
+		print("警告: 敌人没有rewards属性，给予固定奖励")
+		player_stats.currency += 50
+		print("玩家获得50货币")
+	
+	# 更新玩家数据，确保同步
+	player_data.currency = player_stats.currency
+	
+	# 注意：不再自动进入商店
+	# 由场景管理器负责转到奖励场景，然后返回地图
+
+# 游戏失败处理
+func process_defeat():
+	# 游戏失败的逻辑处理
+	print("游戏失败")
+	
+	# 可以在这里添加失败后的逻辑，如重新开始或返回主菜单等
+
+# 添加地图状态保存和加载功能
+func save_map_state(map_state):
+	current_map_state = map_state
+	print("地图状态已保存: 当前层级=", map_state.current_floor, "，当前节点=", map_state.current_node_id)
+
+# 获取地图状态
+func get_map_state():
+	return current_map_state
+
+# 设置当前层级
+func set_floor_level(level):
+	current_floor_level = level
+	print("设置当前层级为: ", level)
+
+# 获取当前层级
+func get_floor_level():
+	return current_floor_level
+
+# 处理地图节点事件
+func handle_map_node_event(node_type, node_data):
+	print("处理地图节点事件: 类型=", node_type)
+	
+	# 根据节点类型执行相应操作
+	match node_type:
+		# 假设这里MapNode.NodeType定义与map_node.gd中的enum相匹配
+		0: # START
+			print("这是起点节点")
+			# 起点通常不需要特殊处理
+			
+		1: # ENEMY
+			print("这是普通敌人节点")
+			# 加载随机普通敌人
+			var enemy_data = get_random_enemy(false)
+			if enemy_data:
+				set_enemy_data(enemy_data)
+			
+		2: # ELITE
+			print("这是精英敌人节点")
+			# 加载随机精英敌人
+			var enemy_data = get_random_enemy(true)
+			if enemy_data:
+				set_enemy_data(enemy_data)
+			
+		3: # SHOP
+			print("这是商店节点")
+			# 进入商店
+			enter_shop()
+			
+		4: # REST
+			print("这是休息点节点")
+			# 恢复一定生命值
+			player_data.current_health = min(player_data.max_health, player_data.current_health + 20)
+			print("玩家恢复20点生命值，当前生命: ", player_data.current_health)
+			
+		5: # TREASURE
+			print("这是宝箱节点")
+			# 获得随机奖励
+			var reward = randi() % 50 + 20
+			player_data.currency += reward
+			print("玩家获得", reward, "货币")
+			
+		6: # EVENT
+			print("这是事件节点")
+			# 触发随机事件
+			trigger_random_event()
+			
+		7: # BOSS
+			print("这是Boss节点")
+			# 加载随机Boss敌人
+			var enemy_data = get_random_boss()
+			if enemy_data:
+				set_enemy_data(enemy_data)
+				
+		8: # END
+			print("这是终点节点")
+			# 完成当前层级，进入下一层
+			current_floor_level += 1
+			print("进入下一层级: ", current_floor_level)
+
+# 获取随机敌人数据
+func get_random_enemy(is_elite: bool):
+	var file = FileAccess.open("res://data/enemies.json", FileAccess.READ)
+	if not file:
+		print("无法打开敌人数据文件")
+		return null
+	
+	var json_text = file.get_as_text()
+	file.close()
+	
+	var json = JSON.new()
+	var error = json.parse(json_text)
+	if error == OK:
+		var enemies = json.data
+		var suitable_enemies = []
+		
+		# 筛选合适的敌人
+		for enemy in enemies:
+			# 检查敌人是否符合要求（普通或精英）
+			if is_elite and enemy.has("is_elite") and enemy.is_elite:
+				suitable_enemies.append(enemy)
+			elif !is_elite and (!enemy.has("is_elite") or !enemy.is_elite):
+				suitable_enemies.append(enemy)
+		
+		# 如果有合适的敌人，随机选择一个
+		if suitable_enemies.size() > 0:
+			return suitable_enemies[randi() % suitable_enemies.size()]
+	
+	print("未找到合适的敌人")
+	return null
+
+# 获取随机Boss敌人数据
+func get_random_boss():
+	var file = FileAccess.open("res://data/enemies.json", FileAccess.READ)
+	if not file:
+		print("无法打开敌人数据文件")
+		return null
+	
+	var json_text = file.get_as_text()
+	file.close()
+	
+	var json = JSON.new()
+	var error = json.parse(json_text)
+	if error == OK:
+		var enemies = json.data
+		var boss_enemies = []
+		
+		# 筛选Boss敌人
+		for enemy in enemies:
+			if enemy.has("is_boss") and enemy.is_boss:
+				boss_enemies.append(enemy)
+		
+		# 如果有Boss敌人，随机选择一个
+		if boss_enemies.size() > 0:
+			return boss_enemies[randi() % boss_enemies.size()]
+	
+	print("未找到Boss敌人")
+	return null

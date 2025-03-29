@@ -1,39 +1,95 @@
 [  
   {  
-	"id": "minion_1",  
+	"id": "lost_knight",  
 	"name": "失落的骑士",  
 	"description": "曾经的王国守卫，现在只是空洞的躯壳。",  
+	"image": "res://assets/enemies/lost_knight.png",  
 	"health": 100,  
 	"round_limit": 5,  
-	"required_score": 150,  
+	"required_score": 50,  
+	"difficulty": 1,  
+	"rewards": {  
+	  "currency": 50,  
+	  "xp": 10  
+	},  
 	"effects": [  
 	  {  
 		"trigger": "round_start",  
 		"frequency": 3,  
 		"type": "mark_card",  
-		"description": "标记一张手牌，若该轮未使用则受到10点伤害"  
+		"description": "每3回合标记一张手牌，若该轮未使用则受到10点伤害"  
 	  }  
 	]  
   },  
   {  
-	"id": "boss_1",  
+	"id": "shadow_mage",  
+	"name": "暗影法师",  
+	"description": "操控黑暗魔法的术士，能够干扰对手的思维。",  
+	"image": "res://assets/enemies/shadow_mage.png",  
+	"health": 150,  
+	"round_limit": 6,  
+	"required_score": 120,  
+	"difficulty": 2,  
+	"rewards": {  
+	  "currency": 80,  
+	  "xp": 15  
+	},  
+	"effects": [  
+	  {  
+		"trigger": "round_start",  
+		"frequency": 2,  
+		"type": "disable_card",  
+		"description": "每2回合使一张随机手牌无法使用"  
+	  }  
+	]  
+  },  
+  {  
+	"id": "fallen_king",  
 	"name": "失落的王",  
 	"description": "被初火腐蚀的统治者，他的力量源自破碎的王冠。",  
+	"image": "res://assets/enemies/fallen_king.png",  
 	"health": 250,  
 	"round_limit": 8,  
-	"required_score": 400,  
+	"required_score": 200,  
+	"difficulty": 3,  
+	"rewards": {  
+	  "currency": 150,  
+	  "xp": 25  
+	},  
 	"effects": [  
 	  {  
 		"trigger": "round_start",  
 		"frequency": 3,  
 		"type": "disable_magic_cards",  
-		"description": "使用\"祈祷\"，使你下一轮无法使用魔法牌"  
+		"description": "每3回合禁用所有魔法牌一回合"  
+	  }  
+	]  
+  },  
+  {  
+	"id": "elder_dragon",  
+	"name": "远古巨龙",  
+	"description": "沉睡千年的龙族，现在被唤醒寻求复仇。",  
+	"image": "res://assets/enemies/elder_dragon.png",  
+	"health": 400,  
+	"round_limit": 10,  
+	"required_score": 350,  
+	"difficulty": 4,  
+	"rewards": {  
+	  "currency": 300,  
+	  "xp": 50  
+	},  
+	"effects": [  
+	  {  
+		"trigger": "round_start",  
+		"frequency": 1,  
+		"type": "burn",  
+		"description": "每回合对玩家造成5点灼烧伤害"  
 	  },  
 	  {  
 		"trigger": "round_end",  
-		"frequency": 5,  
+		"frequency": 2,  
 		"type": "reduce_multiplier",  
-		"description": "所有手牌倍率减半"  
+		"description": "每2回合结束时降低得分倍率0.2"  
 	  }  
 	]  
   }  

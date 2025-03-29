@@ -158,6 +158,10 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "（调试）进入商店"
 
+[node name="TestRewardButton" type="Button" parent="UI/ActionButtons"]
+layout_mode = 2
+text = "测试奖励"
+
 [node name="GameOverPanel" type="Panel" parent="UI"]
 visible = false
 offset_left = 2013.0

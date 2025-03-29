@@ -8,6 +8,9 @@ extends Control
 var game_manager = null  
 var item_card_scene = preload("res://scenes/item_card.tscn")  
 
+# 添加离开商店信号
+signal leave_shop_requested
+
 func _ready():  
 	# 连接按钮信号  
 	leave_button.pressed.connect(_on_leave_shop_pressed)  
@@ -24,11 +27,12 @@ func refresh_shop_display():
 	# 清空现有物品显示  
 	for child in item_container.get_children():  
 		child.queue_free()  
-	player_currency.text = "114514"
-	# 更新货币显示
-	if game_manager:
-		player_currency.text = "货币: " + str(game_manager.player_stats.currency)  
 	
+	# 更新货币显示
+	if game_manager and game_manager.player_stats:
+		player_currency.text = "货币: " + str(game_manager.player_stats.currency)  
+	else:
+		player_currency.text = "货币: 0"
 	
 	# 刷新商店物品  
 	shop_system.initialize_shop()  
@@ -47,6 +51,8 @@ func _on_item_purchased(item_card):
 		refresh_shop_display()  
 		
 func _on_leave_shop_pressed():  
-	# 离开商店，返回主游戏  
-	game_manager.leave_shop()  
-	queue_free()  
+	# 发出离开商店信号
+	emit_signal("leave_shop_requested")
+	
+	# 注意：现在不再直接调用game_manager.leave_shop和queue_free
+	# 让场景管理器负责清理场景

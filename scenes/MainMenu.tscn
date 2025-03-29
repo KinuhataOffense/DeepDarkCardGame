@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://domr3f0kivnb"]
+[gd_scene load_steps=5 format=3 uid="uid://domr3f0kivnb"]
 
 [ext_resource type="Script" uid="uid://dmodhdsujgk7f" path="res://addons/animatedbutton/AnimatedButton.gd" id="1_0ykhv"]
 [ext_resource type="Script" uid="uid://bbao1bufc7d36" path="res://scripts/core/scene_manager.gd" id="2_2wh52"]
+[ext_resource type="Texture2D" uid="uid://00gmo7blocrh" path="res://assets/ui/background1.jpg" id="2_ow34m"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mtydo"]
 font_size = 100
@@ -9,12 +10,12 @@ font_size = 100
 [node name="Main" type="Node2D"]
 
 [node name="MainMenu" type="Control" parent="."]
+z_index = -1
 layout_mode = 3
 anchors_preset = 0
-offset_left = 24.0
-offset_top = 8.0
-offset_right = 64.0
-offset_bottom = 48.0
+offset_top = 1.0
+offset_right = 58.0
+offset_bottom = 74.0
 
 [node name="Title" type="Label" parent="MainMenu"]
 layout_mode = 0
@@ -26,24 +27,44 @@ text = "Title"
 label_settings = SubResource("LabelSettings_mtydo")
 
 [node name="QuitButton" type="Button" parent="MainMenu"]
+z_index = 1
 layout_mode = 0
 offset_left = 1103.0
 offset_top = 876.0
 offset_right = 1305.0
 offset_bottom = 954.0
-text = "Quit"
+text = "退出"
 script = ExtResource("1_0ykhv")
 metadata/_custom_type_script = "uid://dmodhdsujgk7f"
 
 [node name="StartButton" type="Button" parent="MainMenu"]
+z_index = 1
 layout_mode = 0
 offset_left = 1102.0
 offset_top = 688.0
 offset_right = 1302.0
 offset_bottom = 772.0
-text = "Start"
+text = "开始战斗"
 script = ExtResource("1_0ykhv")
 metadata/_custom_type_script = "uid://dmodhdsujgk7f"
+
+[node name="MapButton" type="Button" parent="MainMenu"]
+z_index = 1
+layout_mode = 0
+offset_left = 1102.0
+offset_top = 792.0
+offset_right = 1302.0
+offset_bottom = 856.0
+text = "地图模式"
+script = ExtResource("1_0ykhv")
+metadata/_custom_type_script = "uid://dmodhdsujgk7f"
+
+[node name="Background" type="TextureRect" parent="MainMenu"]
+z_index = -3
+layout_mode = 0
+offset_right = 1212.0
+offset_bottom = 2107.0
+texture = ExtResource("2_ow34m")
 
 [node name="SceneManager" type="Node" parent="."]
 script = ExtResource("2_2wh52")

@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://dkyjr4vbkqxse"]
+
+[ext_resource type="Script" uid="uid://ndi0nrq76g2g" path="res://scripts/map/map_edge.gd" id="1_w3wqc"]
+
+[node name="MapEdge" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_w3wqc")
+
+[node name="Line2D" type="Line2D" parent="."]
+width = 3.0
+default_color = Color(0.4, 0.4, 0.4, 1)
+begin_cap_mode = 2
+end_cap_mode = 2

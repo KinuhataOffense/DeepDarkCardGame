@@ -13,6 +13,9 @@ var required_score: int  # 击败敌人需要的最低分数
 var effects: Array = []  
 var round_counter: int = 0  
 
+# 奖励
+var rewards = {}
+
 # 初始化敌人  
 func initialize(enemy_data: Dictionary):  
 	enemy_name = enemy_data.get("name", "未知敌人")  
@@ -23,6 +26,17 @@ func initialize(enemy_data: Dictionary):
 	required_score = enemy_data.get("required_score", 150)  
 	effects = enemy_data.get("effects", [])  
 	
+	# 初始化奖励
+	if enemy_data.has("rewards"):
+		rewards = enemy_data.get("rewards", {})
+	else:
+		# 设置默认奖励
+		rewards = {"currency": 50}
+		
+# 获取奖励
+func get_rewards():
+	return rewards
+
 # 回合开始时应用效果  
 func apply_round_start_effects(game_manager):  
 	round_counter += 1  
