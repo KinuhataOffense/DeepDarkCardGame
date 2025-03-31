@@ -1,6 +1,5 @@
 extends Control
 
-@onready var shop_system = $ShopSystem  
 @onready var item_container = $ItemContainer  
 @onready var player_currency = $PlayerCurrency  
 @onready var leave_button = $LeaveShopButton  
@@ -20,8 +19,7 @@ func _ready():
 	refresh_shop_display()  
 
 func initialize(new_game_manager):  
-	game_manager = new_game_manager  
-	shop_system.game_manager = game_manager  
+	game_manager = new_game_manager
 	
 func refresh_shop_display():  
 	# 清空现有物品显示  
@@ -29,30 +27,25 @@ func refresh_shop_display():
 		child.queue_free()  
 	
 	# 更新货币显示
-	if game_manager and game_manager.player_stats:
-		player_currency.text = "货币: " + str(game_manager.player_stats.currency)  
+	if game_manager:
+		player_currency.text = "货币: " + str(game_manager.get_player_currency())  
 	else:
 		player_currency.text = "货币: 0"
 	
-	# 刷新商店物品  
-	shop_system.initialize_shop()  
-	
 	# 为每个可用物品创建卡片  
-	for item in shop_system.available_items:  
+	var shop_items = game_manager.get_shop_items()
+	for index in shop_items.size():  
+		var item = shop_items[index]
 		var item_card = item_card_scene.instantiate()  
 		item_container.add_child(item_card)  
-		item_card.setup(item)  
-		item_card.purchased.connect(_on_item_purchased.bind(item_card))  
+		item_card.setup(item, index)  
+		item_card.purchased.connect(_on_item_purchased.bind(index))  
 
-func _on_item_purchased(item_card):  
-	var result = shop_system.purchase_item(item_card.item_index)  
-	if result:  
+func _on_item_purchased(item_index: int):  
+	if game_manager.purchase_shop_item(item_index):  
 		# 更新显示  
 		refresh_shop_display()  
 		
 func _on_leave_shop_pressed():  
 	# 发出离开商店信号
 	emit_signal("leave_shop_requested")
-	
-	# 注意：现在不再直接调用game_manager.leave_shop和queue_free
-	# 让场景管理器负责清理场景

@@ -50,13 +50,14 @@ func _ready():
 
 # 更新玩家信息
 func update_player_info():
-	var game_manager = get_node("/root/game_manager")
+	var game_manager = get_node("/root/Main/GameManager")
 	if game_manager:
 		var player_data = game_manager.player_data
 		player_health_label.text = "生命: %d/%d" % [player_data.current_health, player_data.max_health]
 		player_gold_label.text = "金币: %d" % player_data.currency
 	else:
 		# 默认值，用于测试
+		
 		player_health_label.text = "生命: 80/80"
 		player_gold_label.text = "金币: 100"
 
@@ -97,7 +98,7 @@ func create_nodes():
 	print("开始创建节点，layers_count=", layers_count, ", nodes_per_layer=", nodes_per_layer)
 	
 	var node_id = 0
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	# 为了更像《以撒的结合》的房间布局，我们用网格方式排列节点
 	var grid_width = 7  # 地图网格宽度
@@ -121,7 +122,7 @@ func create_nodes():
 		if layer == 0:
 			# 起点放在中间偏下位置
 			var start_pos = Vector2(0, 0)
-			_create_node_at_position(node_id, MapNode.NodeType.START, start_pos, layer, used_positions)
+			_create_node_at_position(node_id, mapnode.NodeType.START, start_pos, layer, used_positions)
 			print("创建起点节点: id=", node_id, ", position=", start_pos)
 			node_id += 1
 			continue
@@ -130,7 +131,7 @@ func create_nodes():
 		if layer == layers_count - 1:
 			# Boss房间放在中间偏上位置
 			var boss_pos = Vector2(0, -vertical_spacing * 3)
-			_create_node_at_position(node_id, MapNode.NodeType.BOSS, boss_pos, layer, used_positions)
+			_create_node_at_position(node_id, mapnode.NodeType.BOSS, boss_pos, layer, used_positions)
 			print("创建Boss节点: id=", node_id, ", position=", boss_pos)
 			node_id += 1
 			continue
@@ -162,7 +163,7 @@ func create_nodes():
 
 # 在指定位置创建节点
 func _create_node_at_position(node_id, node_type, pos, layer, used_positions):
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	# 记录位置已使用
 	used_positions[pos] = true
@@ -191,8 +192,8 @@ func _get_available_positions(grid_width, grid_height, layer, used_positions):
 	var vertical_offset = -vertical_spacing * (layer - layers_count/2)
 	
 	# 创建网格位置
-	for x in range(-grid_width/2, grid_width/2 + 1):
-		for y in range(-grid_height/2, grid_height/2 + 1):
+	for x in range(0, grid_width/2 + 1):
+		for y in range(0, grid_height/2 + 1):
 			# 跳过中心位置，因为它通常是起点
 			if x == 0 and y == 0:
 				continue
@@ -210,13 +211,13 @@ func _get_available_positions(grid_width, grid_height, layer, used_positions):
 
 # 确定节点类型
 func determine_node_type(layer, index, layer_nodes):
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	# 起点和终点
 	if layer == 0:
-		return MapNode.NodeType.START
+		return mapnode.NodeType.START
 	elif layer == layers_count - 1:
-		return MapNode.NodeType.BOSS
+		return mapnode.NodeType.BOSS
 	
 	# 其他节点类型随机分配
 	var possible_types = []
@@ -225,27 +226,27 @@ func determine_node_type(layer, index, layer_nodes):
 	if layer < layers_count - 2:
 		# 常规层
 		possible_types = [
-			MapNode.NodeType.ENEMY,
-			MapNode.NodeType.ENEMY,
-			MapNode.NodeType.EVENT,
-			MapNode.NodeType.SHOP,
-			MapNode.NodeType.REST
+			mapnode.NodeType.ENEMY,
+			mapnode.NodeType.ENEMY,
+			mapnode.NodeType.EVENT,
+			mapnode.NodeType.SHOP,
+			mapnode.NodeType.REST
 		]
 		
 		# 第三层有精英敌人
 		if layer == 3:
-			possible_types.append(MapNode.NodeType.ELITE)
-			possible_types.append(MapNode.NodeType.ELITE)
+			possible_types.append(mapnode.NodeType.ELITE)
+			possible_types.append(mapnode.NodeType.ELITE)
 		
 		# 宝箱节点稀少
 		if randf() < 0.1:
-			possible_types.append(MapNode.NodeType.TREASURE)
+			possible_types.append(mapnode.NodeType.TREASURE)
 	else:
 		# 倒数第二层主要是精英和休息
 		possible_types = [
-			MapNode.NodeType.ELITE,
-			MapNode.NodeType.REST,
-			MapNode.NodeType.SHOP
+			mapnode.NodeType.ELITE,
+			mapnode.NodeType.REST,
+			mapnode.NodeType.SHOP
 		]
 	
 	# 随机选择类型
@@ -253,7 +254,7 @@ func determine_node_type(layer, index, layer_nodes):
 
 # 创建节点连接
 func create_connections():
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	print("开始创建节点连接，节点总数: ", map_nodes.size())
 	
@@ -393,12 +394,12 @@ func create_connections():
 
 # 确定连接方向
 func _determine_connection_direction(from_id, to_id):
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	# 确保索引有效
 	if from_id >= map_nodes.size() or to_id >= map_nodes.size():
 		print("警告: 确定连接方向时索引超出范围: from_id=", from_id, ", to_id=", to_id, ", map_nodes.size()=", map_nodes.size())
-		return MapNode.DoorDirection.BOTTOM
+		return mapnode.DoorDirection.BOTTOM
 	
 	var from_node = map_nodes[from_id]
 	var to_node = map_nodes[to_id]
@@ -413,31 +414,31 @@ func _determine_connection_direction(from_id, to_id):
 	if abs(direction.x) > abs(direction.y):
 		# 水平方向为主
 		if direction.x > 0:
-			return MapNode.DoorDirection.RIGHT
+			return mapnode.DoorDirection.RIGHT
 		else:
-			return MapNode.DoorDirection.LEFT
+			return mapnode.DoorDirection.LEFT
 	else:
 		# 垂直方向为主
 		if direction.y > 0:
-			return MapNode.DoorDirection.BOTTOM
+			return mapnode.DoorDirection.BOTTOM
 		else:
-			return MapNode.DoorDirection.TOP
+			return mapnode.DoorDirection.TOP
 
 # 获取相反的方向
 func _get_opposite_direction(direction):
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	match direction:
-		MapNode.DoorDirection.TOP:
-			return MapNode.DoorDirection.BOTTOM
-		MapNode.DoorDirection.RIGHT:
-			return MapNode.DoorDirection.LEFT
-		MapNode.DoorDirection.BOTTOM:
-			return MapNode.DoorDirection.TOP
-		MapNode.DoorDirection.LEFT:
-			return MapNode.DoorDirection.RIGHT
+		mapnode.DoorDirection.TOP:
+			return mapnode.DoorDirection.BOTTOM
+		mapnode.DoorDirection.RIGHT:
+			return mapnode.DoorDirection.LEFT
+		mapnode.DoorDirection.BOTTOM:
+			return mapnode.DoorDirection.TOP
+		mapnode.DoorDirection.LEFT:
+			return mapnode.DoorDirection.RIGHT
 	
-	return MapNode.DoorDirection.BOTTOM
+	return mapnode.DoorDirection.BOTTOM
 
 # 绘制连接线（保留但不实际使用，由门替代）
 func draw_connections():
@@ -446,7 +447,7 @@ func draw_connections():
 
 # 更新节点状态
 func update_node_states():
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	print("更新节点状态，当前节点ID: ", current_node_id)
 	
@@ -454,21 +455,21 @@ func update_node_states():
 	for i in range(map_nodes.size()):
 		var node = map_nodes[i]
 		# 设置所有节点为锁定状态
-		node.set_state(MapNode.NodeState.LOCKED)
+		node.set_state(mapnode.NodeState.LOCKED)
 		# 隐藏远处节点
 		node.set_visibility(false)
 	
 	# 如果有当前节点，设置当前节点和相邻节点的状态
 	if current_node_id >= 0 and current_node_id < map_nodes.size():
 		# 设置当前节点为当前状态并可见
-		map_nodes[current_node_id].set_state(MapNode.NodeState.CURRENT)
+		map_nodes[current_node_id].set_state(mapnode.NodeState.CURRENT)
 		map_nodes[current_node_id].set_visibility(true)
 	else:
 		# 如果没有当前节点，使用起点作为当前节点
 		for i in range(map_nodes.size()):
 			var node = map_nodes[i]
-			if node.node_type == MapNode.NodeType.START:
-				node.set_state(MapNode.NodeState.CURRENT)
+			if node.node_type == mapnode.NodeType.START:
+				node.set_state(mapnode.NodeState.CURRENT)
 				current_node_id = node.node_id
 				node.set_visibility(true)
 				break
@@ -481,7 +482,7 @@ func update_node_states():
 
 # 更新可用节点列表
 func update_available_nodes():
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	available_nodes.clear()
 	
 	# 如果当前节点有效
@@ -496,8 +497,8 @@ func update_available_nodes():
 				var target_node = map_nodes[target_id]
 				
 				# 只有未访问的节点可以变为可用
-				if target_node.node_state == MapNode.NodeState.LOCKED:
-					target_node.set_state(MapNode.NodeState.AVAILABLE)
+				if target_node.node_state == mapnode.NodeState.LOCKED:
+					target_node.set_state(mapnode.NodeState.AVAILABLE)
 					available_nodes.append(target_id)
 					
 					# 确保相邻节点可见
@@ -509,7 +510,7 @@ func update_available_nodes():
 
 # 更新路径和节点可见性
 func update_path_visibility():
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	# 更新所有连接线的可见性
 	for connection in node_connections:
@@ -527,7 +528,7 @@ func update_path_visibility():
 
 # 检查路径是否可用
 func _is_path_available(from_id, to_id):
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	# 确保索引有效
 	if from_id < 0 or to_id < 0 or from_id >= map_nodes.size() or to_id >= map_nodes.size():
@@ -543,14 +544,14 @@ func _is_path_available(from_id, to_id):
 	# 或者如果是已访问路径
 	var from_node = map_nodes[from_id]
 	var to_node = map_nodes[to_id]
-	if from_node.node_state == MapNode.NodeState.VISITED and to_node.node_state == MapNode.NodeState.VISITED:
+	if from_node.node_state == mapnode.NodeState.VISITED and to_node.node_state == mapnode.NodeState.VISITED:
 		return true
 	
 	return false
 
 # 节点点击事件处理
 func _on_node_clicked(node):
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	# 检查节点是否为null或无效
 	if node == null:
@@ -579,11 +580,11 @@ func _on_node_clicked(node):
 	
 	# 更新当前节点和已访问节点
 	if current_node_id >= 0 and current_node_id < map_nodes.size():
-		map_nodes[current_node_id].set_state(MapNode.NodeState.VISITED)
+		map_nodes[current_node_id].set_state(mapnode.NodeState.VISITED)
 	
 	# 设置新的当前节点
 	current_node_id = node_id
-	node.set_state(MapNode.NodeState.CURRENT)
+	node.set_state(mapnode.NodeState.CURRENT)
 	
 	# 更新可用节点
 	update_available_nodes()
@@ -592,7 +593,7 @@ func _on_node_clicked(node):
 	update_path_visibility()
 	
 	# 检查是否到达终点
-	if node.node_type == MapNode.NodeType.BOSS:
+	if node.node_type == mapnode.NodeType.BOSS:
 		print("恭喜！已到达Boss节点！")
 		emit_signal("map_completed")
 	
@@ -609,14 +610,14 @@ func _on_return_button_pressed():
 
 # 添加到游戏流程中
 func proceed_to_encounter(node_type, node_data):
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	# 保存当前地图状态
 	save_map_state()
 	
 	# 根据节点类型获取场景和处理方式
 	match node_type:
-		MapNode.NodeType.ENEMY, MapNode.NodeType.ELITE, MapNode.NodeType.BOSS:
+		mapnode.NodeType.ENEMY, mapnode.NodeType.ELITE, mapnode.NodeType.BOSS:
 			print("处理敌人节点，类型: ", node_type)
 			
 			# 获取敌人数据
@@ -669,16 +670,16 @@ func proceed_to_encounter(node_type, node_data):
 			print("无法获取敌人数据，使用传统方式切换场景")
 			get_tree().change_scene_to_file("res://scenes/enemy_select_scene.tscn")
 			
-		MapNode.NodeType.SHOP:
+		mapnode.NodeType.SHOP:
 			print("进入商店场景")
 			get_tree().change_scene_to_file("res://scenes/shop_scene.tscn")
-		MapNode.NodeType.REST:
+		mapnode.NodeType.REST:
 			print("进入休息场景")
 			get_tree().change_scene_to_file("res://scenes/rest_scene.tscn")
-		MapNode.NodeType.EVENT:
+		mapnode.NodeType.EVENT:
 			print("进入事件场景")
 			get_tree().change_scene_to_file("res://scenes/event_scene.tscn")
-		MapNode.NodeType.TREASURE:
+		mapnode.NodeType.TREASURE:
 			print("进入宝箱场景")
 			get_tree().change_scene_to_file("res://scenes/treasure_scene.tscn")
 
@@ -698,13 +699,13 @@ func _on_enemy_selected_direct(enemy_data):
 	await get_tree().process_frame
 	
 	# 切换到游戏场景
-	var game_scene = load("res://scenes/game_scene.tscn")
-	if game_scene:
+	var battle_scene = load("res://scenes/battle_scene.tscn")
+	if battle_scene:
 		print("创建战斗场景")
 		
 		# 创建游戏场景
-		var game_instance = game_scene.instantiate()
-		game_instance.name = "GameScene"
+		var game_instance = battle_scene.instantiate()
+		game_instance.name = "BattleScene"
 		get_tree().root.add_child(game_instance)
 		
 		# 确保UI更新
@@ -722,20 +723,20 @@ func _on_enemy_selected_direct(enemy_data):
 
 # 根据节点类型获取合适的敌人数据
 func _get_enemy_data_for_node_type(node_type):
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	var game_manager = get_node("/root/game_manager")
 	
 	if game_manager:
 		match node_type:
-			MapNode.NodeType.ENEMY:
+			mapnode.NodeType.ENEMY:
 				# 获取普通敌人
 				return game_manager.get_random_enemy(false)
 				
-			MapNode.NodeType.ELITE:
+			mapnode.NodeType.ELITE:
 				# 获取精英敌人
 				return game_manager.get_random_enemy(true)
 				
-			MapNode.NodeType.BOSS:
+			mapnode.NodeType.BOSS:
 				# 获取Boss敌人
 				return game_manager.get_random_boss()
 	else:
@@ -762,13 +763,13 @@ func _get_enemy_data_for_node_type(node_type):
 		}
 		
 		# 根据节点类型调整敌人难度
-		if node_type == MapNode.NodeType.ELITE:
+		if node_type == mapnode.NodeType.ELITE:
 			default_enemy.name = "精英守卫 - 黑暗骑士"
 			default_enemy.health = 120
 			default_enemy.required_score = 25
 			default_enemy.difficulty = 2
 			default_enemy.rewards.currency = 20
-		elif node_type == MapNode.NodeType.BOSS:
+		elif node_type == mapnode.NodeType.BOSS:
 			default_enemy.name = "黑暗领主 - 亡灵君王"
 			default_enemy.health = 200
 			default_enemy.required_score = 50
@@ -782,7 +783,7 @@ func _get_enemy_data_for_node_type(node_type):
 # 保存地图状态
 func save_map_state():
 	# 保存当前地图状态，以便返回时恢复
-	var game_manager = get_node("/root/GameManager")
+	var game_manager = get_node("/root/Main/GameManager")
 	if game_manager:
 		var map_state = {
 			"current_floor": current_floor,
@@ -805,16 +806,16 @@ func save_map_state():
 
 # 确保当前节点被选中并可见
 func ensure_current_node_selected():
-	var MapNode = load("res://scripts/map/map_node.gd")
+	var mapnode = load("res://scripts/map/map_node.gd")
 	
 	# 设置当前节点
 	if current_node_id < 0 or current_node_id >= map_nodes.size():
 		# 如果当前节点无效，查找起点或之前访问过的节点作为当前节点
 		for i in range(map_nodes.size()):
-			if map_nodes[i].node_type == MapNode.NodeType.START and map_nodes[i].node_state != MapNode.NodeState.VISITED:
+			if map_nodes[i].node_type == mapnode.NodeType.START and map_nodes[i].node_state != mapnode.NodeState.VISITED:
 				current_node_id = i
 				break
-			elif map_nodes[i].node_state == MapNode.NodeState.VISITED and i > current_node_id:
+			elif map_nodes[i].node_state == mapnode.NodeState.VISITED and i > current_node_id:
 				# 选择最后一个已访问的节点
 				current_node_id = i
 	
@@ -825,7 +826,7 @@ func ensure_current_node_selected():
 
 # 加载地图状态
 func load_map_state():
-	var game_manager = get_node("/root/GameManager")
+	var game_manager = get_node("/root/Main/GameManager")
 	if game_manager:
 		var map_state = game_manager.get_map_state()
 		if map_state:

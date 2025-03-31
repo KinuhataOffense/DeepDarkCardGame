@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://eydk1r5m47sa"]
 
-[ext_resource type="Script" uid="uid://dmdwb3t1vu80s" path="res://scripts/enemy_select/enemy_select_scene.gd" id="1_rhx5g"]
-[ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="2_abcde"]
+[ext_resource type="Script" uid="uid://dmdwb3t1vu80s" path="res://scripts/select/enemy_select_scene.gd" id="1_ena45"]
+[ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="2_kif5y"]
 
 [node name="EnemySelectScene" type="Control"]
 layout_mode = 3
@@ -10,7 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_rhx5g")
+script = ExtResource("1_ena45")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
@@ -19,7 +19,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_abcde")
+texture = ExtResource("2_kif5y")
 
 [node name="TitleLabel" type="Label" parent="."]
 layout_mode = 1

@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://cbbjeifc56056"]
+[gd_scene load_steps=3 format=3 uid="uid://cbbjeifc56056"]
 
 [ext_resource type="Script" uid="uid://bc25qdecel08x" path="res://scripts/shop/shop_scene.gd" id="1_hovpq"]
-[ext_resource type="Script" uid="uid://dfbei5shayfo7" path="res://scripts/core/shop_system.gd" id="2_mi1d8"]
 [ext_resource type="Script" uid="uid://dmodhdsujgk7f" path="res://addons/animatedbutton/AnimatedButton.gd" id="4_ykrk4"]
 
 [node name="ShopScene" type="Control"]
@@ -17,12 +16,6 @@ offset_left = 80.0
 offset_top = 37.0
 offset_right = 2483.0
 offset_bottom = 1411.0
-
-[node name="ShopSystem" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("2_mi1d8")
 
 [node name="ItemContainer" type="GridContainer" parent="."]
 layout_mode = 0

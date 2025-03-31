@@ -1,13 +1,13 @@
 [gd_scene load_steps=11 format=3 uid="uid://cxco7l6jgsf2"]
 
-[ext_resource type="Script" uid="uid://bbq3kiis6024t" path="res://scripts/core/game_manager.gd" id="1_bw6k5"]
-[ext_resource type="Script" uid="uid://3l8nh0mxslqc" path="res://scripts/game/game_scene.gd" id="1_kk2rg"]
-[ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="1_rurhu"]
-[ext_resource type="Script" uid="uid://tbka1du0xcml" path="res://addons/simple_card_pile_ui/card_pile_ui.gd" id="2_y3j0m"]
-[ext_resource type="Script" uid="uid://b3vqhxkwjhf6m" path="res://scripts/core/combination_dropzone.gd" id="4_kk2rg"]
-[ext_resource type="PackedScene" uid="uid://bs2vgjwuarxm5" path="res://scenes/card_ui.tscn" id="5_kk2rg"]
-[ext_resource type="Script" uid="uid://cuitqesw4sgw4" path="res://scripts/core/player_stats.gd" id="5_y3j0m"]
-[ext_resource type="Texture2D" uid="uid://cmfpp08onmr3f" path="res://assets/card_clubs_07.png" id="7_b5spy"]
+[ext_resource type="Script" uid="uid://3l8nh0mxslqc" path="res://scripts/battle/battle_scene.gd" id="1_rum4d"]
+[ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="2_3oc74"]
+[ext_resource type="Script" uid="uid://tbka1du0xcml" path="res://addons/simple_card_pile_ui/card_pile_ui.gd" id="4_g72on"]
+[ext_resource type="PackedScene" uid="uid://bs2vgjwuarxm5" path="res://scripts/cards/card_ui.tscn" id="5_tttxe"]
+[ext_resource type="Script" uid="uid://b3vqhxkwjhf6m" path="res://scripts/core/combination_dropzone.gd" id="6_ti0og"]
+[ext_resource type="Texture2D" uid="uid://cmfpp08onmr3f" path="res://assets/card_clubs_07.png" id="7_bg0yk"]
+[ext_resource type="Script" uid="uid://bbq3kiis6024t" path="res://scripts/core/battle_manager.gd" id="8_rum4d"]
+[ext_resource type="Script" uid="uid://cuitqesw4sgw4" path="res://scripts/core/player_stats.gd" id="8_yt3ua"]
 
 [sub_resource type="Curve" id="Curve_b5spy"]
 _data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -17,8 +17,8 @@ point_count = 2
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[node name="GameScene" type="Node2D"]
-script = ExtResource("1_kk2rg")
+[node name="BattleScene" type="Node2D"]
+script = ExtResource("1_rum4d")
 
 [node name="Background" type="TextureRect" parent="."]
 z_index = -1
@@ -26,10 +26,7 @@ offset_left = 3.0
 offset_top = 5.0
 offset_right = 2476.0
 offset_bottom = 1466.0
-texture = ExtResource("1_rurhu")
-
-[node name="GameManager" type="Node" parent="."]
-script = ExtResource("1_bw6k5")
+texture = ExtResource("2_3oc74")
 
 [node name="CardPileUI" type="Control" parent="."]
 top_level = true
@@ -39,10 +36,10 @@ offset_left = 16.0
 offset_top = 15.0
 offset_right = 16.0
 offset_bottom = 17.0
-script = ExtResource("2_y3j0m")
+script = ExtResource("4_g72on")
 json_card_database_path = "res://data/cards.json"
 json_card_collection_path = "res://data/collection.json"
-extended_card_ui = ExtResource("5_kk2rg")
+extended_card_ui = ExtResource("5_tttxe")
 hand_pile_position = Vector2(1030, 960)
 max_hand_size = 7
 max_hand_spread = 800
@@ -59,17 +56,17 @@ offset_left = 1714.0
 offset_top = 609.0
 offset_right = 1973.0
 offset_bottom = 1015.0
-script = ExtResource("4_kk2rg")
+script = ExtResource("6_ti0og")
 card_pile_ui = NodePath("../CardPileUI")
 
 [node name="Background" type="TextureRect" parent="CombinationDropzone"]
 layout_mode = 0
 offset_right = 260.0
 offset_bottom = 416.0
-texture = ExtResource("7_b5spy")
+texture = ExtResource("7_bg0yk")
 
 [node name="PlayerStats" type="Node" parent="."]
-script = ExtResource("5_y3j0m")
+script = ExtResource("8_yt3ua")
 
 [node name="EnemyDisplay" type="Control" parent="."]
 layout_mode = 3
@@ -197,3 +194,10 @@ offset_left = 1722.0
 offset_top = 522.0
 offset_right = 1962.0
 offset_bottom = 562.0
+
+[node name="BattleManager" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("8_rum4d")

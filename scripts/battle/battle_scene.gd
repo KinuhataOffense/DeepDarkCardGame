@@ -91,75 +91,18 @@ func _on_enemy_defeated():
 		
 	print("玩家分数:", player_stats.current_score, "，所需分数:", game_manager.score_required)
 	
-	# 尝试找到场景管理器
-	var scene_manager = get_node_or_null("/root/Main/SceneManager")
-	if scene_manager:
-		print("找到场景管理器，让场景管理器处理奖励场景")
-		# 什么都不做，让场景管理器处理
-	else:
-		print("未找到场景管理器，游戏场景自行处理奖励")
-		# 游戏场景自行处理奖励
-		call_deferred("_show_reward_scene_fallback")
+	# 由于使用地图模式作为唯一推进方式，简化处理逻辑
+	# 无需在游戏场景中处理后续逻辑，完全由场景管理器负责
+	print("游戏场景: 敌人已击败，由场景管理器处理后续流程")
 	
-	print("胜利事件已触发，等待场景管理器处理...")
-
-# 游戏场景自行处理奖励场景的后备方案
-func _show_reward_scene_fallback():
-	# 获取奖励数据
-	var reward_data = {}
+	# 游戏场景已胜利，等待场景管理器处理后续流程
+	# 添加一个小延迟确保信号已被处理
+	await get_tree().create_timer(0.5).timeout
 	
-	if game_manager.current_enemy:
-		if game_manager.current_enemy is Enemy:
-			reward_data = game_manager.current_enemy.get_rewards()
-		elif typeof(game_manager.current_enemy) == TYPE_DICTIONARY and game_manager.current_enemy.has("rewards"):
-			reward_data = game_manager.current_enemy.rewards
-		else:
-			reward_data = {"currency": 50}
-	
-	print("游戏场景: 创建奖励场景")
-	
-	# 尝试加载奖励场景资源
-	var reward_scene = load("res://scenes/reward_scene.tscn")
-	if reward_scene:
-		var reward_instance = reward_scene.instantiate()
-		reward_instance.name = "RewardScene"
-		get_tree().root.add_child(reward_instance)
-		
-		# 设置奖励数据
-		reward_instance.set_reward_data(reward_data)
-		
-		# 连接返回地图信号
-		reward_instance.return_to_map_requested.connect(_on_return_to_map_requested)
-		
-		print("游戏场景: 奖励场景创建成功")
-	else:
-		print("错误: 无法加载奖励场景资源")
-
-# 处理从奖励场景返回地图的请求
-func _on_return_to_map_requested():
-	print("游戏场景: 收到返回地图请求")
-	
-	# 隐藏游戏场景
+	# 隐藏场景，由场景管理器处理后续
 	visible = false
-	
-	# 移除游戏场景
-	queue_free()
-	
-	# 尝试显示地图场景
-	var map_scene = get_node_or_null("/root/Main/NodeMapScene")
-	if map_scene:
-		map_scene.visible = true
-		print("游戏场景: 显示地图场景")
-	else:
-		print("警告: 无法找到地图场景")
-		
-		# 返回主菜单
-		var main_menu = get_node_or_null("/root/Main/MainMenu")
-		if main_menu:
-			main_menu.visible = true
-			print("游戏场景: 返回主菜单")
 
-# 测试奖励场景
+# 测试奖励场景 - 在地图模式下，此功能仅用于调试
 func _on_test_reward_pressed():
 	print("测试按钮点击：直接显示奖励场景")
 	
@@ -169,26 +112,9 @@ func _on_test_reward_pressed():
 		print("找到场景管理器，调用测试函数")
 		scene_manager.force_show_reward_scene(20)
 	else:
-		print("未找到场景管理器，游戏场景自行创建奖励场景")
-		# 游戏场景自行处理奖励
-		var reward_data = {"currency": 20}
-		
-		# 尝试加载奖励场景资源
-		var reward_scene = load("res://scenes/reward_scene.tscn")
-		if reward_scene:
-			var reward_instance = reward_scene.instantiate()
-			reward_instance.name = "RewardScene"
-			get_tree().root.add_child(reward_instance)
-			
-			# 设置奖励数据
-			reward_instance.set_reward_data(reward_data)
-			
-			# 连接返回地图信号
-			reward_instance.return_to_map_requested.connect(_on_return_to_map_requested)
-			
-			print("测试: 奖励场景创建成功")
-		else:
-			print("错误: 无法加载奖励场景资源")
+		print("未找到场景管理器")
+		# 在地图模式下，不建议游戏场景自行处理奖励场景
+		# 因此移除自行创建奖励场景的代码
 
 func _on_game_over(win: bool = false):  
 	if ui.has_node("GameOverPanel"):  
@@ -198,8 +124,11 @@ func _on_game_over(win: bool = false):
 	# 处理失败逻辑
 	game_manager.process_defeat()
 	
-	# 延迟返回主菜单或重新开始
+	# 延迟返回地图或重新开始
 	await get_tree().create_timer(3.0).timeout
 	
-	# 这里可以添加返回主菜单或重新开始的逻辑
-	get_tree().reload_current_scene()
+	# 在地图模式下，不再自行重新加载场景
+	# 而是由场景管理器负责处理返回地图的逻辑
+	
+	# 隐藏当前场景，让场景管理器处理后续
+	visible = false

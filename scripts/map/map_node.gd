@@ -41,7 +41,7 @@ var floor_level: int = 0                   # 节点所在的层级（从下往�
 var node_data: Dictionary = {}             # 节点特定数据（如：敌人ID、商店物品等）
 
 # 是否可见
-var is_visible: bool = true                # 节点是否可见
+
 var is_fogged: bool = false                 # 节点是否处于迷雾状态（模糊）
 
 # 信号
@@ -220,7 +220,7 @@ func set_state(new_state: NodeState):
 
 # 设置节点可见性
 func set_visibility(visible_state: bool, fogged_state: bool = false):
-	is_visible = visible_state
+	self.visible = visible_state
 	is_fogged = fogged_state
 	
 	# 更新节点外观

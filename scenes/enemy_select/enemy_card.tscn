@@ -1,7 +1,8 @@
 [gd_scene load_steps=3 format=3 uid="uid://d3j4k5l6m7n8o"]
 
-[ext_resource type="Script" path="res://scripts/enemy_select/enemy_card.gd" id="1_uvwxy"]
-[ext_resource type="Texture2D" uid="uid://c1o2p3q4r5s6t" path="res://assets/enemies/enemy_placeholder.png" id="2_fghij"]
+[ext_resource type="Script" uid="uid://d1poium6uli7p" path="res://scripts/select/enemy_card.gd" id="1_uvwxy"]
+[ext_resource type="Texture2D" uid="uid://42qs2jq604nw" path="res://assets/enemies/enemy_placeholder.png" id="2_fghij"]
+
 
 [node name="EnemyCard" type="Panel"]
 custom_minimum_size = Vector2(250, 350)
