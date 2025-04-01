@@ -4,7 +4,7 @@ extends Node2D
 @onready var combination_zone = $CombinationDropzone  
 @onready var enemy_ui = $EnemyDisplay  
 @onready var game_manager = $GameManager  
-@onready var player_stats = $PlayerStats  
+@onready var player_stats = $root/Main/PlayerStats  
 @onready var ui = $UI  
 
 # 在场景加载时连接信号  

@@ -5,8 +5,7 @@ class_name BattleManager
 @onready var card_pile_ui: CardPileUI = $"../CardPileUI"   
 @onready var combination_area: CombinationDropzone = $"../CombinationDropzone"  
 @onready var enemy_ui = $"../EnemyDisplay"  
-@onready var player_stats = $"../PlayerStats"
-@onready var game_scene = $".."  
+@onready var player_stats = $"root/Main/PlayerStats"
 
 # 游戏状态  
 enum GameState { PLAYER_TURN, ENEMY_TURN, SHOP, GAME_OVER }  
@@ -237,7 +236,6 @@ func reduce_score_multiplier(factor: float):
 	
 # 进入商店  
 func enter_shop():  
-	# 移除直接控制game_scene可见性的代码
 	current_state = GameState.SHOP  
 	
 	# 重置回合状态
@@ -248,7 +246,6 @@ func enter_shop():
 	
 # 离开商店  
 func leave_shop():  
-	# 移除对game_scene可见性的直接控制
 	current_state = GameState.PLAYER_TURN  
 	# 不再生成新敌人，因为会创建新的游戏场景
 	emit_signal("return_to_game_requested")  

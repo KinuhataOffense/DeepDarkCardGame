@@ -13,7 +13,7 @@ signal leave_shop_requested
 func _ready():  
 	# 连接按钮信号  
 	leave_button.pressed.connect(_on_leave_shop_pressed)  
-	
+	game_manager = get_node("/root/Main/GameManager")
 	# 等待游戏管理器引用  
 	await get_tree().process_frame  
 	refresh_shop_display()  

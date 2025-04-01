@@ -91,9 +91,25 @@ func load_shop_items():
 func leave_shop():  
 	current_state = GameState.PLAYER_TURN  
 	emit_signal("return_to_game_requested")
+
+# 获取当前商店物品
+func get_shop_items() -> Array:
+	return current_shop_items
+
+# 购买商店物品
+func purchase_shop_item(item_index: int) -> bool:
+	if item_index < 0 or item_index >= current_shop_items.size():
+		return false
+		
+	var item = current_shop_items[item_index]
+	if player_data.currency >= item.price:
+		player_data.currency -= item.price
+		# 这里应该添加实际应用物品效果的逻辑
+		return true
+	return false
 	
 # 生成下一个敌人  
-func spawn_next_enemy():  
+func spawn_next_enemy():
 	# 简化起见，这里只实现一个示例敌人  
 	var enemy_data = {  
 		"name": "失落的王",  
@@ -356,3 +372,12 @@ func get_random_boss():
 	
 	print("未找到Boss敌人")
 	return null
+
+func get_player_currency():
+	return player_data.currency
+
+func get_player_health():
+	return player_data.current_health
+
+func get_player_max_health():
+	return player_data.max_health

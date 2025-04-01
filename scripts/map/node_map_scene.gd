@@ -100,71 +100,53 @@ func create_nodes():
 	var node_id = 0
 	var mapnode = load("res://scripts/map/map_node.gd")
 	
-	# 为了更像《以撒的结合》的房间布局，我们用网格方式排列节点
-	var grid_width = 7  # 地图网格宽度
-	var grid_height = 7  # 地图网格高度
-	var used_positions = {}  # 记录已使用的位置
-	
 	# 检查每层节点数量是否正确
 	if nodes_per_layer.size() != layers_count:
 		push_error("节点层数配置错误: layers_count=", layers_count, ", nodes_per_layer.size()=", nodes_per_layer.size())
-		# 修正层数和节点数组，确保一致
 		layers_count = min(layers_count, nodes_per_layer.size())
 	
-	print("开始创建节点，总层数: ", layers_count)
+	# 计算容器尺寸和中心点
+	var container_size = map_container.size
+	var center_x = container_size.x / 2
+	var center_y = container_size.y / 2
 	
-	# 遍历每一层
-	for layer in range(layers_count):
+	# 计算每层垂直位置
+	var layer_height = container_size.y / (layers_count + 1)
+	
+	# 创建起点节点
+	var start_pos = Vector2(center_x, container_size.y - layer_height)
+	_create_node_at_position(node_id, mapnode.NodeType.START, start_pos, 0, {})
+	node_id += 1
+	
+	# 创建中间层节点
+	for layer in range(1, layers_count - 1):
 		var nodes_count = nodes_per_layer[layer]
-		print("创建第", layer, "层节点，计划数量: ", nodes_count)
+		var layer_y = container_size.y - (layer_height * (layer + 1))
 		
-		# 如果是第一层（起点）
-		if layer == 0:
-			# 起点放在中间偏下位置
-			var start_pos = Vector2(0, 0)
-			_create_node_at_position(node_id, mapnode.NodeType.START, start_pos, layer, used_positions)
-			print("创建起点节点: id=", node_id, ", position=", start_pos)
-			node_id += 1
-			continue
-			
-		# 如果是最后一层（Boss）
-		if layer == layers_count - 1:
-			# Boss房间放在中间偏上位置
-			var boss_pos = Vector2(0, -vertical_spacing * 3)
-			_create_node_at_position(node_id, mapnode.NodeType.BOSS, boss_pos, layer, used_positions)
-			print("创建Boss节点: id=", node_id, ", position=", boss_pos)
-			node_id += 1
-			continue
+		# 计算水平位置
+		var horizontal_step = container_size.x / (nodes_count + 1)
+		var positions = []
 		
-		# 中间层随机分布节点
-		var available_positions = _get_available_positions(grid_width, grid_height, layer, used_positions)
+		for i in range(nodes_count):
+			var x = horizontal_step * (i + 1)
+			positions.append(Vector2(x, layer_y))
 		
-		if available_positions.size() == 0:
-			print("警告: 第", layer, "层没有可用的位置")
-			continue
-		
-		# 随机洗牌可用位置列表
-		available_positions.shuffle()
-		
-		# 取前N个位置用于当前层
-		var positions_for_layer = available_positions.slice(0, min(nodes_count, available_positions.size()))
-		
-		print("第", layer, "层实际创建节点数量: ", positions_for_layer.size())
-		
-		# 在选定位置创建节点
-		for i in range(min(nodes_count, positions_for_layer.size())):
-			var pos = positions_for_layer[i]
+		# 根据层数调整节点类型分布
+		for i in range(nodes_count):
 			var node_type = determine_node_type(layer, i, nodes_count)
-			_create_node_at_position(node_id, node_type, pos, layer, used_positions)
-			print("创建节点: id=", node_id, ", layer=", layer, ", type=", node_type, ", position=", pos)
+			_create_node_at_position(node_id, node_type, positions[i], layer, {})
 			node_id += 1
+	
+	# 创建Boss节点
+	var boss_pos = Vector2(center_x, layer_height)
+	_create_node_at_position(node_id, mapnode.NodeType.BOSS, boss_pos, layers_count - 1, {})
 	
 	print("节点创建完成，总数: ", map_nodes.size())
 
 # 在指定位置创建节点
 func _create_node_at_position(node_id, node_type, pos, layer, used_positions):
 	var mapnode = load("res://scripts/map/map_node.gd")
-	
+	print("[node_map_scene.gd:_create_node_at_position] 创建节点: id=", node_id, ", type=", node_type, ", position=", pos, ", layer=", layer)
 	# 记录位置已使用
 	used_positions[pos] = true
 	
@@ -188,24 +170,25 @@ func _create_node_at_position(node_id, node_type, pos, layer, used_positions):
 func _get_available_positions(grid_width, grid_height, layer, used_positions):
 	var positions = []
 	
-	# 根据层级调整位置范围
-	var vertical_offset = -vertical_spacing * (layer - layers_count/2)
+	# 基于容器尺寸(1024x500)计算位置
+	var container_width = 1024
+	var container_height = 500
+	var center_x = container_width / 2
+	var center_y = container_height / 2
 	
-	# 创建网格位置
-	for x in range(0, grid_width/2 + 1):
-		for y in range(0, grid_height/2 + 1):
-			# 跳过中心位置，因为它通常是起点
-			if x == 0 and y == 0:
-				continue
-				
-			var pos = Vector2(x * horizontal_spacing, y * vertical_spacing + vertical_offset)
-			
-			# 如果位置未被使用，添加到可用位置列表
-			if not used_positions.has(pos):
-				# 根据距中心的距离设置权重，使节点集中在中间
-				var distance = sqrt(x*x + y*y)
-				if distance <= layer * 0.7:
-					positions.append(pos)
+	# 计算每层垂直位置 - 均匀分布在容器内
+	var layer_height = container_height / (layers_count + 1)
+	var vertical_pos = layer_height * (layer + 1)
+	
+	# 创建网格位置 - 水平均匀分布
+	var horizontal_step = container_width / (grid_width + 1)
+	for x in range(1, grid_width + 1):
+		var horizontal_pos = horizontal_step * x
+		var pos = Vector2(horizontal_pos - center_x, vertical_pos - center_y)
+		
+		# 跳过已使用的位置
+		if not used_positions.has(pos):
+			positions.append(pos)
 	
 	return positions
 
@@ -219,38 +202,43 @@ func determine_node_type(layer, index, layer_nodes):
 	elif layer == layers_count - 1:
 		return mapnode.NodeType.BOSS
 	
-	# 其他节点类型随机分配
-	var possible_types = []
+	# 根据层数和位置策略性分配节点类型
+	var type_weights = {
+		mapnode.NodeType.ENEMY: 0.5,
+		mapnode.NodeType.EVENT: 0.2,
+		mapnode.NodeType.SHOP: 0.15,
+		mapnode.NodeType.REST: 0.15
+	}
 	
-	# 中间层分配不同类型的节点
-	if layer < layers_count - 2:
-		# 常规层
-		possible_types = [
-			mapnode.NodeType.ENEMY,
-			mapnode.NodeType.ENEMY,
-			mapnode.NodeType.EVENT,
-			mapnode.NodeType.SHOP,
-			mapnode.NodeType.REST
-		]
-		
-		# 第三层有精英敌人
-		if layer == 3:
-			possible_types.append(mapnode.NodeType.ELITE)
-			possible_types.append(mapnode.NodeType.ELITE)
-		
-		# 宝箱节点稀少
-		if randf() < 0.1:
-			possible_types.append(mapnode.NodeType.TREASURE)
-	else:
-		# 倒数第二层主要是精英和休息
-		possible_types = [
-			mapnode.NodeType.ELITE,
-			mapnode.NodeType.REST,
-			mapnode.NodeType.SHOP
-		]
+	# 调整权重基于层数
+	if layer == 3:  # 中间层增加精英敌人
+		type_weights[mapnode.NodeType.ELITE] = 0.3
+		type_weights[mapnode.NodeType.ENEMY] = 0.4
+	elif layer >= layers_count - 2:  # 接近Boss层
+		type_weights[mapnode.NodeType.ELITE] = 0.4
+		type_weights[mapnode.NodeType.ENEMY] = 0.3
+		type_weights[mapnode.NodeType.REST] = 0.2
+		type_weights[mapnode.NodeType.SHOP] = 0.1
 	
-	# 随机选择类型
-	return possible_types[randi() % possible_types.size()]
+	# 宝箱节点稀少但固定
+	if index == 0 and randf() < 0.1:  # 每层第一个节点有10%几率是宝箱
+		return mapnode.NodeType.TREASURE
+	
+	# 根据权重随机选择类型
+	var total_weight = 0.0
+	for weight in type_weights.values():
+		total_weight += weight
+	
+	var random_value = randf() * total_weight
+	var current_weight = 0.0
+	
+	for type in type_weights:
+		current_weight += type_weights[type]
+		if random_value <= current_weight:
+			return type
+	
+	# 默认返回敌人节点
+	return mapnode.NodeType.ENEMY
 
 # 创建节点连接
 func create_connections():
@@ -260,135 +248,75 @@ func create_connections():
 	
 	# 为每一层的节点创建连接
 	for layer in range(layers_count - 1):
-		var current_layer_start = 0
-		var next_layer_start = 0
+		var current_layer_nodes = []
+		var next_layer_nodes = []
 		
-		# 计算当前层和下一层的起始索引
-		for l in range(layer):
-			current_layer_start += nodes_per_layer[l]
-		for l in range(layer + 1):
-			next_layer_start += nodes_per_layer[l]
+		# 收集当前层和下一层节点
+		for node in map_nodes:
+			if node.floor_level == layer:
+				current_layer_nodes.append(node)
+			elif node.floor_level == layer + 1:
+				next_layer_nodes.append(node)
 		
-		# 当前层节点数
-		var current_layer_nodes = nodes_per_layer[layer]
-		# 下一层节点数
-		var next_layer_nodes = nodes_per_layer[layer + 1]
-		
-		print("处理第", layer, "层到第", layer+1, "层的连接: 起始索引=", current_layer_start, "/", next_layer_start)
-		
-		# 确保索引不超出map_nodes范围
-		if current_layer_start >= map_nodes.size():
-			print("警告: 当前层起始索引超出范围: ", current_layer_start, "/", map_nodes.size())
-			continue
-			
-		if next_layer_start >= map_nodes.size():
-			print("警告: 下一层起始索引超出范围: ", next_layer_start, "/", map_nodes.size())
-			continue
+		print("处理第", layer, "层到第", layer+1, "层的连接: 当前层节点=", current_layer_nodes.size(), ", 下一层节点=", next_layer_nodes.size())
 		
 		# 为每个当前层节点创建连接
-		for i in range(current_layer_nodes):
-			var current_node_idx = current_layer_start + i
-			
-			# 检查索引是否有效
-			if current_node_idx >= map_nodes.size():
-				print("警告: 当前节点索引超出范围: ", current_node_idx, "/", map_nodes.size())
-				continue
-			
-			print("处理节点", current_node_idx, "的连接")
+		for current_node in current_layer_nodes:
+			print("处理节点", current_node.node_id, "的连接")
 			
 			# 确定连接数量 (1-2)
-			var connections_count = 1 + (randi() % 2 if next_layer_nodes > 1 else 0)
-			connections_count = min(connections_count, next_layer_nodes)
+			var connections_count = 1
+			if next_layer_nodes.size() > 1 and randf() < 0.6:  # 60%几率有第二个连接
+				connections_count = 2
 			
-			# 可能的下一层节点索引范围
-			var possible_next_indices = []
-			for j in range(next_layer_nodes):
-				var next_idx = next_layer_start + j
-				if next_idx < map_nodes.size():  # 确保索引有效
-					possible_next_indices.append(next_idx)
+			# 根据位置选择最近的节点
+			var possible_targets = next_layer_nodes.duplicate()
+			possible_targets.sort_custom(func(a, b): 
+				return a.position.distance_to(current_node.position) < b.position.distance_to(current_node.position)
+			)
 			
-			# 如果没有有效的下一层节点，跳过
-			if possible_next_indices.size() == 0:
-				print("警告: 当前节点没有有效的下一层节点: ", current_node_idx)
-				continue
-			
-			print("节点", current_node_idx, "可能的连接目标: ", possible_next_indices)
-			
-			# 随机选择连接节点
-			var selected_connections = []
-			for _j in range(connections_count):
-				if possible_next_indices.size() > 0:
-					var random_idx = randi() % possible_next_indices.size()
-					var target_node_idx = possible_next_indices[random_idx]
-					
-					print("尝试连接节点", current_node_idx, "到", target_node_idx)
-					
-					# 确保索引有效
-					if target_node_idx < map_nodes.size():
-						# 确定连接方向
-						var direction = _determine_connection_direction(current_node_idx, target_node_idx)
-						
-						# 添加连接
-						selected_connections.append(target_node_idx)
-						map_nodes[current_node_idx].add_connection(target_node_idx, direction)
-						
-						# 添加反向连接
-						var reverse_direction = _get_opposite_direction(direction)
-						map_nodes[target_node_idx].add_connection(current_node_idx, reverse_direction)
-						
-						# 记录连接关系
-						node_connections.append([current_node_idx, target_node_idx])
-						
-						print("成功连接节点", current_node_idx, "到", target_node_idx)
-					else:
-						print("警告: 目标节点索引无效: ", target_node_idx)
-					
-					# 移除已选择的节点，避免重复连接
-					possible_next_indices.remove_at(random_idx)
-				else:
-					print("无更多可连接的节点")
-					break
-			
-			# 打印已建立的连接
-			print("节点", current_node_idx, "已建立的连接: ", selected_connections)
+			# 创建连接
+			for i in range(min(connections_count, possible_targets.size())):
+				var target_node = possible_targets[i]
+				
+				# 确定连接方向
+				var direction = _determine_connection_direction(current_node.node_id, target_node.node_id)
+				
+				# 添加双向连接
+				current_node.add_connection(target_node.node_id, direction)
+				target_node.add_connection(current_node.node_id, _get_opposite_direction(direction))
+				
+				# 记录连接关系
+				node_connections.append([current_node.node_id, target_node.node_id])
+				
+				print("成功连接节点", current_node.node_id, "到", target_node.node_id)
+	
+	# 确保所有下一层节点至少有一个连接
+	for layer in range(layers_count - 1):
+		var next_layer_nodes = []
+		for node in map_nodes:
+			if node.floor_level == layer + 1:
+				next_layer_nodes.append(node)
 		
-		# 确保每个下一层节点至少有一个连接
-		if layer == 0 and next_layer_nodes > 0:
-			print("确保第一层的每个节点都有连接")
-			
-			# 获取第一层节点索引（通常是0）
-			var first_layer_node_idx = 0
-			if first_layer_node_idx >= map_nodes.size():
-				print("警告: 第一层节点索引无效: ", first_layer_node_idx)
-				continue
+		for target_node in next_layer_nodes:
+			if target_node.connected_nodes.size() == 0:
+				# 找到最近的上一层节点
+				var closest_node = null
+				var min_distance = INF
 				
-			for j in range(next_layer_nodes):
-				var target_idx = next_layer_start + j
+				for node in map_nodes:
+					if node.floor_level == layer and node.position.distance_to(target_node.position) < min_distance:
+						closest_node = node
+						min_distance = node.position.distance_to(target_node.position)
 				
-				# 确保索引有效
-				if target_idx >= map_nodes.size():
-					print("警告: 目标节点索引超出范围: ", target_idx, "/", map_nodes.size())
-					continue
-				
-				# 检查节点是否已有连接
-				var has_connection = false
-				for conn in node_connections:
-					if conn[1] == target_idx:
-						has_connection = true
-						break
-				
-				if !has_connection:
-					print("为节点", target_idx, "添加缺失的连接")
+				if closest_node:
+					# 添加连接
+					var direction = _determine_connection_direction(closest_node.node_id, target_node.node_id)
+					closest_node.add_connection(target_node.node_id, direction)
+					target_node.add_connection(closest_node.node_id, _get_opposite_direction(direction))
+					node_connections.append([closest_node.node_id, target_node.node_id])
 					
-					var direction = _determine_connection_direction(first_layer_node_idx, target_idx)
-					map_nodes[first_layer_node_idx].add_connection(target_idx, direction)
-					
-					var reverse_direction = _get_opposite_direction(direction)
-					map_nodes[target_idx].add_connection(first_layer_node_idx, reverse_direction)
-					
-					node_connections.append([first_layer_node_idx, target_idx])
-					
-					print("添加连接成功: ", first_layer_node_idx, " -> ", target_idx)
+					print("添加缺失连接: ", closest_node.node_id, " -> ", target_node.node_id)
 	
 	print("节点连接创建完成，连接总数: ", node_connections.size())
 
@@ -608,177 +536,19 @@ func _on_return_button_pressed():
 	# 返回主菜单或上一个场景
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
-# 添加到游戏流程中
+# 处理节点进入事件
 func proceed_to_encounter(node_type, node_data):
-	var mapnode = load("res://scripts/map/map_node.gd")
-	
 	# 保存当前地图状态
 	save_map_state()
 	
-	# 根据节点类型获取场景和处理方式
-	match node_type:
-		mapnode.NodeType.ENEMY, mapnode.NodeType.ELITE, mapnode.NodeType.BOSS:
-			print("处理敌人节点，类型: ", node_type)
-			
-			# 获取敌人数据
-			var enemy_data = _get_enemy_data_for_node_type(node_type)
-			if enemy_data:
-				# 输出调试信息
-				print("成功获取敌人数据: ", enemy_data.name)
-				
-				# 首先尝试查找场景管理器
-				var scene_manager = get_node_or_null("/root/SceneManager")
-				if scene_manager:
-					print("使用场景管理器处理敌人选择")
-					
-					# 通知场景管理器处理节点选择
-					emit_signal("node_selected", node_type, enemy_data)
-					
-					# 等待一帧确保信号传递
-					await get_tree().process_frame
-					
-					# 隐藏当前地图
-					self.visible = false
-					return
-				
-				# 如果找不到场景管理器，回退到传统方法
-				print("找不到场景管理器，尝试自行处理敌人选择")
-				
-				# 加载敌人选择场景
-				var enemy_select_scene = load("res://scenes/enemy_select_scene.tscn")
-				if enemy_select_scene:
-					var instance = enemy_select_scene.instantiate()
-					# 设置实例名称以便后续查找
-					instance.name = "EnemySelectScene"
-					
-					# 初始化为自动模式，传递敌人数据
-					instance.initialize(false, true, enemy_data)
-					
-					# 隐藏当前场景
-					self.visible = false
-					
-					# 连接信号到本地处理函数
-					instance.enemy_selected.connect(_on_enemy_selected_direct)
-					
-					# 添加敌人选择场景
-					get_tree().root.add_child(instance)
-					
-					print("进入敌人选择场景（自动模式），敌人：", enemy_data.name)
-					return
-			
-			# 如果无法获取敌人数据，回退到传统方式
-			print("无法获取敌人数据，使用传统方式切换场景")
-			get_tree().change_scene_to_file("res://scenes/enemy_select_scene.tscn")
-			
-		mapnode.NodeType.SHOP:
-			print("进入商店场景")
-			get_tree().change_scene_to_file("res://scenes/shop_scene.tscn")
-		mapnode.NodeType.REST:
-			print("进入休息场景")
-			get_tree().change_scene_to_file("res://scenes/rest_scene.tscn")
-		mapnode.NodeType.EVENT:
-			print("进入事件场景")
-			get_tree().change_scene_to_file("res://scenes/event_scene.tscn")
-		mapnode.NodeType.TREASURE:
-			print("进入宝箱场景")
-			get_tree().change_scene_to_file("res://scenes/treasure_scene.tscn")
+	# 通知游戏管理器处理节点事件
+	var gamemanager = get_node("/root/Main/GameManager")
+	gamemanager.handle_map_node_event(node_type, node_data)
+	
+	# 发射节点选择信号
+	emit_signal("node_selected", node_type, node_data)
 
-# 直接处理敌人选择信号（当没有场景管理器时）
-func _on_enemy_selected_direct(enemy_data):
-	print("直接处理敌人选择信号：", enemy_data.name)
-	
-	# 移除敌人选择场景
-	var enemy_select = get_tree().root.get_node_or_null("EnemySelectScene")
-	if enemy_select:
-		print("移除敌人选择场景")
-		enemy_select.queue_free()
-	else:
-		print("警告：找不到敌人选择场景")
-	
-	# 延迟创建游戏场景
-	await get_tree().process_frame
-	
-	# 切换到游戏场景
-	var battle_scene = load("res://scenes/battle_scene.tscn")
-	if battle_scene:
-		print("创建战斗场景")
-		
-		# 创建游戏场景
-		var game_instance = battle_scene.instantiate()
-		game_instance.name = "BattleScene"
-		get_tree().root.add_child(game_instance)
-		
-		# 确保UI更新
-		await get_tree().process_frame
-		
-		# 设置敌人数据
-		var game_manager = game_instance.get_node_or_null("GameManager")
-		if game_manager:
-			print("设置敌人数据: ", enemy_data.name)
-			game_manager.set_enemy_data(enemy_data)
-		else:
-			push_error("无法获取GameManager节点")
-	else:
-		push_error("无法加载游戏场景")
 
-# 根据节点类型获取合适的敌人数据
-func _get_enemy_data_for_node_type(node_type):
-	var mapnode = load("res://scripts/map/map_node.gd")
-	var game_manager = get_node("/root/game_manager")
-	
-	if game_manager:
-		match node_type:
-			mapnode.NodeType.ENEMY:
-				# 获取普通敌人
-				return game_manager.get_random_enemy(false)
-				
-			mapnode.NodeType.ELITE:
-				# 获取精英敌人
-				return game_manager.get_random_enemy(true)
-				
-			mapnode.NodeType.BOSS:
-				# 获取Boss敌人
-				return game_manager.get_random_boss()
-	else:
-		# 如果没有游戏管理器，使用自定义的默认敌人数据
-		var default_enemy = {
-			"id": "default_enemy",
-			"name": "路径阻碍者 - 骑士幽魂",
-			"description": "一个守护地下城通道的幽灵骑士。",
-			"health": 80,
-			"round_limit": 5,
-			"required_score": 15,
-			"difficulty": 1,
-			"rewards": {
-				"currency": 10
-			},
-			"effects": [
-				{
-					"trigger": "round_start",
-					"frequency": 2,
-					"type": "mark_card",
-					"description": "每两回合标记一张手牌，若该轮未使用则受到10点伤害"
-				}
-			]
-		}
-		
-		# 根据节点类型调整敌人难度
-		if node_type == mapnode.NodeType.ELITE:
-			default_enemy.name = "精英守卫 - 黑暗骑士"
-			default_enemy.health = 120
-			default_enemy.required_score = 25
-			default_enemy.difficulty = 2
-			default_enemy.rewards.currency = 20
-		elif node_type == mapnode.NodeType.BOSS:
-			default_enemy.name = "黑暗领主 - 亡灵君王"
-			default_enemy.health = 200
-			default_enemy.required_score = 50
-			default_enemy.difficulty = 3
-			default_enemy.rewards.currency = 50
-		
-		return default_enemy
-	
-	return null
 
 # 保存地图状态
 func save_map_state():

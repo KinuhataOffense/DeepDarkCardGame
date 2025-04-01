@@ -1,6 +1,6 @@
 extends Node  
 
-var game_scene = preload("res://scenes/battle_scene.tscn")  
+var battle_scene = preload("res://scenes/battle_scene.tscn")  
 var shop_scene = preload("res://scenes/shop_scene.tscn")  
 var enemy_select_scene = preload("res://scenes/enemy_select/enemy_select_scene.tscn")
 var node_map_scene = preload("res://scenes/node_map_scene.tscn")
@@ -38,6 +38,7 @@ func _on_quit_game():
 
 # 显示敌人选择场景 - 只在地图节点选择后使用
 func _show_enemy_select_scene(from_shop: bool = false, auto_mode: bool = false, enemy_data = null):
+	print("场景管理器: 显示敌人选择场景")
 	# 创建敌人选择场景
 	var enemy_select_instance = enemy_select_scene.instantiate()
 	enemy_select_instance.name = "EnemySelectScene"
@@ -62,6 +63,7 @@ func _show_enemy_select_scene(from_shop: bool = false, auto_mode: bool = false, 
 
 # 从商店返回
 func _on_return_to_shop():
+	print("场景管理器: 从商店返回")
 	# 移除商店场景
 	var shop_scene_instance = get_node_or_null("ShopScene")
 	if shop_scene_instance:
@@ -108,7 +110,7 @@ func _on_start_map_mode():
 	print("场景管理器: 创建地图场景")
 	var map_instance = node_map_scene.instantiate()
 	map_instance.name = "NodeMapScene"
-	
+	map_instance.position = Vector2(0,0)
 	# 根据不同情况添加到不同节点
 	if get_tree().root.has_node("Main"):
 		get_tree().root.get_node("Main").add_child(map_instance)
@@ -151,7 +153,7 @@ func _on_map_node_selected(node_type, node_data):
 			
 			# 如果没有找到敌人数据，使用默认敌人
 			if enemy_data == null:
-				enemy_data = _create_default_enemy_data(node_type)
+				print("SceneManager Error: enemy_data == null")
 				
 			# 显示自动模式的敌人选择场景
 			_show_enemy_select_scene(false, true, enemy_data)
@@ -242,48 +244,6 @@ func _on_return_to_map():
 	
 	print("场景管理器: 地图场景已显示")
 
-# 创建默认敌人数据（用于游戏管理器不可用时）
-func _create_default_enemy_data(node_type):
-	# 创建基础敌人数据
-	var default_enemy = {
-		"id": "auto_enemy_" + str(node_type),
-		"name": "通道守卫",
-		"description": "一个守护地下城通道的敌人。",
-		"health": 80,
-		"round_limit": 5,
-		"required_score": 15,
-		"difficulty": 1,
-		"rewards": {
-			"currency": 10
-		},
-		"effects": [
-			{
-				"trigger": "round_start",
-				"frequency": 2,
-				"type": "mark_card",
-				"description": "每两回合标记一张手牌，若该轮未使用则受到10点伤害"
-			}
-		]
-	}
-	
-	# 根据节点类型调整敌人属性
-	match node_type:
-		1:  # ENEMY
-			default_enemy.name = "通道守卫 - 迷雾怨灵"
-		2:  # ELITE
-			default_enemy.name = "精英守卫 - 猩红骑士"
-			default_enemy.health = 120
-			default_enemy.required_score = 25
-			default_enemy.difficulty = 2
-			default_enemy.rewards.currency = 20
-		7:  # BOSS
-			default_enemy.name = "黑暗领主 - 亡灵大君"
-			default_enemy.health = 200
-			default_enemy.required_score = 40
-			default_enemy.difficulty = 3
-			default_enemy.rewards.currency = 50
-	
-	return default_enemy
 
 # 这个函数用于直接测试奖励场景
 func force_show_reward_scene(currency_amount = 10):
@@ -350,7 +310,7 @@ func _on_enemy_selected(enemy_data):
 	print("场景管理器: 创建战斗场景，敌人: ", enemy_data.name)
 	
 	# 创建游戏场景
-	var game_instance = game_scene.instantiate()
+	var game_instance = battle_scene.instantiate()
 	game_instance.name = "GameScene"
 	
 	# 根据不同情况添加到不同节点
@@ -402,13 +362,13 @@ func _on_game_over(win: bool):
 		print("场景管理器: 玩家失败!")
 		
 		# 获取游戏场景
-		var game_scene_instance = get_node_or_null("GameScene")
-		if !game_scene_instance and get_tree().root.has_node("Main/GameScene"):
-			game_scene_instance = get_tree().root.get_node("Main/GameScene")
+		var battle_scene_instance = get_node_or_null("GameScene")
+		if !battle_scene_instance and get_tree().root.has_node("Main/GameScene"):
+			battle_scene_instance = get_tree().root.get_node("Main/GameScene")
 			
-		if game_scene_instance:
+		if battle_scene_instance:
 			# 移除游戏场景
-			game_scene_instance.queue_free()
+			battle_scene_instance.queue_free()
 		
 		# 在地图模式下，失败后返回地图或创建新地图
 		# 而不是返回已被销毁的主菜单
@@ -419,18 +379,18 @@ func _on_enemy_defeated():
 	print("场景管理器: 收到敌人击败信号，开始处理战利品")
 	
 	# 获取当前游戏场景 - 修改获取路径方式
-	var game_scene_instance = null
+	var battle_scene_instance = null
 	if get_node_or_null("GameScene"):
 		# 场景管理器直接子节点
-		game_scene_instance = get_node("GameScene")
+		battle_scene_instance = get_node("GameScene")
 	elif get_tree().root.has_node("Main/GameScene"):
 		# 主场景路径
-		game_scene_instance = get_tree().root.get_node("Main/GameScene")
+		battle_scene_instance = get_tree().root.get_node("Main/GameScene")
 	elif get_parent().get_node_or_null("GameScene"):
 		# 父节点的子节点
-		game_scene_instance = get_parent().get_node("GameScene")
+		battle_scene_instance = get_parent().get_node("GameScene")
 	
-	if !game_scene_instance:
+	if !battle_scene_instance:
 		print("警告: 没有找到游戏场景，使用游戏场景的备用方案")
 		return
 	
@@ -464,7 +424,7 @@ func _on_enemy_defeated():
 	print("场景管理器: 准备隐藏游戏场景并创建奖励场景")
 	
 	# 隐藏游戏场景
-	game_scene_instance.visible = false
+	battle_scene_instance.visible = false
 	
 	# 验证奖励场景资源是否加载成功
 	if reward_scene == null:

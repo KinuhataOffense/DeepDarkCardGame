@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cxco7l6jgsf2"]
+[gd_scene load_steps=10 format=3 uid="uid://cxco7l6jgsf2"]
 
 [ext_resource type="Script" uid="uid://3l8nh0mxslqc" path="res://scripts/battle/battle_scene.gd" id="1_rum4d"]
 [ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="2_3oc74"]
@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://b3vqhxkwjhf6m" path="res://scripts/core/combination_dropzone.gd" id="6_ti0og"]
 [ext_resource type="Texture2D" uid="uid://cmfpp08onmr3f" path="res://assets/card_clubs_07.png" id="7_bg0yk"]
 [ext_resource type="Script" uid="uid://bbq3kiis6024t" path="res://scripts/core/battle_manager.gd" id="8_rum4d"]
-[ext_resource type="Script" uid="uid://cuitqesw4sgw4" path="res://scripts/core/player_stats.gd" id="8_yt3ua"]
 
 [sub_resource type="Curve" id="Curve_b5spy"]
 _data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -64,9 +63,6 @@ layout_mode = 0
 offset_right = 260.0
 offset_bottom = 416.0
 texture = ExtResource("7_bg0yk")
-
-[node name="PlayerStats" type="Node" parent="."]
-script = ExtResource("8_yt3ua")
 
 [node name="EnemyDisplay" type="Control" parent="."]
 layout_mode = 3
