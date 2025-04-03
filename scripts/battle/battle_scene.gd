@@ -92,27 +92,27 @@ func _on_enemy_defeated():
 	print("玩家分数:", player_stats.current_score, "，所需分数:", game_manager.score_required)
 	
 	# 由于使用地图模式作为唯一推进方式，简化处理逻辑
-	# 无需在游戏场景中处理后续逻辑，完全由场景管理器负责
-	print("游戏场景: 敌人已击败，由场景管理器处理后续流程")
+	# 无需在游戏场景中处理后续逻辑，完全由GameManager负责
+	print("游戏场景: 敌人已击败，由GameManager处理后续流程")
 	
-	# 游戏场景已胜利，等待场景管理器处理后续流程
+	# 游戏场景已胜利，等待GameManager处理后续流程
 	# 添加一个小延迟确保信号已被处理
 	await get_tree().create_timer(0.5).timeout
 	
-	# 隐藏场景，由场景管理器处理后续
+	# 隐藏场景，由GameManager处理后续
 	visible = false
 
 # 测试奖励场景 - 在地图模式下，此功能仅用于调试
 func _on_test_reward_pressed():
 	print("测试按钮点击：直接显示奖励场景")
 	
-	# 尝试不同路径找到场景管理器
-	var scene_manager = get_node_or_null("/root/Main/SceneManager")
-	if scene_manager:
-		print("找到场景管理器，调用测试函数")
-		scene_manager.force_show_reward_scene(20)
+	# 使用GameManager替代SceneManager
+	var game_manager_node = get_node_or_null("/root/Main/GameManager")
+	if game_manager_node:
+		print("找到游戏管理器，调用测试函数")
+		game_manager_node.force_show_reward_scene(20)
 	else:
-		print("未找到场景管理器")
+		print("未找到游戏管理器")
 		# 在地图模式下，不建议游戏场景自行处理奖励场景
 		# 因此移除自行创建奖励场景的代码
 
@@ -128,7 +128,7 @@ func _on_game_over(win: bool = false):
 	await get_tree().create_timer(3.0).timeout
 	
 	# 在地图模式下，不再自行重新加载场景
-	# 而是由场景管理器负责处理返回地图的逻辑
+	# 而是由GameManager负责处理返回地图的逻辑
 	
-	# 隐藏当前场景，让场景管理器处理后续
+	# 隐藏当前场景，让GameManager处理后续
 	visible = false

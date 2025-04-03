@@ -1,8 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://domr3f0kivnb"]
+[gd_scene load_steps=5 format=3 uid="uid://domr3f0kivnb"]
 
 [ext_resource type="Script" uid="uid://dmodhdsujgk7f" path="res://addons/animatedbutton/AnimatedButton.gd" id="1_0ykhv"]
-[ext_resource type="Script" uid="uid://bbao1bufc7d36" path="res://scripts/core/scene_manager.gd" id="2_2wh52"]
-[ext_resource type="Texture2D" uid="uid://00gmo7blocrh" path="res://assets/ui/background1.jpg" id="2_ow34m"]
 [ext_resource type="Script" uid="uid://dm87nhuybmyi6" path="res://scripts/core/game_manager.gd" id="4_ow34m"]
 [ext_resource type="Script" uid="uid://cuitqesw4sgw4" path="res://scripts/core/player_stats.gd" id="5_l72w3"]
 
@@ -11,30 +9,44 @@ font_size = 100
 
 [node name="Main" type="Node2D"]
 
+[node name="GameManager" type="Control" parent="." groups=["persistent"]]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 2015.0
+offset_top = 481.0
+offset_right = 2373.0
+offset_bottom = 648.0
+script = ExtResource("4_ow34m")
+
+[node name="PlayerStats" type="Node" parent="." groups=["persistent"]]
+script = ExtResource("5_l72w3")
+metadata/_custom_type_script = "uid://cuitqesw4sgw4"
+
 [node name="MainMenu" type="Control" parent="."]
 z_index = -1
 layout_mode = 3
 anchors_preset = 0
-offset_top = 1.0
-offset_right = 58.0
-offset_bottom = 74.0
+offset_left = 11.0
+offset_top = 3.0
+offset_right = 2490.0
+offset_bottom = 1508.0
 
 [node name="Title" type="Label" parent="MainMenu"]
 layout_mode = 0
-offset_left = 1104.0
-offset_top = 453.0
-offset_right = 1313.0
-offset_bottom = 590.0
+offset_left = 668.0
+offset_top = 113.0
+offset_right = 877.0
+offset_bottom = 250.0
 text = "Title"
 label_settings = SubResource("LabelSettings_mtydo")
 
 [node name="QuitButton" type="Button" parent="MainMenu"]
 z_index = 1
 layout_mode = 0
-offset_left = 1103.0
-offset_top = 876.0
-offset_right = 1305.0
-offset_bottom = 954.0
+offset_left = 667.0
+offset_top = 516.0
+offset_right = 869.0
+offset_bottom = 594.0
 text = "退出"
 script = ExtResource("1_0ykhv")
 metadata/_custom_type_script = "uid://dmodhdsujgk7f"
@@ -42,42 +54,18 @@ metadata/_custom_type_script = "uid://dmodhdsujgk7f"
 [node name="StartButton" type="Button" parent="MainMenu"]
 z_index = 1
 layout_mode = 0
-offset_left = 1102.0
-offset_top = 688.0
-offset_right = 1302.0
-offset_bottom = 772.0
+offset_left = 668.0
+offset_top = 305.0
+offset_right = 868.0
+offset_bottom = 389.0
 text = "开始战斗"
-script = ExtResource("1_0ykhv")
-metadata/_custom_type_script = "uid://dmodhdsujgk7f"
-
-[node name="MapButton" type="Button" parent="MainMenu"]
-z_index = 1
-layout_mode = 0
-offset_left = 1102.0
-offset_top = 792.0
-offset_right = 1302.0
-offset_bottom = 856.0
-text = "地图模式"
 script = ExtResource("1_0ykhv")
 metadata/_custom_type_script = "uid://dmodhdsujgk7f"
 
 [node name="Background" type="TextureRect" parent="MainMenu"]
 z_index = -3
 layout_mode = 0
-offset_right = 1212.0
-offset_bottom = 2107.0
-texture = ExtResource("2_ow34m")
-
-[node name="SceneManager" type="Node" parent="."]
-script = ExtResource("2_2wh52")
-
-[node name="GameManager" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("4_ow34m")
-
-[node name="PlayerStats" type="Node" parent="."]
-script = ExtResource("5_l72w3")
-metadata/_custom_type_script = "uid://cuitqesw4sgw4"
+offset_left = 34.0
+offset_top = 151.0
+offset_right = 437.0
+offset_bottom = 454.0

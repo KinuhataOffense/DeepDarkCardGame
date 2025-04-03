@@ -49,36 +49,46 @@ func _ready():
 
 # 设置自动模式，显示敌人信息并在延迟后进入战斗
 func _setup_auto_mode():
-	print("自动模式：显示敌人信息 - ", auto_selected_enemy.name)
+	print("自动模式：显示敌人信息 - ", auto_selected_enemy.name if auto_selected_enemy.has("name") else "未知敌人")
 	
 	# 确保在处理前信号未发送
 	signal_emitted = false
 	
-	# 更新详细信息面板
-	_display_enemy_info(auto_selected_enemy)
-	
-	# 隐藏敌人卡片容器和开始按钮，只显示敌人信息
-	enemy_container.visible = false
-	start_button.visible = false
-	return_button.visible = false
-	
-	# 先检查并清理可能已存在的定时器
-	if display_timer:
-		display_timer.stop()
-		if display_timer.is_connected("timeout", _auto_start_battle):
-			display_timer.timeout.disconnect(_auto_start_battle)
-		display_timer.queue_free()
-		display_timer = null
-	
-	# 创建并启动新的定时器
-	display_timer = Timer.new()
-	add_child(display_timer)
-	display_timer.wait_time = 3.0  # 3秒后自动进入战斗
-	display_timer.one_shot = true
-	display_timer.timeout.connect(_auto_start_battle)
-	display_timer.start()
-	
-	print("启动定时器，3秒后自动进入战斗")
+	# 先确保敌人信息可用于显示
+	if auto_selected_enemy != null:
+		# 更新详细信息面板
+		_display_enemy_info(auto_selected_enemy)
+		
+		# 显示敌人详情面板，确保其可见
+		enemy_details_panel.visible = true
+		
+		# 隐藏敌人卡片容器
+		enemy_container.visible = false
+		
+		# 在自动模式下仍显示开始按钮，但禁用返回按钮
+		start_button.visible = true
+		start_button.disabled = false
+		return_button.visible = false
+		
+		# 清理可能已存在的定时器
+		if display_timer:
+			display_timer.stop()
+			if display_timer.is_connected("timeout", _auto_start_battle):
+				display_timer.timeout.disconnect(_auto_start_battle)
+			display_timer.queue_free()
+			display_timer = null
+		
+		# 创建并启动新的定时器
+		display_timer = Timer.new()
+		add_child(display_timer)
+		display_timer.wait_time = 3.0  # 3秒后自动进入战斗
+		display_timer.one_shot = true
+		display_timer.timeout.connect(_auto_start_battle)
+		display_timer.start()
+		
+		print("启动定时器，3秒后自动进入战斗")
+	else:
+		print("错误：自动模式下没有敌人数据")
 
 # 自动开始战斗
 func _auto_start_battle():
@@ -145,18 +155,26 @@ func _display_enemy_info(enemy_data):
 	selected_enemy = enemy_data
 	
 	# 打印选择信息
-	print("显示敌人详情: ", enemy_data.id, " - ", enemy_data.name)
+	print("显示敌人详情: ", enemy_data.id if enemy_data.has("id") else "未知ID", " - ", enemy_data.name if enemy_data.has("name") else "未知敌人")
 	
 	# 更新详细信息面板
-	enemy_name_label.text = enemy_data.name
-	enemy_description_label.text = enemy_data.description
+	enemy_name_label.text = enemy_data.name if enemy_data.has("name") else "未知敌人"
+	
+	# 处理可能缺少的description字段
+	if enemy_data.has("description"):
+		enemy_description_label.text = enemy_data.description
+	else:
+		enemy_description_label.text = "无可用描述"
 	
 	# 设置难度显示
 	var difficulty_text = "难度: "
-	for i in range(enemy_data.difficulty):
-		difficulty_text += "★"
-	for i in range(4 - enemy_data.difficulty):
-		difficulty_text += "☆"
+	if enemy_data.has("difficulty"):
+		for i in range(enemy_data.difficulty):
+			difficulty_text += "★"
+		for i in range(4 - enemy_data.difficulty):
+			difficulty_text += "☆"
+	else:
+		difficulty_text += "★☆☆☆" # 默认难度
 	difficulty_label.text = difficulty_text
 	
 	# 启用开始按钮

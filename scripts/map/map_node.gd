@@ -248,6 +248,12 @@ func add_connection(target_id: int, direction: DoorDirection = DoorDirection.BOT
 		connected_directions[target_id] = direction
 		update_appearance()
 
+func is_connected_to(target_id: int) -> bool:
+	if (connected_nodes.has(target_id)):
+		return true
+	else:
+		return false
+	
 # 按钮点击处理
 func _on_button_pressed():
 	# 只有当节点状态为可用时才发出信号
@@ -258,6 +264,30 @@ func _on_button_pressed():
 # 获取节点类型的字符串表示
 func get_node_type_string() -> String:
 	match node_type:
+		NodeType.START:
+			return "起点"
+		NodeType.ENEMY:
+			return "敌人"
+		NodeType.ELITE:
+			return "精英"
+		NodeType.SHOP:
+			return "商店"
+		NodeType.REST:
+			return "休息"
+		NodeType.TREASURE:
+			return "宝箱"
+		NodeType.EVENT:
+			return "事件"
+		NodeType.BOSS:
+			return "Boss"
+		NodeType.END:
+			return "终点"
+		_:
+			return "未知" 
+
+# 静态函数：获取节点类型的字符串表示
+static func get_node_type_name(type_value: int) -> String:
+	match type_value:
 		NodeType.START:
 			return "起点"
 		NodeType.ENEMY:
