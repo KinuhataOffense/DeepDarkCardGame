@@ -6,11 +6,12 @@ extends Node2D
 @onready var game_manager = null
 @onready var player_stats = null
 @onready var ui = $UI  
-
+@onready var battle_manager = null
 # 在场景加载时连接信号  
 func _ready():  
 	game_manager = get_node("/root/Main/GameManager")  
 	player_stats = get_node("/root/Main/PlayerStats")
+	battle_manager = get_node("BattleManager")
 	randomize()
 	# 连接组合区域的信号  
 	if combination_zone:  
@@ -75,7 +76,7 @@ func _on_combination_resolved(combination_result):
 	print("Debug:turns_remaining:", game_manager.turns_remaining)
 	
 func _on_end_turn_pressed():  
-	game_manager.end_player_turn()  
+	battle_manager.end_player_turn()  
 	update_ui()  
 
 func _on_enter_shop_pressed():
