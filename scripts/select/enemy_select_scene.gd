@@ -30,26 +30,24 @@ func _ready():
 	start_button.pressed.connect(_on_start_button_pressed)
 	return_button.pressed.connect(_on_return_button_pressed)
 	
-	# 加载敌人数据
-	_load_enemy_data()
-	
 	# 创建敌人卡片
 	_create_enemy_cards()
 	
 	# 默认禁用开始按钮
-	start_button.disabled = false
+	start_button.disabled = true
 	
-	# 根据来源显示或隐藏返回按钮
-	return_button.visible = from_shop
-
 	# 如果是自动模式，直接进入自动选择流程
 	if auto_mode and auto_selected_enemy != null:
 		print("启动自动模式流程")
-		call_deferred("_setup_auto_mode")
+		
+	else:
+		print("EnemySelect: 进入自动模式失败！")
 
 # 设置自动模式，显示敌人信息并在延迟后进入战斗
 func _setup_auto_mode():
-	print("自动模式：显示敌人信息 - ", auto_selected_enemy.name if auto_selected_enemy.has("name") else "未知敌人")
+	#if (auto_selected_enemy):
+		#print("Right!")
+	#print("自动模式：显示敌人信息 - ", auto_selected_enemy.name if auto_selected_enemy.has("name") else "未知敌人")
 	
 	# 确保在处理前信号未发送
 	signal_emitted = false
@@ -103,14 +101,6 @@ func _auto_start_battle():
 		print("发送敌人选择信号: ", auto_selected_enemy.name)
 		signal_emitted = true
 		emit_signal("enemy_selected", auto_selected_enemy)
-		
-		# 添加延迟确保信号已被处理
-		await get_tree().create_timer(0.5).timeout
-		
-		# 检查是否被处理，如果没有被处理（例如：信号未被连接），尝试直接切换到战斗场景
-		if is_instance_valid(self) and self.is_inside_tree():
-			print("信号可能未被处理，尝试直接切换场景")
-			_try_fallback_to_battle()
 	else:
 		print("错误：没有选择敌人数据")
 
@@ -155,7 +145,7 @@ func _display_enemy_info(enemy_data):
 	selected_enemy = enemy_data
 	
 	# 打印选择信息
-	print("显示敌人详情: ", enemy_data.id if enemy_data.has("id") else "未知ID", " - ", enemy_data.name if enemy_data.has("name") else "未知敌人")
+	print("显示敌人详情: ", enemy_data.id if enemy_data.has("id") else "未知ID", " - ", enemy_data.name)
 	
 	# 更新详细信息面板
 	enemy_name_label.text = enemy_data.name if enemy_data.has("name") else "未知敌人"
@@ -217,12 +207,11 @@ func initialize(shop_mode: bool = false, auto: bool = false, enemy_data = null):
 	
 	from_shop = shop_mode
 	auto_mode = auto
-	auto_selected_enemy = enemy_data
+	auto_selected_enemy = enemy_data._to_dicitionary()
 	signal_emitted = false
-	
-	# 在下一帧更新UI
-	call_deferred("_update_ui")
 
+	call_deferred("_update_ui")
+	call_deferred("_setup_auto_mode")
 # 更新UI根据场景状态
 func _update_ui():
 	# 设置返回按钮可见性

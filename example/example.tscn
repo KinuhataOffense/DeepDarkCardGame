@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://bayw73ve8ui7r"]
 
 [ext_resource type="Script" uid="uid://j1o0vcgy60iv" path="res://example/example.gd" id="1_0dn0o"]
-[ext_resource type="Script" uid="uid://drd42knb870wm" path="res://addons/simple_card_pile_ui/card_pile_ui_debugger.gd" id="2_7gbt2"]
+[ext_resource type="Script" uid="uid://b0x280ophvao2" path="res://addons/simple_card_pile_ui/card_pile_ui_debugger.gd" id="2_7gbt2"]
 [ext_resource type="Script" uid="uid://d1xaie18l7oui" path="res://example/example__dropzone__discard.gd" id="3_7f8qk"]
 [ext_resource type="Script" uid="uid://tbka1du0xcml" path="res://addons/simple_card_pile_ui/card_pile_ui.gd" id="3_axm7s"]
 [ext_resource type="Script" uid="uid://b633spyisgblf" path="res://example/example__dropzone__play_by_suit.gd" id="4_cyr6y"]

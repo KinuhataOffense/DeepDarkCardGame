@@ -74,3 +74,26 @@ func execute_effect(effect, game_manager):
 			#for card in hand_cards:  
 				#if card.card_data.get("card_type", 0) == 2:  # 假设2是魔法牌类型  
 					#card.set_disabled(true)  
+
+func _to_dicitionary():
+	var data = {
+		"name": enemy_name,
+		"description": description,
+		"health": health,
+		"max_health": max_health,
+		"round_limit": round_limit,
+		"required_score": required_score,
+		"effects": effects,
+		"rewards": rewards
+	}
+	return data
+
+func _from_dictionary(data):
+	enemy_name = data.get("name", "未知敌人")  
+	description = data.get("description", "")  
+	health = data.get("health", 100)  
+	max_health = health  
+	round_limit = data.get("round_limit", 5)  
+	required_score = data.get("required_score", 150)  
+	effects = data.get("effects", [])  
+	rewards = data.get("rewards", {})

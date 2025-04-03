@@ -52,6 +52,7 @@
 	"round_limit": 8,  
 	"required_score": 200,  
 	"difficulty": 3,  
+	"is_boss": true,  
 	"rewards": {  
 	  "currency": 150,  
 	  "xp": 25  
@@ -74,6 +75,7 @@
 	"round_limit": 10,  
 	"required_score": 350,  
 	"difficulty": 4,  
+	"is_boss": true,  
 	"rewards": {  
 	  "currency": 300,  
 	  "xp": 50  
@@ -92,5 +94,198 @@
 		"description": "每2回合结束时降低得分倍率0.2"  
 	  }  
 	]  
-  }  
+  },
+  {
+	"id": "hollow_soldier",
+	"name": "空洞士兵",
+	"description": "曾经的士兵，现在已经失去理智，变成了行尸走肉般的敌人。",
+	"image": "res://assets/enemies/hollow_soldier.png",
+	"health": 80,
+	"round_limit": 4,
+	"required_score": 40,
+	"difficulty": 1,
+	"rewards": {
+	  "currency": 30,
+	  "xp": 8
+	},
+	"effects": [
+	  {
+		"trigger": "round_end",
+		"frequency": 2,
+		"type": "weak_attack",
+		"description": "每2回合结束时对玩家造成5点伤害"
+	  }
+	]
+  },
+  {
+	"id": "undead_dog",
+	"name": "不死犬",
+	"description": "腐烂的猎犬，行动迅速且凶猛，攻击会造成流血效果。",
+	"image": "res://assets/enemies/undead_dog.png",
+	"health": 60,
+	"round_limit": 3,
+	"required_score": 35,
+	"difficulty": 1,
+	"rewards": {
+	  "currency": 25,
+	  "xp": 7
+	},
+	"effects": [
+	  {
+		"trigger": "round_start",
+		"frequency": 1,
+		"type": "bleed",
+		"description": "每回合开始使玩家受到2点流血伤害"
+	  }
+	]
+  },
+  {
+	"id": "capra_demon",
+	"name": "卡普拉恶魔",
+	"description": "手持双刀的山羊头恶魔，攻击凶猛且迅速。",
+	"image": "res://assets/enemies/capra_demon.png",
+	"health": 180,
+	"round_limit": 6,
+	"required_score": 140,
+	"difficulty": 3,
+	"is_elite": true,
+	"rewards": {
+	  "currency": 120,
+	  "xp": 20
+	},
+	"effects": [
+	  {
+		"trigger": "round_start",
+		"frequency": 2,
+		"type": "double_strike",
+		"description": "每2回合造成两次攻击，每次减少10点生命值"
+	  }
+	]
+  },
+  {
+	"id": "bell_gargoyle",
+	"name": "钟楼石像鬼",
+	"description": "守护钟楼的古老石像鬼，会喷吐火焰并以爪击攻击敌人。",
+	"image": "res://assets/enemies/bell_gargoyle.png",
+	"health": 200,
+	"round_limit": 7,
+	"required_score": 160,
+	"difficulty": 3,
+	"is_elite": true,
+	"rewards": {
+	  "currency": 140,
+	  "xp": 22
+	},
+	"effects": [
+	  {
+		"trigger": "round_start",
+		"frequency": 3,
+		"type": "fire_breath",
+		"description": "每3回合使用火焰吐息，降低得分倍率0.3"
+	  }
+	]
+  },
+  {
+	"id": "channeler",
+	"name": "引导者",
+	"description": "来自公爵的档案馆的神秘六眼法师，能够增强周围敌人的能力。",
+	"image": "res://assets/enemies/channeler.png",
+	"health": 130,
+	"round_limit": 5,
+	"required_score": 100,
+	"difficulty": 2,
+	"rewards": {
+	  "currency": 70,
+	  "xp": 13
+	},
+	"effects": [
+	  {
+		"trigger": "round_start",
+		"frequency": 2,
+		"type": "buff_enemy",
+		"description": "每2回合增加自身所需分数10点"
+	  }
+	]
+  },
+  {
+	"id": "silver_knight",
+	"name": "银骑士",
+	"description": "太阳王葛温的精英骑士，装备精良且技术高超。",
+	"image": "res://assets/enemies/silver_knight.png",
+	"health": 170,
+	"round_limit": 6,
+	"required_score": 130,
+	"difficulty": 2,
+	"is_elite": true,
+	"rewards": {
+	  "currency": 100,
+	  "xp": 18
+	},
+	"effects": [
+	  {
+		"trigger": "round_end",
+		"frequency": 1,
+		"type": "block",
+		"description": "每回合结束获得10点护甲，减少下回合受到的伤害"
+	  }
+	]
+  },
+  {
+	"id": "gwyn_lord_of_cinder",
+	"name": "葛温•余烬之王",
+	"description": "初始之火的守护者，曾是诸神之王，现在只是初火的薪柴。",
+	"image": "res://assets/enemies/gwyn.png",
+	"health": 450,
+	"round_limit": 12,
+	"required_score": 400,
+	"difficulty": 5,
+	"is_boss": true,
+	"rewards": {
+	  "currency": 500,
+	  "xp": 100
+	},
+	"effects": [
+	  {
+		"trigger": "round_start",
+		"frequency": 1,
+		"type": "fire_slash",
+		"description": "每回合以火焰剑攻击，造成15点伤害"
+	  },
+	  {
+		"trigger": "health_threshold",
+		"threshold": 0.5,
+		"type": "enrage",
+		"description": "生命值低于50%时狂暴化，攻击力提高50%"
+	  }
+	]
+  },
+  {
+	"id": "ornstein_dragonslayer",
+	"name": "龙杀手•欧斯坦",
+	"description": "安罗尔城四骑士之首，手持龙杀手长枪，迅捷如风。",
+	"image": "res://assets/enemies/ornstein.png",
+	"health": 350,
+	"round_limit": 10,
+	"required_score": 300,
+	"difficulty": 4,
+	"is_boss": true,
+	"rewards": {
+	  "currency": 250,
+	  "xp": 40
+	},
+	"effects": [
+	  {
+		"trigger": "round_start",
+		"frequency": 2,
+		"type": "lightning_charge",
+		"description": "每2回合使用雷电充能，对玩家造成20点伤害"
+	  },
+	  {
+		"trigger": "round_end",
+		"frequency": 3,
+		"type": "leap_attack",
+		"description": "每3回合结束时突刺，下回合限制玩家使用牌数-1"
+	  }
+	]
+  }
 ]  

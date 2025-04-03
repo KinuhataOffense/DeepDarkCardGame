@@ -3,12 +3,14 @@ extends Node2D
 @onready var card_pile_ui = $CardPileUI  
 @onready var combination_zone = $CombinationDropzone  
 @onready var enemy_ui = $EnemyDisplay  
-@onready var game_manager = $GameManager  
-@onready var player_stats = $root/Main/PlayerStats  
+@onready var game_manager = null
+@onready var player_stats = null
 @onready var ui = $UI  
 
 # 在场景加载时连接信号  
 func _ready():  
+	game_manager = get_node("/root/Main/GameManager")  
+	player_stats = get_node("/root/Main/PlayerStats")
 	randomize()
 	# 连接组合区域的信号  
 	if combination_zone:  
