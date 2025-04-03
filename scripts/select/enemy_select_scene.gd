@@ -14,7 +14,7 @@ var enemy_card_scene = preload("res://scenes/enemy_select/enemy_card.tscn")
 var enemies_data = []
 var selected_enemy = null
 var from_shop = false  # 标记是否从商店进入
-var auto_mode = false  # 标记是否为自动模式（从地图进入）
+var auto_mode = true  # 标记是否为自动模式（从地图进入）
 var auto_selected_enemy = null  # 从地图传入的敌人数据
 var display_timer = null  # 用于自动模式的定时器
 var signal_emitted = false  # 防止信号重复发送
@@ -37,7 +37,7 @@ func _ready():
 	_create_enemy_cards()
 	
 	# 默认禁用开始按钮
-	start_button.disabled = true
+	start_button.disabled = false
 	
 	# 根据来源显示或隐藏返回按钮
 	return_button.visible = from_shop

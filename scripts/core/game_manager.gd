@@ -738,12 +738,11 @@ func _on_quit_game():
 func _on_start_map_mode():  
 	print("GameManager: 启动地图模式")  
 	
-	# 使用统一的场景切换方法  
-	var success = await switch_to_scene(node_map_scene)  
-	if not success:  
-		push_error("无法切换到地图场景")  
-		return  
-	
+	var parent = get_tree().current_scene  
+	var node_map_scene_instance = add_subscene(parent, node_map_scene, "NodeMapScene")  
+	if not node_map_scene_instance:  
+		push_error("无法创建节点地图场景")  
+		return
 	# 获取当前场景并连接信号  
 	var map_scene = get_tree().current_scene  
 	if map_scene.has_signal("node_selected"):  
@@ -766,23 +765,11 @@ func _on_map_node_selected(node_type, node_data):
 			# 隐藏地图场景（不移除它）  
 			set_scene_visibility("NodeMapScene", false)  
 			
-			# 获取相应敌人数据，确保我们获得有效的敌人  
-			var enemy_data = null  
-			if node_type == 1:  # ENEMY  
-				print("GameManager: 正在获取普通敌人数据")
-				enemy_data = get_random_enemy(false)  
-			elif node_type == 2:  # ELITE  
-				print("GameManager: 正在获取精英敌人数据")
-				enemy_data = get_random_enemy(true)  
-			elif node_type == 7:  # BOSS  
-				print("GameManager: 正在获取Boss敌人数据")
-				enemy_data = get_random_boss()  
-			
 			# 如果没有找到敌人数据，使用默认敌人  
-			if enemy_data == null:  
+			if node_data == null:  
 				print("GameManager: 无法获取敌人数据，创建默认敌人")  
 				# 创建基本敌人数据以防获取失败
-				enemy_data = {
+				node_data = {
 					"id": "default_enemy",
 					"name": "未知敌人",
 					"health": 50,
@@ -794,14 +781,14 @@ func _on_map_node_selected(node_type, node_data):
 				
 				# 对于Boss，增加难度
 				if node_type == 7:
-					enemy_data.name = "神秘Boss"
-					enemy_data.health = 100
-					enemy_data.required_score = 200
-					enemy_data.round_limit = 8
-					enemy_data.rewards.currency = 100
+					node_data.name = "神秘Boss"
+					node_data.health = 100
+					node_data.required_score = 200
+					node_data.round_limit = 8
+					node_data.rewards.currency = 100
 				
 			# 显示自动模式的敌人选择场景  
-			_show_enemy_select_scene(false, true, enemy_data)  
+			_show_enemy_select_scene(false, true, node_data)  
 		
 		3:  # SHOP  
 			print("GameManager: 准备显示商店场景")
@@ -834,7 +821,7 @@ func _on_map_completed():
 	map_scene.map_completed.connect(_on_map_completed)  
 
 # 显示敌人选择场景  
-func _show_enemy_select_scene(from_shop: bool = false, auto_mode: bool = false, enemy_data = null):  
+func _show_enemy_select_scene(from_shop: bool = false, auto_mode: bool = true, enemy_data = null):  
 	print("GameManager: 显示敌人选择场景")  
 	
 	# 使用统一的添加子场景方法  

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cxco7l6jgsf2"]
+[gd_scene load_steps=11 format=3 uid="uid://cxco7l6jgsf2"]
 
 [ext_resource type="Script" uid="uid://3l8nh0mxslqc" path="res://scripts/battle/battle_scene.gd" id="1_rum4d"]
 [ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="2_3oc74"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bs2vgjwuarxm5" path="res://scripts/cards/card_ui.tscn" id="5_tttxe"]
 [ext_resource type="Script" uid="uid://b3vqhxkwjhf6m" path="res://scripts/core/combination_dropzone.gd" id="6_ti0og"]
 [ext_resource type="Texture2D" uid="uid://cmfpp08onmr3f" path="res://assets/card_clubs_07.png" id="7_bg0yk"]
+[ext_resource type="Texture2D" uid="uid://42qs2jq604nw" path="res://assets/enemies/enemy_placeholder.png" id="7_rum4d"]
 [ext_resource type="Script" uid="uid://bbq3kiis6024t" path="res://scripts/core/battle_manager.gd" id="8_rum4d"]
 
 [sub_resource type="Curve" id="Curve_b5spy"]
@@ -23,9 +24,10 @@ script = ExtResource("1_rum4d")
 z_index = -1
 offset_left = 3.0
 offset_top = 5.0
-offset_right = 2476.0
-offset_bottom = 1466.0
+offset_right = 1603.0
+offset_bottom = 905.0
 texture = ExtResource("2_3oc74")
+expand_mode = 1
 
 [node name="CardPileUI" type="Control" parent="."]
 top_level = true
@@ -51,10 +53,10 @@ self_modulate = Color(0.589122, 0.477859, 0.620659, 1)
 clip_contents = true
 layout_mode = 3
 anchors_preset = 0
-offset_left = 1714.0
-offset_top = 609.0
-offset_right = 1973.0
-offset_bottom = 1015.0
+offset_left = 1614.0
+offset_top = 491.0
+offset_right = 1873.0
+offset_bottom = 897.0
 script = ExtResource("6_ti0og")
 card_pile_ui = NodePath("../CardPileUI")
 
@@ -67,41 +69,44 @@ texture = ExtResource("7_bg0yk")
 [node name="EnemyDisplay" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 90.0
+offset_bottom = 160.0
 
 [node name="EnemyImage" type="TextureRect" parent="EnemyDisplay"]
 layout_mode = 0
-offset_left = 952.0
-offset_top = 416.0
-offset_right = 992.0
-offset_bottom = 456.0
+offset_left = 1225.0
+offset_top = 223.0
+offset_right = 1275.0
+offset_bottom = 274.0
 scale = Vector2(4.62852, 9.8434)
+texture = ExtResource("7_rum4d")
+expand_mode = 3
 
 [node name="EnemyName" type="Label" parent="EnemyDisplay"]
 layout_mode = 0
-offset_left = 938.0
-offset_top = 329.0
-offset_right = 1138.0
-offset_bottom = 398.0
+offset_left = 978.0
+offset_top = 150.0
+offset_right = 1178.0
+offset_bottom = 220.0
 theme_override_font_sizes/font_size = 50
 text = "敌人名称"
 
 [node name="EnemyHealth" type="ProgressBar" parent="EnemyDisplay"]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 0
-offset_left = 957.0
-offset_top = 395.0
-offset_right = 1118.0
-offset_bottom = 454.0
+offset_left = 1192.0
+offset_top = 160.0
+offset_right = 1492.0
+offset_bottom = 219.0
 theme_override_font_sizes/font_size = 40
 
 [node name="EnemyDescription" type="RichTextLabel" parent="EnemyDisplay"]
 layout_mode = 0
-offset_left = 956.0
-offset_top = 798.0
-offset_right = 1209.0
-offset_bottom = 1067.0
+offset_left = 964.0
+offset_top = 301.0
+offset_right = 1217.0
+offset_bottom = 570.0
+text = "敌人描述"
 fit_content = true
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -124,17 +129,17 @@ text = "回合数"
 
 [node name="PlayerHealth" type="ProgressBar" parent="UI"]
 modulate = Color(1, 0.14, 0.14, 1)
-offset_left = 836.0
-offset_top = 1268.0
-offset_right = 1339.0
-offset_bottom = 1314.0
+offset_left = 154.0
+offset_top = 159.0
+offset_right = 454.0
+offset_bottom = 209.0
 theme_override_font_sizes/font_size = 30
 
 [node name="ActionButtons" type="HBoxContainer" parent="UI"]
-offset_left = 837.0
-offset_top = 1206.0
-offset_right = 1349.0
-offset_bottom = 1256.0
+offset_left = 497.0
+offset_top = 705.0
+offset_right = 1085.0
+offset_bottom = 756.0
 
 [node name="EndTurnButton" type="Button" parent="UI/ActionButtons"]
 layout_mode = 2
@@ -186,10 +191,10 @@ offset_bottom = 32.0
 text = "胜利！"
 
 [node name="CombinationResult" type="RichTextLabel" parent="UI"]
-offset_left = 1722.0
-offset_top = 522.0
-offset_right = 1962.0
-offset_bottom = 562.0
+offset_left = 1622.0
+offset_top = 404.0
+offset_right = 1862.0
+offset_bottom = 444.0
 
 [node name="BattleManager" type="Control" parent="."]
 layout_mode = 3

@@ -549,3 +549,17 @@ func play_selected_card():
   - **map/**：地图系统脚本
 - **assets/**：游戏资源
 - **data/**：游戏数据（卡牌、敌人等）
+
+### 关于切换场景
+
+```gdscript
+	# 使用统一的添加子场景方法  
+	var parent = get_tree().current_scene  
+	var enemy_select_instance = add_subscene(parent, enemy_select_scene, "EnemySelectScene")  
+	if not enemy_select_instance:  
+		push_error("无法创建敌人选择场景")  
+		return 
+```
+- 由于项目把Main作为root下的主节点，所以需要使用get_tree().current_scene获取当前场景，然后使用add_subscene方法添加子场景。
+- 由于add_subscene方法返回的是一个引用，所以可以判断是否创建成功。
+- 由于add_subscene方法是异步的，所以需要在下一帧调用get_tree().change_scene方法切换场景。
