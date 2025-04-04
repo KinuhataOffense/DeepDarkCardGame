@@ -1,14 +1,14 @@
 [gd_scene load_steps=3 format=3 uid="uid://cbbjeifc56056"]
 
-[ext_resource type="Script" uid="uid://bc25qdecel08x" path="res://scripts/shop/shop_scene.gd" id="1_hovpq"]
-[ext_resource type="Script" uid="uid://dmodhdsujgk7f" path="res://addons/animatedbutton/AnimatedButton.gd" id="4_ykrk4"]
+[ext_resource type="Script" uid="uid://bc25qdecel08x" path="res://scripts/shop/shop_scene.gd" id="1_8aja7"]
+[ext_resource type="Script" uid="uid://dmodhdsujgk7f" path="res://addons/animatedbutton/AnimatedButton.gd" id="2_j54d5"]
 
 [node name="ShopScene" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_hovpq")
+script = ExtResource("1_8aja7")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 0
@@ -42,5 +42,5 @@ offset_top = 732.0
 offset_right = 884.0
 offset_bottom = 853.0
 text = "离开"
-script = ExtResource("4_ykrk4")
+script = ExtResource("2_j54d5")
 metadata/_custom_type_script = "uid://dmodhdsujgk7f"

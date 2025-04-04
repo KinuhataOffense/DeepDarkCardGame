@@ -12,67 +12,55 @@ offset_bottom = 80.0
 script = ExtResource("1_kylco")
 
 [node name="Background" type="TextureRect" parent="."]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 0
-offset_left = 100.0
-offset_top = 100.0
-offset_right = 100.0
-offset_bottom = 100.0
+offset_right = 80.0
+offset_bottom = 80.0
 texture = ExtResource("2_l8gir")
 expand_mode = 1
 
 [node name="Icon" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 100.0
-offset_top = 100.0
-offset_right = 160.0
-offset_bottom = 160.0
+offset_right = 80.0
+offset_bottom = 80.0
 expand_mode = 1
 
 [node name="VisitedOverlay" type="ColorRect" parent="."]
 visible = false
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 0
-offset_left = 100.0
-offset_top = 100.0
-offset_right = 200.0
-offset_bottom = 200.0
+offset_right = 80.0
+offset_bottom = 80.0
 color = Color(0.137255, 0.137255, 0.137255, 0.501961)
 
 [node name="HighlightBorder" type="ColorRect" parent="."]
 visible = false
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 0
-offset_left = 100.0
-offset_top = 100.0
-offset_right = 100.0
-offset_bottom = 100.0
+offset_right = 80.0
+offset_bottom = 80.0
 color = Color(1, 0.843137, 0, 0.501961)
 
 [node name="FogOverlay" type="ColorRect" parent="."]
 visible = false
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 0
-offset_left = 100.0
-offset_top = 100.0
-offset_right = 100.0
-offset_bottom = 100.0
+offset_right = 80.0
+offset_bottom = 80.0
 color = Color(0.2, 0.2, 0.2, 0.7)
 
 [node name="Button" type="Button" parent="."]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 0
-offset_left = 100.0
-offset_top = 100.0
-offset_right = 108.0
-offset_bottom = 108.0
+offset_right = 80.0
+offset_bottom = 80.0
 flat = true
 
 [node name="Doors" type="Control" parent="."]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(80, 80)
 anchors_preset = 0
-offset_left = 100.0
-offset_top = 100.0
-offset_right = 200.0
-offset_bottom = 200.0
+offset_right = 80.0
+offset_bottom = 80.0
 mouse_filter = 2
 
 [node name="DoorTop" type="ColorRect" parent="Doors"]
@@ -135,10 +123,8 @@ color = Color(0.6, 0.4, 0.2, 1)
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0
-offset_left = 100.0
-offset_top = 100.0
-offset_right = 170.0
-offset_bottom = 120.0
+offset_right = 80.0
+offset_bottom = 20.0
 theme_override_font_sizes/font_size = 12
 text = "节点"
 horizontal_alignment = 1

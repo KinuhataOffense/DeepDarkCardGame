@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dkyjr4vbkqxse"]
 
-[ext_resource type="Script" uid="uid://dfkvrtlh6wwjc" path="res://scripts/map/node_map_scene.gd" id="1_76cja"]
-[ext_resource type="Texture2D" uid="uid://j0ohhd10oj7y" path="res://scenes/map/background3.png" id="2_a6rxb"]
+[ext_resource type="Script" uid="uid://dfkvrtlh6wwjc" path="res://scripts/map/node_map_scene.gd" id="1_gg6kn"]
+[ext_resource type="Texture2D" uid="uid://j0ohhd10oj7y" path="res://scenes/map/background3.png" id="2_h5nnf"]
 
 [node name="NodeMapScene" type="Control"]
 layout_mode = 3
@@ -10,14 +10,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_76cja")
+script = ExtResource("1_gg6kn")
 
 [node name="Background" type="TextureRect" parent="."]
 z_index = -1
 layout_mode = 0
 offset_right = 1600.0
 offset_bottom = 900.0
-texture = ExtResource("2_a6rxb")
+texture = ExtResource("2_h5nnf")
 stretch_mode = 5
 
 [node name="MapTitle" type="Label" parent="."]

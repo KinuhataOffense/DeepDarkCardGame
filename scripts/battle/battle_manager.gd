@@ -5,7 +5,7 @@ class_name BattleManager
 @onready var card_pile_ui: CardPileUI = $"../CardPileUI"   
 @onready var combination_area: CombinationDropzone = $"../CombinationDropzone"  
 @onready var enemy_ui = $"../EnemyDisplay"  
-@onready var player_stats = $"root/Main/PlayerStats"
+
 
 # 游戏状态  
 enum GameState { PLAYER_TURN, ENEMY_TURN, SHOP, GAME_OVER }  
@@ -14,6 +14,7 @@ var current_enemy = null
 var current_round: int = 1  
 var turns_remaining: int = 3  
 var score_required: int = 0  
+var player_stats = null
 
 # 倍率和奖励系统  
 var score_multiplier: float = 1.0  
@@ -39,6 +40,7 @@ var current_map_node = null
 
 # 游戏初始化  
 func _ready():  
+	player_stats = get_node("/root/Main/PlayerStats").get_player_stats()  
 	# 连接卡牌相关信号  
 	if card_pile_ui:  
 		card_pile_ui.connect("card_clicked", _on_card_clicked)  
@@ -205,6 +207,8 @@ func end_player_turn():
 func check_game_state():  
 	# 打印当前游戏状态
 	print("当前回合:", current_round, "/", current_enemy.round_limit, "，剩余行动:", turns_remaining)
+	if (!player_stats):
+		print("BattleManagerError: player_stats is not existed")
 	print("当前分数:", player_stats.current_score, "，击败要求:", score_required)
 	
 	# 检查是否击败敌人  

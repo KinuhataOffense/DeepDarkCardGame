@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b8c3w6hylc2oj"]
 
-[ext_resource type="Script" uid="uid://cr8qexxmi73yo" path="res://scripts/reward_scene.gd" id="1_hljsn"]
-[ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="2_ykft6"]
+[ext_resource type="Script" uid="uid://cr8qexxmi73yo" path="res://scripts/reward/reward_scene.gd" id="1_1hqiq"]
+[ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="2_fekdp"]
 
 [node name="RewardScene" type="Control"]
 layout_mode = 3
@@ -10,7 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_hljsn")
+script = ExtResource("1_1hqiq")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -44,6 +44,26 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
+[node name="ReturnButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 22
+text = "返回地图"
+
+[node name="CurrencyReward" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="CurrencyValue" type="Label" parent="VBoxContainer/CurrencyReward"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94902, 0.862745, 0.317647, 1)
+theme_override_font_sizes/font_size = 22
+text = "0"
+
+[node name="OtherRewards" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
 [node name="TitleLabel" type="Label" parent="."]
 layout_mode = 2
 offset_left = 731.0
@@ -60,7 +80,7 @@ offset_left = 1831.0
 offset_top = 389.0
 offset_right = 1831.0
 offset_bottom = 389.0
-texture = ExtResource("2_ykft6")
+texture = ExtResource("2_fekdp")
 expand_mode = 1
 stretch_mode = 3
 
@@ -74,14 +94,6 @@ theme_override_font_sizes/font_size = 24
 text = "获得奖励:"
 horizontal_alignment = 1
 
-[node name="CurrencyReward" type="HBoxContainer" parent="."]
-layout_mode = 2
-offset_left = 839.0
-offset_top = 584.0
-offset_right = 839.0
-offset_bottom = 584.0
-alignment = 1
-
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
 offset_left = 708.0
@@ -91,24 +103,6 @@ offset_bottom = 661.0
 theme_override_font_sizes/font_size = 22
 text = "货币: "
 
-[node name="CurrencyValue" type="Label" parent="."]
-layout_mode = 2
-offset_left = 843.0
-offset_top = 625.0
-offset_right = 856.0
-offset_bottom = 656.0
-theme_override_colors/font_color = Color(0.94902, 0.862745, 0.317647, 1)
-theme_override_font_sizes/font_size = 22
-text = "0"
-
-[node name="OtherRewards" type="VBoxContainer" parent="."]
-layout_mode = 2
-offset_left = 851.0
-offset_top = 556.0
-offset_right = 851.0
-offset_bottom = 556.0
-alignment = 1
-
 [node name="HSeparator" type="HSeparator" parent="."]
 layout_mode = 2
 offset_left = 768.0
@@ -116,13 +110,3 @@ offset_top = 597.0
 offset_right = 859.0
 offset_bottom = 627.0
 theme_override_constants/separation = 30
-
-[node name="ReturnButton" type="Button" parent="."]
-layout_mode = 2
-offset_left = 741.0
-offset_top = 746.0
-offset_right = 837.0
-offset_bottom = 785.0
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 22
-text = "返回地图"

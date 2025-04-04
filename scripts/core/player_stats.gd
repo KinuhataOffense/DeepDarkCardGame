@@ -26,3 +26,12 @@ func take_damage(amount: int):
 		
 func heal(amount: int):  
 	health = min(max_health, health + amount)  
+
+func get_player_stats():  
+	return { "health": health, "max_health": max_health, "current_score": current_score, "currency": currency }
+
+func set_player_stats(stats):  
+	health = stats["health"]  	
+	max_health = stats["max_health"]  
+	current_score = stats["current_score"]  	
+	currency = stats["currency"]

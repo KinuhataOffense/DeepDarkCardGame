@@ -1,11 +1,11 @@
 [gd_scene load_steps=11 format=3 uid="uid://cxco7l6jgsf2"]
 
-[ext_resource type="Script" uid="uid://bbq3kiis6024t" path="res://scripts/core/battle_manager.gd" id="1_bw6k5"]
+[ext_resource type="Script" uid="uid://bbq3kiis6024t" path="res://scripts/battle/battle_manager.gd" id="1_bw6k5"]
 [ext_resource type="Script" uid="uid://3l8nh0mxslqc" path="res://scripts/battle/battle_scene.gd" id="1_kk2rg"]
 [ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="1_rurhu"]
 [ext_resource type="Script" uid="uid://tbka1du0xcml" path="res://addons/simple_card_pile_ui/card_pile_ui.gd" id="2_y3j0m"]
-[ext_resource type="Script" uid="uid://b3vqhxkwjhf6m" path="res://scripts/core/combination_dropzone.gd" id="4_kk2rg"]
-[ext_resource type="Script" uid="uid://bqa0whjic5p4d" path="res://addons/simple_card_pile_ui/card_ui.gd" id="5_kk2rg"]
+[ext_resource type="Script" uid="uid://b3vqhxkwjhf6m" path="res://scripts/cards/combination_dropzone.gd" id="4_kk2rg"]
+[ext_resource type="Script" uid="uid://ubd65sdk7bbs" path="res://addons/simple_card_pile_ui/card_ui.gd" id="5_kk2rg"]
 [ext_resource type="Script" uid="uid://cuitqesw4sgw4" path="res://scripts/core/player_stats.gd" id="5_y3j0m"]
 
 [sub_resource type="PackedScene" id="PackedScene_b5spy"]

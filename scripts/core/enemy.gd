@@ -43,14 +43,14 @@ func apply_round_start_effects(game_manager):
 	
 	for effect in effects:  
 		if effect.get("trigger") == "round_start":  
-			if round_counter % effect.get("frequency", 1) == 0:  
+			if round_counter % int(effect.get("frequency", 1)) == 0:  
 				execute_effect(effect, game_manager)  
 				
 # 回合结束时应用效果  
 func apply_round_end_effects(game_manager):  
 	for effect in effects:  
 		if effect.get("trigger") == "round_end":  
-			if round_counter % effect.get("frequency", 1) == 0:  
+			if round_counter % int(effect.get("frequency", 1)) == 0:  
 				execute_effect(effect, game_manager)  
 				
 # 执行特殊效果  

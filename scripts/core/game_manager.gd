@@ -6,11 +6,11 @@ class_name GameManager
 #------------------------------------------------------------------------------  
 # 预加载场景资源  
 #------------------------------------------------------------------------------  
-var battle_scene = preload("res://scenes/battle_scene.tscn")  
-var shop_scene = preload("res://scenes/shop_scene.tscn")  
+var battle_scene = preload("res://scenes/battle/battle_scene.tscn")  
+var shop_scene = preload("res://scenes/shop/shop_scene.tscn")  
 var enemy_select_scene = preload("res://scenes/enemy_select/enemy_select_scene.tscn")  
-var node_map_scene = preload("res://scenes/node_map_scene.tscn")  
-var reward_scene = preload("res://scenes/reward_scene.tscn")  
+var node_map_scene = preload("res://scenes/map/node_map_scene.tscn")  
+var reward_scene = preload("res://scenes/reward/reward_scene.tscn")  
 
 #------------------------------------------------------------------------------  
 # 引用节点和变量声明  
@@ -75,19 +75,14 @@ func _ready():
 		if main_menu:  
 			var start_button = main_menu.get_node_or_null("StartButton")  
 			var quit_button = main_menu.get_node_or_null("QuitButton")  
-			var map_button = main_menu.get_node_or_null("MapButton")  
 			
 			if start_button and quit_button:  
 				# 默认模式为地图模式  
 				start_button.pressed.connect(_on_start_map_mode)  
 				quit_button.pressed.connect(_on_quit_game)  
-				
-				# 隐藏多余的按钮，只保留开始和退出  
-				if map_button:  
-					map_button.pressed.connect(_on_start_map_mode)  
-					map_button.visible = false  
 					
 				start_button.text = "开始地下城探险"  
+				quit_button.text = "离开地下城探险"
 
 func initialize_game():  
 	# 初始化游戏状态  
