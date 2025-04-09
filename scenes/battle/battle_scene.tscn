@@ -1,21 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://cxco7l6jgsf2"]
+[gd_scene load_steps=9 format=3 uid="uid://cxco7l6jgsf2"]
 
 [ext_resource type="Script" uid="uid://3l8nh0mxslqc" path="res://scripts/battle/battle_scene.gd" id="1_2wmvw"]
 [ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="2_ww1p6"]
-[ext_resource type="Script" uid="uid://tbka1du0xcml" path="res://addons/simple_card_pile_ui/card_pile_ui.gd" id="3_7hnyd"]
-[ext_resource type="PackedScene" uid="uid://bs2vgjwuarxm5" path="res://scripts/cards/card_ui.tscn" id="4_dddu7"]
-[ext_resource type="Script" uid="uid://b3vqhxkwjhf6m" path="res://scripts/cards/combination_dropzone.gd" id="5_3511k"]
+[ext_resource type="Script" uid="uid://bgiiwmtkdh216" path="res://scripts/card/card_pile_ui.gd" id="3_cywj5"]
+[ext_resource type="PackedScene" uid="uid://cmlsueqj3ow61" path="res://scripts/card/styled_card_ui.tscn" id="4_2wmvw"]
+[ext_resource type="Script" uid="uid://b3vqhxkwjhf6m" path="res://scripts/card/combination_dropzone.gd" id="5_3511k"]
 [ext_resource type="Texture2D" uid="uid://cmfpp08onmr3f" path="res://assets/card_clubs_07.png" id="6_puhd7"]
 [ext_resource type="Texture2D" uid="uid://42qs2jq604nw" path="res://assets/enemies/enemy_placeholder.png" id="7_mpswg"]
 [ext_resource type="Script" uid="uid://bbq3kiis6024t" path="res://scripts/battle/battle_manager.gd" id="8_te27b"]
-
-[sub_resource type="Curve" id="Curve_b5spy"]
-_data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="Curve" id="Curve_utbpp"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
 
 [node name="BattleScene" type="Node2D"]
 script = ExtResource("1_2wmvw")
@@ -37,15 +29,25 @@ offset_left = 16.0
 offset_top = 15.0
 offset_right = 16.0
 offset_bottom = 17.0
-script = ExtResource("3_7hnyd")
+script = ExtResource("3_cywj5")
 json_card_database_path = "res://data/cards.json"
 json_card_collection_path = "res://data/collection.json"
-extended_card_ui = ExtResource("4_dddu7")
-hand_pile_position = Vector2(1030, 960)
+extended_card_ui = ExtResource("4_2wmvw")
+stack_display_gap = null
+max_stack_display = null
+card_return_speed = null
+click_draw_pile_to_draw = null
+cant_draw_at_hand_limit = null
+shuffle_discard_on_empty_draw = null
+draw_pile_layout = null
+hand_enabled = null
+hand_face_up = null
 max_hand_size = 7
 max_hand_spread = 800
-hand_rotation_curve = SubResource("Curve_b5spy")
-hand_vertical_curve = SubResource("Curve_utbpp")
+card_ui_hover_distance = null
+drag_when_clicked = null
+discard_face_up = null
+discard_pile_layout = null
 
 [node name="CombinationDropzone" type="Control" parent="." node_paths=PackedStringArray("card_pile_ui")]
 modulate = Color(0.804596, 0.934213, 0.842941, 1)

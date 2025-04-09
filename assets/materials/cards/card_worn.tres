@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bsdkqtlh82wy6"]
+
+[ext_resource type="Shader" path="res://assets/shaders/card_worn.gdshader" id="1_xwyp3"]
+[ext_resource type="Texture2D" path="res://assets/textures/noise/noise_damage.png" id="2_4xldw"]
+
+[resource]
+shader = ExtResource("1_xwyp3")
+shader_parameter/worn_amount = 0.4
+shader_parameter/edge_worn = 0.6
+shader_parameter/stain_amount = 0.3
+shader_parameter/dust_amount = 0.15
+shader_parameter/crease_amount = 0.25
+shader_parameter/color_fade = 0.35
+shader_parameter/yellowing = 0.3
+shader_parameter/stain_color = Color(0.27, 0.19, 0.12, 1)
+shader_parameter/dust_color = Color(0.15, 0.13, 0.1, 1)
+shader_parameter/edge_darkness = 0.6
+shader_parameter/randomness = 0.7
+shader_parameter/unique_seed = 12.345
+shader_parameter/damage_texture = ExtResource("2_4xldw") 

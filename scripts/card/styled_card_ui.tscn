@@ -1,0 +1,103 @@
+[gd_scene load_steps=6 format=3 uid="uid://cmlsueqj3ow61"]
+
+[ext_resource type="Script" uid="uid://e1hgbdijfm1l" path="res://scripts/card/styled_card_ui.gd" id="1_jkcuo"]
+[ext_resource type="Texture2D" uid="uid://ben7qqx34vpkq" path="res://assets/card_back.png" id="2_5b06w"]
+[ext_resource type="Texture2D" uid="uid://bfl63euqkp7g6" path="res://assets/cards/card_front.png" id="3_jrfbt"]
+[ext_resource type="Texture2D" uid="uid://bddymiv4rv8kw" path="res://assets/white-circle.png" id="4_uevs0"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_s24iq"]
+blend_mode = 1
+
+[node name="StyledCardUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 150.0
+offset_bottom = 200.0
+script = ExtResource("1_jkcuo")
+
+[node name="Backface" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 150.0
+offset_bottom = 200.0
+texture = ExtResource("2_5b06w")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Backface"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 119.0
+offset_right = 131.0
+offset_bottom = 168.0
+rotation = -1.57058
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 14
+text = "无火的牌局"
+horizontal_alignment = 1
+
+[node name="Frontface" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 150.0
+offset_bottom = 200.0
+texture = ExtResource("3_jrfbt")
+expand_mode = 1
+
+[node name="CardName" type="Label" parent="Frontface"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 114.0
+offset_right = 135.0
+offset_bottom = 134.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 14
+text = "卡牌名称"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CardValue" type="Label" parent="Frontface"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = -2.0
+offset_right = 34.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CardSymbol" type="Label" parent="Frontface"]
+layout_mode = 0
+offset_left = 111.0
+offset_top = -2.0
+offset_right = 151.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "♣"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GlowEffect" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 0.7, 0.3, 0.4)
+material = SubResource("CanvasItemMaterial_s24iq")
+position = Vector2(75, 100)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_uevs0")
+
+[node name="CardGlow" type="PointLight2D" parent="."]
+visible = false
+position = Vector2(75, 100)
+scale = Vector2(1.5, 1.5)
+color = Color(1, 0.7, 0.3, 1)
+energy = 0.8
+texture = ExtResource("4_uevs0")
+texture_scale = 0.5

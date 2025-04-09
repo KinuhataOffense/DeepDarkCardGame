@@ -1,0 +1,196 @@
+[gd_scene load_steps=5 format=3 uid="uid://dkdac45xnghc"]
+
+[ext_resource type="Script" uid="uid://d2wmh76371jnr" path="res://scripts/core/visual_effects_manager.gd" id="1_jx6dy"]
+[ext_resource type="Script" uid="uid://d1hxg438x6x81" path="res://scripts/core/visual_effects_demo.gd" id="2_cqcnq"]
+
+[sub_resource type="GDScript" id="GDScript_vyxwa"]
+script/source = "extends OptionButton
+
+var presets = [
+	\"默认\",
+	\"电影风格\",
+	\"性能优先\",
+	\"恐怖风格\",
+	\"经典风格\"
+]
+
+func _ready():
+	for preset in presets:
+		add_item(preset)
+	
+	select(0)
+	connect(\"item_selected\", _on_preset_selected)
+
+func _on_preset_selected(index):
+	var effects_manager = $\"/root/VisualEffectsManager\"
+	if effects_manager:
+		effects_manager.apply_preset(index)
+"
+
+[sub_resource type="GDScript" id="GDScript_dkljr"]
+script/source = "extends OptionButton
+
+var scene_types = [
+	\"主菜单\",
+	\"地图\",
+	\"战斗\",
+	\"商店\",
+	\"休息点\"
+]
+
+func _ready():
+	for type in scene_types:
+		add_item(type)
+	
+	select(0)
+	connect(\"item_selected\", _on_scene_selected)
+
+func _on_scene_selected(index):
+	var effects_manager = $\"/root/VisualEffectsManager\"
+	if effects_manager:
+		effects_manager.set_scene_type(index)
+"
+
+[node name="VisualEffectsDemo" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_cqcnq")
+
+[node name="VisualEffectsManager" type="Node" parent="."]
+script = ExtResource("1_jx6dy")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.188235, 0.188235, 0.188235, 1)
+
+[node name="DemoUI" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="DemoUI"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "无火的牌局 - 视觉效果演示"
+horizontal_alignment = 1
+
+[node name="Spacer1" type="Control" parent="DemoUI"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="PresetLabel" type="Label" parent="DemoUI"]
+layout_mode = 2
+text = "视觉效果预设:"
+
+[node name="PresetSelector" type="OptionButton" parent="DemoUI"]
+layout_mode = 2
+script = SubResource("GDScript_vyxwa")
+
+[node name="Spacer2" type="Control" parent="DemoUI"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="SceneTypeLabel" type="Label" parent="DemoUI"]
+layout_mode = 2
+text = "场景类型:"
+
+[node name="SceneTypeSelector" type="OptionButton" parent="DemoUI"]
+layout_mode = 2
+script = SubResource("GDScript_dkljr")
+
+[node name="Spacer3" type="Control" parent="DemoUI"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="EffectsContainer" type="GridContainer" parent="DemoUI"]
+layout_mode = 2
+columns = 2
+
+[node name="VignetteLabel" type="Label" parent="DemoUI/EffectsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "暗角效果:"
+
+[node name="VignetteToggle" type="CheckButton" parent="DemoUI/EffectsContainer"]
+layout_mode = 2
+button_pressed = true
+
+[node name="FilmGrainLabel" type="Label" parent="DemoUI/EffectsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "胶片颗粒:"
+
+[node name="FilmGrainToggle" type="CheckButton" parent="DemoUI/EffectsContainer"]
+layout_mode = 2
+button_pressed = true
+
+[node name="ToneMappingLabel" type="Label" parent="DemoUI/EffectsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "色调映射:"
+
+[node name="ToneMappingToggle" type="CheckButton" parent="DemoUI/EffectsContainer"]
+layout_mode = 2
+button_pressed = true
+
+[node name="ColorShiftLabel" type="Label" parent="DemoUI/EffectsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "色彩偏移:"
+
+[node name="ColorShiftToggle" type="CheckButton" parent="DemoUI/EffectsContainer"]
+layout_mode = 2
+button_pressed = true
+
+[node name="DustLabel" type="Label" parent="DemoUI/EffectsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "灰尘效果:"
+
+[node name="DustToggle" type="CheckButton" parent="DemoUI/EffectsContainer"]
+layout_mode = 2
+button_pressed = true
+
+[node name="Spacer4" type="Control" parent="DemoUI"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="EnabledContainer" type="HBoxContainer" parent="DemoUI"]
+layout_mode = 2
+
+[node name="EnabledLabel" type="Label" parent="DemoUI/EnabledContainer"]
+layout_mode = 2
+text = "启用后处理:"
+
+[node name="EnabledToggle" type="CheckButton" parent="DemoUI/EnabledContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+button_pressed = true
+
+[node name="Spacer5" type="Control" parent="DemoUI"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Description" type="Label" parent="DemoUI"]
+layout_mode = 2
+text = "本演示展示了游戏中的各种后处理视觉效果。
+尝试不同的预设和场景类型，看看效果如何变化。"
+horizontal_alignment = 1

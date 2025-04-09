@@ -15,6 +15,10 @@ run/main_scene="uid://domr3f0kivnb"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+VisualEffectsManager="*res://scripts/core/visual_effects_manager.gd"
+
 [display]
 
 window/size/viewport_width=1600
@@ -23,7 +27,7 @@ window/stretch/mode="viewport"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/animatedbutton/plugin.cfg", "res://addons/simple_card_pile_ui/plugin.cfg")
+enabled=PackedStringArray("res://addons/animatedbutton/plugin.cfg")
 
 [rendering]
 
