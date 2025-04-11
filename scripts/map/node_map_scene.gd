@@ -62,7 +62,7 @@ func _initialize_map():
 # 玩家信息  
 #------------------------------------------------------------------------------  
 func update_player_info():  
-	var game_manager = get_node("/root/Main/GameManager")  
+	var game_manager = get_node("/root/GameManager")  
 	if game_manager:  
 		var health = game_manager.get_player_health()  
 		var max_health = game_manager.get_player_max_health()  
@@ -463,7 +463,7 @@ func _on_node_clicked(node):
 	save_map_state()  
 	
 	# 直接调用GameManager处理地图节点，不仅仅依赖信号连接
-	var game_manager = get_node("/root/Main/GameManager")  
+	var game_manager = get_node("/root/GameManager")  
 	if game_manager:  
 		# 先处理节点事件
 		game_manager.handle_map_node_event(node.node_type, node_data)  
@@ -494,7 +494,7 @@ func _get_node_data(node_type):
 			return {}  
 
 func _on_return_button_pressed():  
-	var game_manager = get_node("/root/Main/GameManager")  
+	var game_manager = get_node("/root/GameManager")  
 	if game_manager:  
 		# 使用GameManager中的场景切换功能，而不是直接调用场景变换  
 		var main_menu_scene = preload("res://scenes/MainMenu.tscn")  
@@ -507,7 +507,7 @@ func _on_return_button_pressed():
 # 状态保存和加载  
 #------------------------------------------------------------------------------  
 func save_map_state():  
-	var game_manager = get_node("/root/Main/GameManager")  
+	var game_manager = get_node("/root/GameManager")  
 	if game_manager:  
 		var map_state = {  
 			"current_floor": current_floor,  
@@ -530,7 +530,7 @@ func save_map_state():
 		game_manager.save_map_state(map_state)  
 
 func load_map_state():  
-	var game_manager = get_node("/root/Main/GameManager")  
+	var game_manager = get_node("/root/GameManager")  
 	if !game_manager:  
 		return false  
 	
@@ -615,3 +615,59 @@ func ensure_current_node_selected():
 	
 	# 更新节点状态  
 	update_node_states()  
+
+# 在加载状态后更新地图
+func update_after_state_load():
+	print("NodeMapScene: 在加载状态后更新地图")
+	
+	# 获取MapNode类
+	var MapNode = load("res://scripts/map/map_node.gd")
+	
+	# 确保地图可见
+	visible = true
+	
+	# 刷新节点状态
+	for node in map_nodes:
+		if node.node_id == current_node_id:
+			node.set_state(MapNode.NodeState.CURRENT)
+		
+		# 更新节点连接和可见性
+		node.set_visibility(true)
+	
+	# 更新地图标题
+	if map_title:
+		map_title.text = "地下城 - 第%s层" % current_floor
+	
+	# 更新可用节点和路径
+	update_available_nodes()
+	update_visuals()
+	
+	print("NodeMapScene: 地图状态加载后更新完成")
+
+# 在处理地图节点事件后更新
+func update_after_node_event(node_type):
+	print("NodeMapScene: 在节点事件后更新地图")
+	
+	# 获取MapNode类
+	var MapNode = load("res://scripts/map/map_node.gd")
+	
+	# 确保地图可见
+	visible = true
+	
+	# 检查并更新节点状态
+	for node in map_nodes:
+		if node.node_id == current_node_id:
+			node.set_state(MapNode.NodeState.VISITED)
+			
+			# 更新连接节点状态
+			for connected_id in node.connected_nodes:
+				if connected_id >= 0 && connected_id < map_nodes.size():
+					var connected_node = map_nodes[connected_id]
+					if connected_node.node_state == MapNode.NodeState.LOCKED:
+						connected_node.set_state(MapNode.NodeState.AVAILABLE)
+	
+	# 更新可用节点和视觉效果
+	update_available_nodes()
+	update_visuals()
+	
+	print("NodeMapScene: 节点事件后地图更新完成")

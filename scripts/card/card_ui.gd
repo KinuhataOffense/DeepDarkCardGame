@@ -24,6 +24,14 @@ var return_speed := 0.2
 var hover_distance := 10
 var drag_when_clicked := true
 
+# 高亮和视觉效果属性
+var highlight_color := Color.WHITE
+var is_highlighted := false
+var highlight_intensity := 0.0
+var target_highlight_intensity := 0.0
+var highlight_speed := 0.2
+var outline_width := 2.0
+var combination_type := ""
 
 func set_direction(card_is_facing : Vector2):
 	backface.visible = card_is_facing == Vector2.DOWN
@@ -53,7 +61,46 @@ func _ready():
 		pivot_offset = frontface.texture.get_size() / 2
 		mouse_filter = Control.MOUSE_FILTER_PASS
 
+# 设置卡牌高亮效果
+func set_highlight(active: bool, type: String = "", intensity: float = 1.0):
+	is_highlighted = active
+	
+	if active:
+		combination_type = type
+		target_highlight_intensity = intensity
+		
+		# 根据组合类型设置不同的高亮颜色
+		match type:
+			"ASH":
+				highlight_color = Color(0.7, 0.7, 0.7)
+			"SOUL_PAIR":
+				highlight_color = Color(0.2, 0.6, 1.0)
+			"SOUL_CHAIN":
+				highlight_color = Color(0.0, 0.8, 0.4)
+			"IMPRINT":
+				highlight_color = Color(1.0, 0.5, 0.0)
+			"KING_SEAL":
+				highlight_color = Color(1.0, 0.8, 0.0)
+			_:
+				highlight_color = Color.WHITE
+	else:
+		combination_type = ""
+		target_highlight_intensity = 0.0
 
+# 绘制高亮效果
+func _draw():
+	if is_highlighted and highlight_intensity > 0.01:
+		# 绘制带颜色的轮廓
+		var rect = Rect2(Vector2.ZERO, custom_minimum_size)
+		var outline_color = highlight_color
+		outline_color.a = highlight_intensity * 0.8
+		draw_rect(rect, outline_color, false, outline_width)
+		
+		# 绘制薄的发光效果
+		var glow_rect = rect.grow(2.0)
+		var glow_color = highlight_color
+		glow_color.a = highlight_intensity * 0.4
+		draw_rect(glow_rect, glow_color, false, 1.0)
 
 func _card_can_be_interacted_with():
 	var parent = get_parent()
@@ -68,7 +115,6 @@ func _card_can_be_interacted_with():
 			valid = dropzone.get_top_card() == self and not parent.is_any_card_ui_clicked()
 	return valid
 			
-
 
 func _on_mouse_enter():
 	#check if is hovering should be turned on
@@ -130,13 +176,18 @@ func get_dropzones(node: Node, className : String, result : Array) -> void:
 	for child in node.get_children():
 		get_dropzones(child, className, result)
 
-func _process(_delta):
+func _process(delta):
 	if is_clicked and drag_when_clicked:
 		target_position = get_global_mouse_position() - custom_minimum_size * 0.5
 	if is_clicked:
 		position = target_position
 	elif position != target_position:
 		position = lerp(position, target_position, return_speed)
+	
+	# 更新高亮效果
+	if highlight_intensity != target_highlight_intensity:
+		highlight_intensity = lerp(highlight_intensity, target_highlight_intensity, highlight_speed)
+		queue_redraw() # 触发重绘
 		
 	if Engine.is_editor_hint() and last_child_count != get_child_count():
 		update_configuration_warnings()

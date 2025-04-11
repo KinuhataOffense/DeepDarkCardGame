@@ -1,0 +1,420 @@
+[gd_scene load_steps=18 format=3 uid="uid://1234568aa0"]
+
+[ext_resource type="Script" uid="uid://duyx58uhxibdh" path="res://scripts/debug/effect_system_demo.gd" id="1_abc12"]
+[ext_resource type="Material" uid="uid://cxkwmqdbqwx2q" path="res://assets/materials/cards/card_worn_light.tres" id="2_60mu8"]
+[ext_resource type="Texture2D" uid="uid://b7bqw6bmwwqwt" path="res://assets/cards/card_diamonds_A.png" id="2_def34"]
+[ext_resource type="Texture2D" uid="uid://b7tcxyqqgi7px" path="res://assets/cards/card_hearts_K.png" id="3_ghi56"]
+[ext_resource type="Texture2D" uid="uid://cwi8go8begyxn" path="res://assets/cards/card_spades_Q.png" id="4_jkl78"]
+[ext_resource type="Texture2D" uid="uid://cybxhtuja4i43" path="res://assets/cards/card_clubs_J.png" id="5_mno90"]
+[ext_resource type="Shader" uid="uid://ch2gxcm2mj8t7" path="res://shaders/ui_panel.gdshader" id="7_2i1ap"]
+[ext_resource type="Shader" uid="uid://nbrn22qfpqh5" path="res://shaders/ui_button.gdshader" id="8_ctxcr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r0gdv"]
+shader = ExtResource("7_2i1ap")
+shader_parameter/base_color = Color(0.12, 0.1, 0.08, 0.95)
+shader_parameter/border_color = Color(0.35, 0.28, 0.2, 1)
+shader_parameter/border_width = 0.03
+shader_parameter/corner_radius = 0.05
+shader_parameter/pattern_opacity = 0.15
+shader_parameter/pattern_scale = 1.0
+shader_parameter/use_inner_shadow = true
+shader_parameter/inner_shadow_size = 0.1
+shader_parameter/inner_shadow_opacity = 0.6
+shader_parameter/accent_color = Color(0.5, 0.4, 0.1, 1)
+shader_parameter/animate_pattern = false
+shader_parameter/animation_speed = 0.05
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y5mck"]
+shader = ExtResource("8_ctxcr")
+shader_parameter/hovered = false
+shader_parameter/pressed = false
+shader_parameter/disabled = false
+shader_parameter/normal_color = Color(0.25, 0.22, 0.18, 1)
+shader_parameter/hover_color = Color(0.35, 0.3, 0.22, 1)
+shader_parameter/pressed_color = Color(0.18, 0.16, 0.12, 1)
+shader_parameter/disabled_color = Color(0.15, 0.15, 0.15, 0.7)
+shader_parameter/border_color = Color(0.6, 0.5, 0.3, 1)
+shader_parameter/border_width = 0.02
+shader_parameter/corner_radius = 0.1
+shader_parameter/glow_strength = 0.3
+shader_parameter/glow_color = Color(0.8, 0.6, 0.2, 1)
+shader_parameter/noise_amount = 0.05
+shader_parameter/use_wear_effect = true
+shader_parameter/wear_amount = 0.4
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bpet7"]
+shader = ExtResource("8_ctxcr")
+shader_parameter/hovered = false
+shader_parameter/pressed = false
+shader_parameter/disabled = false
+shader_parameter/normal_color = Color(0.25, 0.22, 0.18, 1)
+shader_parameter/hover_color = Color(0.35, 0.3, 0.22, 1)
+shader_parameter/pressed_color = Color(0.18, 0.16, 0.12, 1)
+shader_parameter/disabled_color = Color(0.15, 0.15, 0.15, 0.7)
+shader_parameter/border_color = Color(0.6, 0.5, 0.3, 1)
+shader_parameter/border_width = 0.02
+shader_parameter/corner_radius = 0.1
+shader_parameter/glow_strength = 0.3
+shader_parameter/glow_color = Color(0.8, 0.6, 0.2, 1)
+shader_parameter/noise_amount = 0.05
+shader_parameter/use_wear_effect = true
+shader_parameter/wear_amount = 0.4
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o3cai"]
+shader = ExtResource("8_ctxcr")
+shader_parameter/hovered = false
+shader_parameter/pressed = false
+shader_parameter/disabled = false
+shader_parameter/normal_color = Color(0.25, 0.22, 0.18, 1)
+shader_parameter/hover_color = Color(0.35, 0.3, 0.22, 1)
+shader_parameter/pressed_color = Color(0.18, 0.16, 0.12, 1)
+shader_parameter/disabled_color = Color(0.15, 0.15, 0.15, 0.7)
+shader_parameter/border_color = Color(0.6, 0.5, 0.3, 1)
+shader_parameter/border_width = 0.02
+shader_parameter/corner_radius = 0.1
+shader_parameter/glow_strength = 0.3
+shader_parameter/glow_color = Color(0.8, 0.6, 0.2, 1)
+shader_parameter/noise_amount = 0.05
+shader_parameter/use_wear_effect = true
+shader_parameter/wear_amount = 0.4
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x5ajt"]
+shader = ExtResource("7_2i1ap")
+shader_parameter/base_color = Color(0.12, 0.1, 0.08, 0.95)
+shader_parameter/border_color = Color(0.35, 0.28, 0.2, 1)
+shader_parameter/border_width = 0.03
+shader_parameter/corner_radius = 0.05
+shader_parameter/pattern_opacity = 0.15
+shader_parameter/pattern_scale = 1.0
+shader_parameter/use_inner_shadow = true
+shader_parameter/inner_shadow_size = 0.1
+shader_parameter/inner_shadow_opacity = 0.6
+shader_parameter/accent_color = Color(0.5, 0.4, 0.1, 1)
+shader_parameter/animate_pattern = false
+shader_parameter/animation_speed = 0.05
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_16rs4"]
+shader = ExtResource("8_ctxcr")
+shader_parameter/hovered = false
+shader_parameter/pressed = false
+shader_parameter/disabled = false
+shader_parameter/normal_color = Color(0.25, 0.22, 0.18, 1)
+shader_parameter/hover_color = Color(0.35, 0.3, 0.22, 1)
+shader_parameter/pressed_color = Color(0.18, 0.16, 0.12, 1)
+shader_parameter/disabled_color = Color(0.15, 0.15, 0.15, 0.7)
+shader_parameter/border_color = Color(0.6, 0.5, 0.3, 1)
+shader_parameter/border_width = 0.02
+shader_parameter/corner_radius = 0.1
+shader_parameter/glow_strength = 0.3
+shader_parameter/glow_color = Color(0.8, 0.6, 0.2, 1)
+shader_parameter/noise_amount = 0.05
+shader_parameter/use_wear_effect = true
+shader_parameter/wear_amount = 0.4
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u7ttf"]
+shader = ExtResource("8_ctxcr")
+shader_parameter/hovered = false
+shader_parameter/pressed = false
+shader_parameter/disabled = false
+shader_parameter/normal_color = Color(0.25, 0.22, 0.18, 1)
+shader_parameter/hover_color = Color(0.35, 0.3, 0.22, 1)
+shader_parameter/pressed_color = Color(0.18, 0.16, 0.12, 1)
+shader_parameter/disabled_color = Color(0.15, 0.15, 0.15, 0.7)
+shader_parameter/border_color = Color(0.6, 0.5, 0.3, 1)
+shader_parameter/border_width = 0.02
+shader_parameter/corner_radius = 0.1
+shader_parameter/glow_strength = 0.3
+shader_parameter/glow_color = Color(0.8, 0.6, 0.2, 1)
+shader_parameter/noise_amount = 0.05
+shader_parameter/use_wear_effect = true
+shader_parameter/wear_amount = 0.4
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2qpuv"]
+shader = ExtResource("8_ctxcr")
+shader_parameter/hovered = false
+shader_parameter/pressed = false
+shader_parameter/disabled = false
+shader_parameter/normal_color = Color(0.25, 0.22, 0.18, 1)
+shader_parameter/hover_color = Color(0.35, 0.3, 0.22, 1)
+shader_parameter/pressed_color = Color(0.18, 0.16, 0.12, 1)
+shader_parameter/disabled_color = Color(0.15, 0.15, 0.15, 0.7)
+shader_parameter/border_color = Color(0.6, 0.5, 0.3, 1)
+shader_parameter/border_width = 0.02
+shader_parameter/corner_radius = 0.1
+shader_parameter/glow_strength = 0.3
+shader_parameter/glow_color = Color(0.8, 0.6, 0.2, 1)
+shader_parameter/noise_amount = 0.05
+shader_parameter/use_wear_effect = true
+shader_parameter/wear_amount = 0.4
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tja61"]
+shader = ExtResource("7_2i1ap")
+shader_parameter/base_color = Color(0.12, 0.1, 0.08, 0.95)
+shader_parameter/border_color = Color(0.35, 0.28, 0.2, 1)
+shader_parameter/border_width = 0.03
+shader_parameter/corner_radius = 0.05
+shader_parameter/pattern_opacity = 0.15
+shader_parameter/pattern_scale = 1.0
+shader_parameter/use_inner_shadow = true
+shader_parameter/inner_shadow_size = 0.1
+shader_parameter/inner_shadow_opacity = 0.6
+shader_parameter/accent_color = Color(0.5, 0.4, 0.1, 1)
+shader_parameter/animate_pattern = false
+shader_parameter/animation_speed = 0.05
+
+[node name="EffectSystemDemo" type="Control" node_paths=PackedStringArray("example_card", "example_buttons", "example_panels")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_abc12")
+example_card = NodePath("CardContainer/Card1")
+example_buttons = [NodePath("UIControlsContainer/EffectControls/SceneTypePanel/ButtonContainer/MenuButton"), NodePath("UIControlsContainer/EffectControls/SceneTypePanel/ButtonContainer/BattleButton"), NodePath("UIControlsContainer/EffectControls/SceneTypePanel/ButtonContainer/ShopButton"), NodePath("UIControlsContainer/EffectControls/EffectTypePanel/ButtonContainer/GlowButton"), NodePath("UIControlsContainer/EffectControls/EffectTypePanel/ButtonContainer/BurnButton"), NodePath("UIControlsContainer/EffectControls/EffectTypePanel/ButtonContainer/SoulfireButton")]
+example_panels = [NodePath("UIControlsContainer/EffectControls/SceneTypePanel"), NodePath("UIControlsContainer/EffectControls/EffectTypePanel"), NodePath("UIControlsContainer/PresetPanel")]
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.12, 0.14, 1)
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -267.5
+offset_top = 20.0
+offset_right = 267.5
+offset_bottom = 57.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "《无火的牌局》视觉效果系统演示"
+horizontal_alignment = 1
+
+[node name="CardContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -170.0
+offset_right = 400.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="Card1" type="TextureRect" parent="CardContainer"]
+material = ExtResource("2_60mu8")
+layout_mode = 2
+texture = ExtResource("2_def34")
+stretch_mode = 5
+
+[node name="Card2" type="TextureRect" parent="CardContainer"]
+layout_mode = 2
+texture = ExtResource("3_ghi56")
+stretch_mode = 5
+
+[node name="Card3" type="TextureRect" parent="CardContainer"]
+layout_mode = 2
+texture = ExtResource("4_jkl78")
+stretch_mode = 5
+
+[node name="Card4" type="TextureRect" parent="CardContainer"]
+layout_mode = 2
+texture = ExtResource("5_mno90")
+stretch_mode = 5
+
+[node name="UIControlsContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = -220.0
+offset_right = 400.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 15
+
+[node name="EffectControls" type="HBoxContainer" parent="UIControlsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SceneTypePanel" type="Panel" parent="UIControlsContainer/EffectControls"]
+material = SubResource("ShaderMaterial_r0gdv")
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="UIControlsContainer/EffectControls/SceneTypePanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -83.0
+offset_top = 10.0
+offset_right = 83.0
+offset_bottom = 36.0
+grow_horizontal = 2
+text = "场景类型"
+horizontal_alignment = 1
+
+[node name="ButtonContainer" type="HBoxContainer" parent="UIControlsContainer/EffectControls/SceneTypePanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -123.0
+offset_top = -16.0
+offset_right = 123.0
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="MenuButton" type="Button" parent="UIControlsContainer/EffectControls/SceneTypePanel/ButtonContainer"]
+material = SubResource("ShaderMaterial_y5mck")
+layout_mode = 2
+text = "菜单"
+
+[node name="BattleButton" type="Button" parent="UIControlsContainer/EffectControls/SceneTypePanel/ButtonContainer"]
+material = SubResource("ShaderMaterial_bpet7")
+layout_mode = 2
+text = "战斗"
+
+[node name="ShopButton" type="Button" parent="UIControlsContainer/EffectControls/SceneTypePanel/ButtonContainer"]
+material = SubResource("ShaderMaterial_o3cai")
+layout_mode = 2
+text = "商店"
+
+[node name="EffectTypePanel" type="Panel" parent="UIControlsContainer/EffectControls"]
+material = SubResource("ShaderMaterial_x5ajt")
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="UIControlsContainer/EffectControls/EffectTypePanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -83.0
+offset_top = 10.0
+offset_right = 83.0
+offset_bottom = 36.0
+grow_horizontal = 2
+text = "卡牌效果"
+horizontal_alignment = 1
+
+[node name="ButtonContainer" type="HBoxContainer" parent="UIControlsContainer/EffectControls/EffectTypePanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -16.0
+offset_right = 160.0
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="GlowButton" type="Button" parent="UIControlsContainer/EffectControls/EffectTypePanel/ButtonContainer"]
+material = SubResource("ShaderMaterial_16rs4")
+layout_mode = 2
+text = "发光"
+
+[node name="BurnButton" type="Button" parent="UIControlsContainer/EffectControls/EffectTypePanel/ButtonContainer"]
+material = SubResource("ShaderMaterial_u7ttf")
+layout_mode = 2
+text = "黑火"
+
+[node name="SoulfireButton" type="Button" parent="UIControlsContainer/EffectControls/EffectTypePanel/ButtonContainer"]
+material = SubResource("ShaderMaterial_2qpuv")
+layout_mode = 2
+text = "灵魂火"
+
+[node name="PresetPanel" type="Panel" parent="UIControlsContainer"]
+material = SubResource("ShaderMaterial_tja61")
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="UIControlsContainer/PresetPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -83.0
+offset_top = 10.0
+offset_right = 83.0
+offset_bottom = 36.0
+grow_horizontal = 2
+text = "效果预设"
+horizontal_alignment = 1
+
+[node name="PresetButtons" type="HBoxContainer" parent="UIControlsContainer/PresetPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -16.0
+offset_right = 300.0
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="DefaultButton" type="Button" parent="UIControlsContainer/PresetPanel/PresetButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "默认"
+
+[node name="CinematicButton" type="Button" parent="UIControlsContainer/PresetPanel/PresetButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "电影风格"
+
+[node name="PerformanceButton" type="Button" parent="UIControlsContainer/PresetPanel/PresetButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "性能优先"
+
+[node name="HorrorButton" type="Button" parent="UIControlsContainer/PresetPanel/PresetButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "恐怖风格"
+
+[node name="ClassicButton" type="Button" parent="UIControlsContainer/PresetPanel/PresetButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "经典风格"
+
+[connection signal="pressed" from="UIControlsContainer/EffectControls/SceneTypePanel/ButtonContainer/MenuButton" to="." method="change_scene_type" binds= [0]]
+[connection signal="pressed" from="UIControlsContainer/EffectControls/SceneTypePanel/ButtonContainer/BattleButton" to="." method="change_scene_type" binds= [2]]
+[connection signal="pressed" from="UIControlsContainer/EffectControls/SceneTypePanel/ButtonContainer/ShopButton" to="." method="change_scene_type" binds= [3]]
+[connection signal="pressed" from="UIControlsContainer/EffectControls/EffectTypePanel/ButtonContainer/GlowButton" to="." method="change_card_effect" binds= [1]]
+[connection signal="pressed" from="UIControlsContainer/EffectControls/EffectTypePanel/ButtonContainer/BurnButton" to="." method="change_card_effect" binds= [2]]
+[connection signal="pressed" from="UIControlsContainer/EffectControls/EffectTypePanel/ButtonContainer/SoulfireButton" to="." method="change_card_effect" binds= [3]]
+[connection signal="pressed" from="UIControlsContainer/PresetPanel/PresetButtons/DefaultButton" to="." method="_on_preset_pressed" binds= [0]]
+[connection signal="pressed" from="UIControlsContainer/PresetPanel/PresetButtons/CinematicButton" to="." method="_on_preset_pressed" binds= [1]]
+[connection signal="pressed" from="UIControlsContainer/PresetPanel/PresetButtons/PerformanceButton" to="." method="_on_preset_pressed" binds= [2]]
+[connection signal="pressed" from="UIControlsContainer/PresetPanel/PresetButtons/HorrorButton" to="." method="_on_preset_pressed" binds= [3]]
+[connection signal="pressed" from="UIControlsContainer/PresetPanel/PresetButtons/ClassicButton" to="." method="_on_preset_pressed" binds= [4]]

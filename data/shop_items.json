@@ -1,31 +1,31 @@
 [
-    {
-        "name": "锻造服务",
-        "description": "将一张普通牌升级为强化牌",
-        "price": 50,
-        "category": "deck_modifier",
-        "effect_id": "forge"
-    },
-    {
-        "name": "人性碎片",
-        "description": "一次重新排列所有手牌的机会",
-        "price": 30,
-        "category": "consumable",
-        "effect_id": "humanity_fragment",
-        "duration": 1
-    },
-    {
-        "name": "灵魂链接",
-        "description": "每完成3次魂链，获得一次额外行动",
-        "price": 100,
-        "category": "permanent",
-        "effect_id": "soul_link"
-    },
-    {
-        "name": "守护之戒",
-        "description": "每回合一次，可以保护一张牌不被敌人效果影响",
-        "price": 80,
-        "category": "passive",
-        "effect_id": "guardian_ring"
-    }
+	{
+		"name": "锻造服务",
+		"description": "将一张普通牌升级为强化牌",
+		"price": 50,
+		"category": "deck_modifier",
+		"effect_id": "forge"
+	},
+	{
+		"name": "人性碎片",
+		"description": "一次重新排列所有手牌的机会",
+		"price": 30,
+		"category": "consumable",
+		"effect_id": "humanity_fragment",
+		"duration": 1
+	},
+	{
+		"name": "灵魂链接",
+		"description": "每完成3次魂链，获得一次额外行动",
+		"price": 100,
+		"category": "permanent",
+		"effect_id": "soul_link"
+	},
+	{
+		"name": "守护之戒",
+		"description": "每回合一次，可以保护一张牌不被敌人效果影响",
+		"price": 80,
+		"category": "passive",
+		"effect_id": "guardian_ring"
+	}
 ]

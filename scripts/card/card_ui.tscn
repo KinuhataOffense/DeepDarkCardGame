@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://bs2vgjwuarxm5"]
 
 [ext_resource type="Script" uid="uid://b8phcp5vf36di" path="res://scripts/card/example__card_ui.gd" id="1_0ct6v"]
-[ext_resource type="Texture2D" uid="uid://ben7qqx34vpkq" path="res://assets/card_back.png" id="2_sofqg"]
-[ext_resource type="Texture2D" uid="uid://dp7k4aq6freb1" path="res://assets/card_clubs_02.png" id="3_psgti"]
-[ext_resource type="Texture2D" uid="uid://5xmphmyx5bvv" path="res://assets/1.png" id="4_xou0u"]
+[ext_resource type="Texture2D" uid="uid://ben7qqx34vpkq" path="res://assets/cards/card_back (2).png" id="2_sofqg"]
+[ext_resource type="Texture2D" uid="uid://dp7k4aq6freb1" path="res://assets/cards/card_clubs_02.png" id="3_psgti"]
+[ext_resource type="Texture2D" uid="uid://5xmphmyx5bvv" path="res://assets/cards/1.png" id="4_xou0u"]
 
 [node name="ExampleCardUI" type="Control"]
 layout_mode = 3

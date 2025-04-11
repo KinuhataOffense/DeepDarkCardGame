@@ -207,7 +207,7 @@ func initialize(shop_mode: bool = false, auto: bool = false, enemy_data = null):
 	
 	from_shop = shop_mode
 	auto_mode = auto
-	auto_selected_enemy = enemy_data._to_dicitionary()
+	auto_selected_enemy = enemy_data
 	signal_emitted = false
 
 	call_deferred("_update_ui")

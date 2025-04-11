@@ -3,7 +3,8 @@ class_name BattleManager
 
 # 引用到核心节点  
 @onready var card_pile_ui: CardPileUI = $"../CardPileUI"   
-@onready var combination_area: CombinationDropzone = $"../CombinationDropzone"  
+@onready var combination_area: CombinationDropzone = $"../CombinationDropzone"
+@onready var queue_dropzone: CardQueueDropzone = $"../CardQueueDropzone"
 @onready var enemy_ui = $"../EnemyDisplay"  
 
 
@@ -40,56 +41,95 @@ var current_map_node = null
 
 # 游戏初始化  
 func _ready():  
-	player_stats = get_node("/root/Main/PlayerStats").get_player_stats()  
+	player_stats = get_node("/root/PlayerStats")
 	# 连接卡牌相关信号  
 	if card_pile_ui:  
 		card_pile_ui.connect("card_clicked", _on_card_clicked)  
 		card_pile_ui.connect("card_dropped", _on_card_dropped)  
 	
+	# 连接队列区域信号
+	if queue_dropzone:
+		queue_dropzone.connect("combinations_evaluated", _on_queue_combinations_evaluated)
+	
 	# 初始化游戏  
 	call_deferred("initialize_game")  # 使用call_deferred确保所有节点都已准备好  
 	
 func initialize_game():  
+	print("BattleManager: 初始化游戏...")
 	# 初始化游戏状态  
 	current_state = GameState.PLAYER_TURN  
-	current_round = 1  
-	turns_remaining = 3  
-	score_multiplier = 1.0  
 	
 	# 设置组合区域引用  
 	combination_area.game_manager = self  
 	
+	# 设置队列区域引用
+	if queue_dropzone:
+		queue_dropzone.battle_manager = self
+	
 	# 初始化敌人，只有在没有敌人的情况下才初始化第一个敌人  
 	if current_enemy == null:
-		print("未设置敌人，使用默认敌人")
+		print("BattleManager: 未设置敌人，使用默认敌人")
 		spawn_first_enemy()  
 	else:
-		print("使用已设置的敌人:", current_enemy.enemy_name)
-		# 确保score_required是正确的
+		print("BattleManager: 使用已设置的敌人:", current_enemy.name)
 		score_required = current_enemy.required_score
 		update_enemy_ui()
 	
 	# 加载并重置牌堆  
-	print("Loading card pile data...")  
+	print("BattleManager: 加载卡牌数据...")  
 	card_pile_ui.load_json_path()  
-	print("Resetting card pile...")  
+	print("BattleManager: 重置卡牌堆...")  
 	card_pile_ui.reset()  
-	print("Card pile initialized.")  
+	print("BattleManager: 卡牌初始化完成")  
 	
 	# 抽取初始手牌  
-	print("Drawing initial hand...")  
+	print("BattleManager: 抽取初始手牌...")  
 	card_pile_ui.draw(5)  
-	print("Initial hand drawn.")
+	print("BattleManager: 初始手牌抽取完成")
 	
+	print("BattleManager: 游戏初始化完成")
 
-const MAX_SELECTED_CARDS: int = 1  
-var selected_cards: Array = []  
+# 当前选中的卡牌
+var selected_card: CardUI = null
 
+# 处理卡牌点击事件
 func _on_card_clicked(card: CardUI):  
+	# 在PLAYER_TURN状态下才能选牌
+	if current_state != GameState.PLAYER_TURN:
+		return
+		
+	# 只能选择手牌中的卡牌
+	if not card_pile_ui.is_card_ui_in_hand(card):
+		return
+		
+	if selected_card == card:
+		# 取消选中
+		selected_card = null
+		print("取消选中卡牌")
+	else:
+		# 取消之前的选择
+		if selected_card:
+			print("取消之前的选牌")
+			
+		# 选中新卡牌
+		selected_card = card
+		print("选中卡牌: " + (card.card_data.nice_name if card.card_data else "未知卡牌"))
+
+# 当卡牌被放置到某处时
+func _on_card_dropped(card: CardUI):  
+	# 如果放置到队列区域，会由队列区域处理
 	pass
 
-func _on_card_dropped(card: CardUI):  
-	pass
+# 处理队列组合评估结果
+func _on_queue_combinations_evaluated(results):
+	# 更新玩家分数
+	if player_stats:
+		var previous_score = player_stats.current_score
+		player_stats.add_score(results.total_score)
+		print("玩家获得", results.total_score, "分，当前总分:", player_stats.current_score)
+	
+	# 检查游戏状态
+	check_game_state()
 	
 # 应用卡牌效果  
 func apply_card_effect(card_data):  
@@ -172,9 +212,7 @@ func start_player_turn():
 	current_state = GameState.PLAYER_TURN  
 	
 	# 重置选中状态  
-	for card in selected_cards:  
-		card.set_selected(false)  
-	selected_cards.clear()  
+	selected_card = null
 	
 	# 抽牌到手牌上限  
 	var cards_to_draw = card_pile_ui.max_hand_size - card_pile_ui.get_card_pile_size(CardPileUI.Piles.hand_pile)  
@@ -209,23 +247,35 @@ func check_game_state():
 	print("当前回合:", current_round, "/", current_enemy.round_limit, "，剩余行动:", turns_remaining)
 	if (!player_stats):
 		print("BattleManagerError: player_stats is not existed")
+		return
+		
 	print("当前分数:", player_stats.current_score, "，击败要求:", score_required)
 	
 	# 检查是否击败敌人  
 	if player_stats.current_score >= score_required:  
 		print("玩家分数达到要求，敌人被击败!")
-		# 确保信号只发送一次
+		
+		# 使用元数据标记确保信号只发送一次
 		if not has_meta("enemy_defeated_emitted"):
 			print("BattleManager: 发送enemy_defeated信号")
-			emit_signal("enemy_defeated")
 			set_meta("enemy_defeated_emitted", true)
-		return  
+			emit_signal("enemy_defeated")
+		else:
+			print("BattleManager: enemy_defeated信号已发送过，不重复发送")
+		return
 		
 	# 检查回合限制  
 	if current_round >= current_enemy.round_limit || turns_remaining < 0:  
 		print("玩家失败: 回合用尽或行动结束")
-		emit_signal("game_over", false)  # 失败参数为false
 		
+		# 使用元数据标记确保信号只发送一次
+		if not has_meta("game_over_emitted"):
+			print("BattleManager: 发送game_over信号")
+			set_meta("game_over_emitted", true)
+			emit_signal("game_over", false)  # 失败参数为false
+		else:
+			print("BattleManager: game_over信号已发送过，不重复发送")
+
 # 检查敌人是否已击败  
 func check_enemy_defeated() -> bool: 
 	var is_defeated = player_stats.current_score >= score_required
@@ -283,28 +333,88 @@ func spawn_next_enemy():
 # 更新敌人UI  
 func update_enemy_ui():  
 	if current_enemy and enemy_ui:  
-		enemy_ui.get_node("EnemyName").text = current_enemy.enemy_name  
+		enemy_ui.get_node("EnemyName").text = current_enemy.name  
 		enemy_ui.get_node("EnemyDescription").text = current_enemy.description  
-		enemy_ui.get_node("EnemyHealth").max_value = current_enemy.max_health  
+		enemy_ui.get_node("EnemyHealth").max_value = current_enemy.health  
 		enemy_ui.get_node("EnemyHealth").value = current_enemy.health  
 
 # 设置游戏的敌人数据
 func set_enemy_data(enemy_data):
+	print("BattleManager: 接收到敌人数据设置请求")
+	
 	# 如果没有敌人数据，使用默认数据
 	if not enemy_data:
-		print("警告: 未提供敌人数据，使用默认敌人")
+		print("BattleManager警告: 未提供敌人数据，使用默认敌人")
 		spawn_first_enemy()
 		return
+	
+	# 打印收到的敌人数据详情
+	print("BattleManager: 敌人数据详情:")
+	if enemy_data.has("name"):
+		print(" - 名称:", enemy_data.name)
+	else:
+		print(" - 名称: 未指定")
 		
-	# 创建新敌人
-	current_enemy = Enemy.new()
-	current_enemy.initialize(enemy_data)
-	score_required = current_enemy.required_score
+	if enemy_data.has("health"):
+		print(" - 生命值:", enemy_data.health)
+	else:
+		print(" - 生命值: 未指定")
+		
+	if enemy_data.has("required_score"):
+		print(" - 所需分数:", enemy_data.required_score)
+	else:
+		print(" - 所需分数: 未指定")
+		
+	if enemy_data.has("round_limit"):
+		print(" - 回合限制:", enemy_data.round_limit)
+	else:
+		print(" - 回合限制: 未指定")
+		
+	# 确保基本数据存在，如果不存在则设置默认值
+	if not enemy_data.has("name"):
+		enemy_data["name"] = "未命名敌人"
+		
+	if not enemy_data.has("description"):
+		enemy_data["description"] = "无描述信息"
+		
+	if not enemy_data.has("health"):
+		enemy_data["health"] = 100
+		
+	if not enemy_data.has("round_limit"):
+		enemy_data["round_limit"] = 5
+		
+	if not enemy_data.has("required_score"):
+		enemy_data["required_score"] = 100
+		
+	# 清除之前的状态标记
+	if has_meta("enemy_defeated_emitted"):
+		remove_meta("enemy_defeated_emitted")
+		
+	if has_meta("game_over_emitted"):
+		remove_meta("game_over_emitted")
+		
+	# 尝试使用Enemy类
+	var success = false
+	if "Enemy" in get_parent().get_script().get_script_constant_map():
+		print("BattleManager: 尝试使用Enemy类")
+		var Enemy_Class = get_parent().get_script().get_script_constant_map()["Enemy"]
+		if Enemy_Class:
+			current_enemy = Enemy_Class.new()
+			current_enemy.initialize(enemy_data)
+			score_required = current_enemy.required_score
+			success = true
+			print("BattleManager: 成功创建Enemy类敌人")
+	
+	# 如果无法使用Enemy类，直接使用字典
+	if not success:
+		print("BattleManager: 使用字典格式存储敌人数据")
+		current_enemy = enemy_data
+		score_required = enemy_data.required_score
 	
 	# 打印敌人信息
-	print("加载敌人:", current_enemy.enemy_name)
-	print("击败条件: 需要", score_required, "分")
-	print("回合限制:", current_enemy.round_limit, "回合")
+	print("BattleManager: 加载敌人:", enemy_data.name)
+	print("BattleManager: 击败条件: 需要", score_required, "分")
+	print("BattleManager: 回合限制:", enemy_data.round_limit, "回合")
 	
 	# 重置游戏状态
 	current_round = 1
@@ -312,7 +422,7 @@ func set_enemy_data(enemy_data):
 	
 	# 更新UI
 	update_enemy_ui()
-	
+
 # 加载敌人数据
 func load_enemy_by_id(enemy_id: String):
 	var file = FileAccess.open("res://data/enemies.json", FileAccess.READ)
@@ -347,24 +457,8 @@ func process_victory_rewards():
 		return
 		
 	print("玩家击败敌人，处理奖励")
-		
-	# 检查敌人的rewards属性并添加到玩家数据
-	if current_enemy.has_method("get_rewards"):
-		# 如果敌人类有获取奖励的方法
-		var rewards = current_enemy.get_rewards()
-		if rewards and rewards.has("currency"):
-			player_stats.currency += rewards.currency
-			print("玩家获得", rewards.currency, "货币")
-	elif typeof(current_enemy) == TYPE_DICTIONARY and current_enemy.has("rewards"):
-		# 如果敌人是字典形式
-		if current_enemy.rewards.has("currency"):
-			player_stats.currency += current_enemy.rewards.currency
-			print("玩家获得", current_enemy.rewards.currency, "货币")
-	else:
-		# 如果没有奖励属性，给予固定奖励
-		print("警告: 敌人没有rewards属性，给予固定奖励")
-		player_stats.currency += 50
-		print("玩家获得50货币")
+	player_stats.currency += current_enemy.rewards.currency
+	print("玩家获得", current_enemy.rewards.currency, "货币")
 	
 	# 更新玩家数据，确保同步
 	player_data.currency = player_stats.currency
@@ -375,10 +469,7 @@ func process_victory_rewards():
 # 游戏失败处理
 func process_defeat():
 	# 游戏失败的逻辑处理
-	print("游戏失败，玩家将返回地图并重置当前楼层")
-	
-	# 在地图模式下，失败后返回地图并重置当前楼层
-	print("BattleManager: 失败处理完成，等待场景管理器将玩家返回地图")
+	print("游戏失败,但还没有实现")
 
 # 添加地图状态保存和加载功能
 func save_map_state(map_state):

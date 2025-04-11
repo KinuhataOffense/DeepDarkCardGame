@@ -16,7 +16,7 @@ enum	EffectType	{
 }
 
 #	全局后处理着色器
-const POST_PROCESSING_SHADER_PATH	=	"res://assets/shaders/post_processing.gdshader"
+const POST_PROCESSING_SHADER_PATH	=	"res://shaders/post_processing.gdshader"
 
 #	噪点纹理路径
 const	NOISE_DUST_PATH	=	"res://assets/textures/noise/noise_dust.png"

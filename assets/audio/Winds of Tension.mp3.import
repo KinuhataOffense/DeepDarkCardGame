@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c6e5afjcg11xm"
+path="res://.godot/imported/Winds of Tension.mp3-59d0d8a511a36c8540ac4848d02403ad.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/Winds of Tension.mp3"
+dest_files=["res://.godot/imported/Winds of Tension.mp3-59d0d8a511a36c8540ac4848d02403ad.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

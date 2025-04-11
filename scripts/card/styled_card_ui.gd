@@ -45,8 +45,10 @@ var card_type: CardMaterialManager.CardMaterialType = CardMaterialManager.CardMa
 # 覆盖基类的_ready方法
 func _ready():
 	super()
-	card_name.text = card_data.nice_name
-	card_value.text = str(card_data.value)
+	if card_data:
+		card_name.text = card_data.nice_name
+		card_value.text = str(card_data.value)
+		
 	if Engine.is_editor_hint():
 		set_disabled(true)
 		update_configuration_warnings()

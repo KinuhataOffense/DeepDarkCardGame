@@ -1,13 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://cxco7l6jgsf2"]
+[gd_scene load_steps=10 format=3 uid="uid://cxco7l6jgsf2"]
 
 [ext_resource type="Script" uid="uid://3l8nh0mxslqc" path="res://scripts/battle/battle_scene.gd" id="1_2wmvw"]
 [ext_resource type="Texture2D" uid="uid://4im0spyblxwl" path="res://assets/ui/enhanced_overlay.png" id="2_ww1p6"]
 [ext_resource type="Script" uid="uid://bgiiwmtkdh216" path="res://scripts/card/card_pile_ui.gd" id="3_cywj5"]
 [ext_resource type="PackedScene" uid="uid://cmlsueqj3ow61" path="res://scripts/card/styled_card_ui.tscn" id="4_2wmvw"]
 [ext_resource type="Script" uid="uid://b3vqhxkwjhf6m" path="res://scripts/card/combination_dropzone.gd" id="5_3511k"]
-[ext_resource type="Texture2D" uid="uid://cmfpp08onmr3f" path="res://assets/card_clubs_07.png" id="6_puhd7"]
+[ext_resource type="Texture2D" uid="uid://cmfpp08onmr3f" path="res://assets/cards/card_clubs_07.png" id="6_puhd7"]
 [ext_resource type="Texture2D" uid="uid://42qs2jq604nw" path="res://assets/enemies/enemy_placeholder.png" id="7_mpswg"]
 [ext_resource type="Script" uid="uid://bbq3kiis6024t" path="res://scripts/battle/battle_manager.gd" id="8_te27b"]
+[ext_resource type="Script" uid="uid://cqdirjoo5youj" path="res://scripts/card/card_queue_dropzone.gd" id="9_ckjfl"]
 
 [node name="BattleScene" type="Node2D"]
 script = ExtResource("1_2wmvw")
@@ -68,6 +69,40 @@ offset_right = 260.0
 offset_bottom = 416.0
 texture = ExtResource("6_puhd7")
 
+[node name="CardQueueDropzone" type="Control" parent="." node_paths=PackedStringArray("card_pile_ui")]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 493.0
+offset_top = 281.0
+offset_right = 1033.0
+offset_bottom = 481.0
+script = ExtResource("9_ckjfl")
+card_pile_ui = NodePath("../CardPileUI")
+
+[node name="QueueLabel" type="Label" parent="CardQueueDropzone"]
+layout_mode = 0
+offset_left = -3.0
+offset_top = -35.0
+offset_right = 97.0
+offset_bottom = 1.0
+theme_override_font_sizes/font_size = 24
+text = "出牌队列"
+
+[node name="Background" type="Panel" parent="CardQueueDropzone"]
+self_modulate = Color(0.478431, 0.478431, 0.478431, 0.254902)
+layout_mode = 0
+offset_right = 540.0
+offset_bottom = 200.0
+
+[node name="QueueScoreLabel" type="Label" parent="CardQueueDropzone"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 166.0
+offset_right = 532.0
+offset_bottom = 198.0
+theme_override_font_sizes/font_size = 20
+text = "队列分数: 0"
+
 [node name="EnemyDisplay" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -114,20 +149,20 @@ fit_content = true
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="ScoreDisplay" type="Label" parent="UI"]
-offset_left = 2209.0
-offset_top = 93.0
-offset_right = 2269.0
-offset_bottom = 135.0
+offset_left = 809.0
+offset_top = 100.0
+offset_right = 949.0
+offset_bottom = 142.0
 theme_override_font_sizes/font_size = 30
-text = "分数"
+text = "分数: 0"
 
 [node name="TurnsDisplay" type="Label" parent="UI"]
-offset_left = 2205.0
-offset_top = 41.0
-offset_right = 2295.0
-offset_bottom = 83.0
+offset_left = 500.0
+offset_top = 100.0
+offset_right = 670.0
+offset_bottom = 142.0
 theme_override_font_sizes/font_size = 30
-text = "回合数"
+text = "剩余行动: 3"
 
 [node name="PlayerHealth" type="ProgressBar" parent="UI"]
 modulate = Color(1, 0.14, 0.14, 1)
@@ -142,6 +177,11 @@ offset_left = 497.0
 offset_top = 705.0
 offset_right = 1085.0
 offset_bottom = 756.0
+
+[node name="PlayCardButton" type="Button" parent="UI/ActionButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "打出选中牌"
 
 [node name="EndTurnButton" type="Button" parent="UI/ActionButtons"]
 layout_mode = 2

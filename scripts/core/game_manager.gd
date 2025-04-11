@@ -1,7 +1,6 @@
 # gamemanager.gd  
 
 extends Node  
-class_name GameManager  
 
 #------------------------------------------------------------------------------  
 # 预加载场景资源  
@@ -19,8 +18,8 @@ var reward_scene = preload("res://scenes/reward/reward_scene.tscn")
 @onready var player_stats = $"../PlayerStats"  
 
 # 游戏状态枚举  
-enum GameState { PLAYER_TURN, ENEMY_TURN, SHOP, GAME_OVER }  
-var current_state: GameState = GameState.PLAYER_TURN  
+enum GameState { Menu, MAP, BATTLE, SHOP, GAME_OVER }  
+var current_state: GameState = GameState.Menu  
 var current_enemy = null  
 var current_round: int = 1  
 var turns_remaining: int = 3  
@@ -59,19 +58,19 @@ var initialized = false
 
 func _ready():
 	if not initialized:
-		# 确保自己不会被释放
-		add_to_group("persistent", true)
-		# 确保PlayerStats也不会被释放
-		if player_stats and is_instance_valid(player_stats):
-			player_stats.add_to_group("persistent", true)
 		initialized = true
-		print("GameManager: 初始化完成，已标记为持久节点")
-		
-		# 初始化游戏  
-		call_deferred("initialize_game")  
-		
+		print("GameManager: 初始化完成")
+	
+		# 尝试连接战斗管理器的敌人被击败信号
+		var battle_manager_node = get_tree().root.get_node_or_null("BattleScene/BattleManager")
+		if battle_manager_node:
+			battle_manager_node.connect("enemy_defeated", _on_battle_enemy_defeated)
+			print("GameManager: 已连接BattleManager的enemy_defeated信号")
+		else:
+			print("GameManager: 未找到BattleManager节点")
+	
 		# 连接主菜单按钮信号（如果存在）  
-		var main_menu = get_node_or_null("../MainMenu")  
+		var main_menu = get_tree().root.get_node_or_null("MainMenu")
 		if main_menu:  
 			var start_button = main_menu.get_node_or_null("StartButton")  
 			var quit_button = main_menu.get_node_or_null("QuitButton")  
@@ -83,10 +82,8 @@ func _ready():
 					
 				start_button.text = "开始地下城探险"  
 				quit_button.text = "离开地下城探险"
-
-func initialize_game():  
-	# 初始化游戏状态  
-	current_state = GameState.PLAYER_TURN  
+		else:
+			print("GameManager: 无法找到MainMenu节点")
 
 #------------------------------------------------------------------------------  
 # 游戏核心功能  
@@ -115,13 +112,11 @@ func reduce_score_multiplier(factor: float):
 # 切换到新的主场景  
 func switch_to_scene(scene_resource):  
 	print("GameManager: 开始切换场景...")
-	# 记录当前场景以便可能的返回  
-	var old_scene = current_main_scene  
 	
-	# 获取Main节点
-	var main_node = get_tree().root.get_node_or_null("Main")
-	if not main_node:
-		push_error("GameManager: 无法找到Main节点")
+	# 获取root节点
+	var root = get_tree().root
+	if not root:
+		push_error("GameManager: 无法获取root节点")
 		return false
 	
 	# 保存GameManager和PlayerStats节点的引用
@@ -129,35 +124,38 @@ func switch_to_scene(scene_resource):
 	var player_stats_node = player_stats
 	
 	# 首先保存地图状态（如果是从地图场景切换走）
-	var map_node = main_node.get_node_or_null("NodeMapScene")
+	var map_node = root.get_node_or_null("NodeMapScene")
 	if map_node and map_node.has_method("get_map_state"):
 		var map_state = map_node.get_map_state()
 		save_map_state(map_state)
 		print("GameManager: 地图状态已保存")
 	
-	# 找到当前的活动场景（非持久节点）
-	var current_scene_node = null
-	var persistent_nodes = []
+	# 创建待移除场景列表，这样我们可以跟踪并处理所有非自动加载的场景
+	var scenes_to_remove = []
 	
-	for child in main_node.get_children():
-		if child.is_in_group("persistent") or child.name == "GameManager" or child.name == "PlayerStats":
-			persistent_nodes.append(child)
-		else:
-			if current_scene_node == null:  # 第一个找到的非持久节点视为当前主场景
-				current_scene_node = child
-				
-	# 清除当前活动场景(如果存在)，但保留持久节点
-	if current_scene_node:
-		print("GameManager: 移除当前场景:", current_scene_node.name)
-		main_node.remove_child(current_scene_node)
-		current_scene_node.queue_free()
+	# 遍历所有子节点寻找现有场景
+	for i in range(root.get_child_count()):
+		var child = root.get_child(i)
+		if child.name != "GameManager" and child.name != "PlayerStats" and child.name != "VisualEffectsManager" and not child.name.begins_with("_"):
+			# 这是需要移除的场景
+			scenes_to_remove.append(child)
+			print("GameManager: 将移除场景:", child.name)
+	
+	# 逐个移除场景
+	for scene in scenes_to_remove:
+		# 从活动场景跟踪列表中移除
+		if active_scenes.has(scene.name):
+			active_scenes.erase(scene.name)
+			print("GameManager: 从活动场景列表中移除:", scene.name)
 		
-		# 清除其他非持久节点（可能是子场景）
-		for child in main_node.get_children():
-			if not child.is_in_group("persistent") and child.name != "GameManager" and child.name != "PlayerStats":
-				print("GameManager: 同时移除额外场景:", child.name)
-				main_node.remove_child(child)
-				child.queue_free()
+		# 从场景树中移除
+		root.remove_child(scene)
+		scene.queue_free()
+		print("GameManager: 场景已移除并释放:", scene.name)
+	
+	# 创建新场景前等待一帧
+	if scenes_to_remove.size() > 0:
+		await get_tree().process_frame
 	
 	# 实例化新场景
 	var new_scene = scene_resource.instantiate()
@@ -165,8 +163,15 @@ func switch_to_scene(scene_resource):
 		push_error("GameManager: 场景实例化失败")
 		return false
 	
-	# 将新场景添加到Main节点
-	main_node.add_child(new_scene)
+	# 设置场景名称为其资源名（如果没有其他名称）
+	if new_scene.name.contains("@"):
+		var scene_path = scene_resource.resource_path
+		var scene_name = scene_path.get_file().get_basename()
+		new_scene.name = scene_name
+		print("GameManager: 设置场景实例名称为:", scene_name)
+	
+	# 将新场景添加到root节点
+	root.add_child(new_scene)
 	
 	# 调整新场景的位置 - 确保场景位于正确位置
 	_adjust_scene_position(new_scene)
@@ -179,6 +184,25 @@ func switch_to_scene(scene_resource):
 	
 	# 等待一帧确保场景已加载
 	await get_tree().process_frame
+	
+	# 如果是战斗场景，连接BattleManager
+	if new_scene.name == "BattleScene":
+		# 确保先清除之前的元数据标志
+		if has_meta("enemy_defeated_emitted"):
+			remove_meta("enemy_defeated_emitted")
+			
+		# 尝试连接战斗管理器信号
+		var battle_manager = new_scene.get_node_or_null("BattleManager")
+		if battle_manager:
+			# 先断开之前的连接（如果有）
+			if battle_manager.is_connected("enemy_defeated", _on_battle_enemy_defeated):
+				battle_manager.disconnect("enemy_defeated", _on_battle_enemy_defeated)
+				
+			# 重新连接信号
+			battle_manager.connect("enemy_defeated", _on_battle_enemy_defeated)
+			print("GameManager: 已连接战斗场景的BattleManager信号")
+		else:
+			print("GameManager: 警告 - 无法在战斗场景中找到BattleManager节点")
 	
 	print("GameManager: 成功切换到场景：", current_main_scene)  
 	return true
@@ -247,115 +271,6 @@ func _adjust_scene_position(scene_node):
 			
 	print("GameManager: 场景位置调整完成")
 
-# 添加子场景 - 也需要调整位置  
-func add_subscene(parent_node, scene_resource, scene_name):  
-	# 确保父节点存在  
-	if not parent_node:  
-		push_error("添加子场景失败：父节点不存在")  
-		return null  
-	
-	# 检查场景是否已存在，如果存在则移除
-	var existing_scene = get_scene(scene_name)
-	if existing_scene:
-		print("GameManager: 子场景", scene_name, "已存在，先移除")
-		remove_scene(scene_name)
-		await get_tree().process_frame  # 等待一帧确保场景已移除
-	
-	# 实例化场景  
-	var scene_instance = scene_resource.instantiate()  
-	if not scene_instance:  
-		push_error("场景实例化失败：" + scene_name)  
-		return null  
-	
-	# 设置场景名称  
-	scene_instance.name = scene_name  
-	
-	# 添加为子节点  
-	parent_node.add_child(scene_instance)
-	
-	# 对于特定子场景类型进行位置调整
-	if scene_instance is CanvasItem:
-		# 优先处理EnemySelectScene和ShopScene等特殊子场景
-		if scene_name == "EnemySelectScene" or scene_name == "ShopScene" or scene_name == "RewardScene":
-			# 对于UI类型的子场景，设置为铺满父节点区域
-			if scene_instance is Control:
-				scene_instance.anchors_preset = 15 # 设置锚点预设为全屏
-				scene_instance.anchor_left = 0
-				scene_instance.anchor_top = 0
-				scene_instance.anchor_right = 1
-				scene_instance.anchor_bottom = 1
-				scene_instance.offset_left = 0
-				scene_instance.offset_top = 0
-				scene_instance.offset_right = 0
-				scene_instance.offset_bottom = 0
-				scene_instance.grow_horizontal = 2
-				scene_instance.grow_vertical = 2
-				print("GameManager: 设置子场景", scene_name, "铺满区域")
-			else:
-				# 对于非Control类型的CanvasItem，重置其位置
-				scene_instance.position = Vector2.ZERO
-				print("GameManager: 重置子场景", scene_name, "位置")
-	
-	# 记录活动场景  
-	active_scenes[scene_name] = scene_instance  
-	
-	print("已添加子场景：", scene_name)  
-	return scene_instance  
-
-# 移除场景  
-func remove_scene(scene_name):  
-	print("GameManager: 尝试移除场景:", scene_name)
-	
-	# 如果是地图场景且需要保存状态，先保存状态
-	if scene_name == "NodeMapScene":
-		var map_scene = get_scene(scene_name)
-		if map_scene and map_scene.has_method("get_map_state"):
-			var map_state = map_scene.get_map_state()
-			save_map_state(map_state)
-			print("GameManager: 移除前已保存地图状态")
-	
-	# 检查跟踪的场景列表  
-	if active_scenes.has(scene_name):
-		if is_instance_valid(active_scenes[scene_name]):
-			# 先从父节点移除，再销毁  
-			var scene_node = active_scenes[scene_name]
-			var parent = scene_node.get_parent()
-			if parent:
-				parent.remove_child(scene_node)
-			scene_node.queue_free()
-			print("GameManager: 已移除跟踪的场景:", scene_name)
-		
-		# 从活动场景列表移除
-		active_scenes.erase(scene_name)
-		return true
-	
-	# 尝试从Main节点查找  
-	var main_node = get_tree().root.get_node_or_null("Main")
-	if main_node:
-		var scene = main_node.get_node_or_null(scene_name)  
-		if scene:
-			if scene.is_in_group("persistent"):
-				print("GameManager: 警告 - 试图移除持久节点:", scene_name)
-				return false
-				
-			main_node.remove_child(scene)
-			scene.queue_free()  
-			print("GameManager: 已移除Main下的场景:", scene_name)  
-			return true
-	
-	# 在当前场景下查找
-	var current_scene = get_tree().current_scene
-	if current_scene:
-		var scene = current_scene.get_node_or_null(scene_name)
-		if scene:
-			current_scene.remove_child(scene)
-			scene.queue_free()
-			print("GameManager: 已移除当前场景下的场景:", scene_name)
-			return true
-	
-	print("GameManager: 未找到要移除的场景:", scene_name)
-	return false
-
 # 获取活动场景  
 func get_scene(scene_name):  
 	# 首先检查跟踪的场景  
@@ -367,10 +282,10 @@ func get_scene(scene_name):
 		active_scenes.erase(scene_name)
 		print("GameManager: 移除了无效的场景引用:", scene_name)
 	
-	# 尝试从Main节点查找  
-	var main_node = get_tree().root.get_node_or_null("Main")
-	if main_node:
-		var scene = main_node.get_node_or_null(scene_name)
+	# 尝试从root节点查找  
+	var root = get_tree().root
+	if root:
+		var scene = root.get_node_or_null(scene_name)
 		if scene:
 			# 找到后添加到跟踪列表  
 			active_scenes[scene_name] = scene  
@@ -404,61 +319,58 @@ func set_scene_visibility(scene_name, visible_state):
 #------------------------------------------------------------------------------  
 # 设置游戏的敌人数据  
 func set_enemy_data(enemy_data):  
-	# 如果没有敌人数据，使用默认数据  
-	if not enemy_data:  
-		print("警告: 未提供敌人数据，使用默认敌人")  
-		enemy_data = create_default_enemy(false)
-	
-	# 打印详细的敌人数据以便调试
+	# 打印enemy_data的详细信息用于调试
 	print("GameManager: 设置敌人数据详情:")
+	if not enemy_data:
+		print("警告：没有敌人数据，使用默认敌人")
+		enemy_data = create_default_enemy(false)
+		return
+	
 	print(" - 名称:", enemy_data.name if enemy_data.has("name") else "未命名敌人")
 	print(" - 生命值:", enemy_data.health if enemy_data.has("health") else "未指定")
 	print(" - 所需分数:", enemy_data.required_score if enemy_data.has("required_score") else "未指定")
 	print(" - 回合限制:", enemy_data.round_limit if enemy_data.has("round_limit") else "未指定")
 	
-	# 确保敌人数据包含必要字段
+	# 设置默认值如果属性不存在
 	if not enemy_data.has("description"):
 		enemy_data["description"] = "无描述信息"
 	
 	if not enemy_data.has("round_limit"):
 		enemy_data["round_limit"] = 5
-		
+	
 	if not enemy_data.has("required_score"):
 		enemy_data["required_score"] = 100
-		
+	
 	if not enemy_data.has("health"):
 		enemy_data["health"] = 100
 	
-	# 尝试创建Enemy对象，如果类不存在则使用字典
-	var Enemy_Class = load("res://scripts/core/enemy.gd")
-	
-	if Enemy_Class:
-		# 创建新敌人对象
-		current_enemy = Enemy_Class.new()
-		current_enemy.initialize(enemy_data)
-		score_required = current_enemy.required_score
-		
-		# 打印敌人信息  
-		print("加载敌人:", current_enemy.enemy_name)  
-		print("击败条件: 需要", score_required, "分")  
-		print("回合限制:", current_enemy.round_limit, "回合")  
-	else:
-		# 如果Enemy类不存在，直接使用字典
-		print("注意: Enemy类未找到，使用字典格式")
+	# 判断敌人类型和存储敌人数据
+	if enemy_data is Enemy:
+		# 如果是Enemy类实例，直接使用
 		current_enemy = enemy_data
 		score_required = enemy_data.required_score
+	else:
+		# 如果是字典数据，直接存储为敌人数据
+		current_enemy = enemy_data
+		score_required = enemy_data.required_score
+	
+	# 加载敌人数据
+	print("加载敌人:", enemy_data.name)
+	print("击败条件: 需要", score_required, "分")
+	print("回合限制:", enemy_data.round_limit, "回合")
+	
+	# 设置回合状态
+	turns_remaining = 3
+	current_round = 1
+
+# 获取当前敌人数据
+func get_current_enemy_data():
+	if not current_enemy:
+		print("GameManager: 当前没有敌人数据，返回null")
+		return null
 		
-		# 打印敌人信息
-		print("加载敌人:", enemy_data.name)
-		print("击败条件: 需要", score_required, "分")
-		print("回合限制:", enemy_data.round_limit, "回合")
-	
-	# 重置游戏状态  
-	current_round = 1  
-	turns_remaining = 3  
-	
-	# 更新UI  
-	update_enemy_ui()
+	print("GameManager: 返回当前敌人数据:", current_enemy.name if current_enemy.has("name") else "未知敌人")
+	return current_enemy
 
 # 更新敌人UI  
 func update_enemy_ui():  
@@ -647,29 +559,9 @@ func process_victory_rewards():
 		
 	print("GameManager: 玩家击败敌人，处理奖励")  
 		
-	# 检查敌人的rewards属性并添加到玩家数据  
-	if current_enemy.has_method("get_rewards"):  
-		# 如果敌人类有获取奖励的方法  
-		var rewards = current_enemy.get_rewards()  
-		if rewards and rewards.has("currency"):  
-			player_data.currency += rewards.currency  
-			if player_stats:  
-				player_stats.currency += rewards.currency  
-			print("玩家获得", rewards.currency, "货币")  
-	elif typeof(current_enemy) == TYPE_DICTIONARY and current_enemy.has("rewards"):  
-		# 如果敌人是字典形式  
-		if current_enemy.rewards.has("currency"):  
-			player_data.currency += current_enemy.rewards.currency  
-			if player_stats:  
-				player_stats.currency += current_enemy.rewards.currency  
-			print("玩家获得", current_enemy.rewards.currency, "货币")  
-	else:  
-		# 如果没有奖励属性，给予固定奖励  
-		print("警告: 敌人没有rewards属性，给予固定奖励")  
-		player_data.currency += 50  
-		if player_stats:  
-			player_stats.currency += 50  
-		print("玩家获得50货币")  
+
+	player_stats.currency += current_enemy.rewards.currency  
+	print("玩家获得", current_enemy.rewards.currency, "货币")  
 	
 	print("GameManager: 胜利奖励处理完成，等待切换到奖励场景")  
 
@@ -706,7 +598,7 @@ func load_shop_items():
 	
 # 离开商店  
 func leave_shop():  
-	current_state = GameState.PLAYER_TURN  
+	current_state = GameState.MAP
 	emit_signal("return_to_game_requested")  
 
 # 获取当前商店物品  
@@ -834,24 +726,37 @@ func _on_quit_game():
 # 启动地图模式  
 func _on_start_map_mode():  
 	print("GameManager: 启动地图模式")  
-	remove_scene("MainMenu")
-	var parent = get_tree().current_scene  
-	var node_map_scene_instance = await add_subscene(parent, node_map_scene, "NodeMapScene")  
-	if not node_map_scene_instance:  
-		push_error("无法创建节点地图场景")  
-		return
-	# 获取当前场景并连接信号  
-	var map_scene = get_tree().current_scene  
-	if map_scene.has_signal("node_selected"):  
-		map_scene.node_selected.connect(_on_map_node_selected)  
-	if map_scene.has_signal("map_completed"):  
-		map_scene.map_completed.connect(_on_map_completed)  
 	
-	print("GameManager: 地图模式启动完成")  
+	# 使用统一的场景切换方法
+	var success = await switch_to_scene(node_map_scene)
+	if not success:
+		push_error("GameManager: 无法切换到地图场景")
+		return
+	
+	# 等待一帧确保场景已完全加载
+	await get_tree().process_frame
+	
+	# 获取当前场景并连接信号
+	var map_scene = get_scene("NodeMapScene")
+	if not map_scene:
+		push_error("GameManager: 无法获取地图场景")
+		return
+	
+	# 断开可能已存在的信号连接
+	if map_scene.is_connected("node_selected", _on_map_node_selected):
+		map_scene.disconnect("node_selected", _on_map_node_selected)
+	if map_scene.is_connected("map_completed", _on_map_completed):
+		map_scene.disconnect("map_completed", _on_map_completed)
+	
+	# 连接信号
+	map_scene.node_selected.connect(_on_map_node_selected)
+	map_scene.map_completed.connect(_on_map_completed)
+	
+	print("GameManager: 地图模式启动完成")
 
 # 处理地图节点选择  
 func _on_map_node_selected(node_type, node_data):  
-	print("选择了地图节点: 类型=", node_type)  
+	print("GameManager: 选择了地图节点: 类型=", node_type)  
 	
 	# 保存当前地图状态
 	var map_scene = get_scene("NodeMapScene")
@@ -866,12 +771,7 @@ func _on_map_node_selected(node_type, node_data):
 	# 根据节点类型执行不同操作  
 	match node_type:  
 		1, 2, 7:  # ENEMY, ELITE, BOSS  
-			# 隐藏地图场景（不移除它）  
-			if map_scene:
-				print("GameManager: 隐藏地图场景")
-				map_scene.visible = false
-			
-			# current_enemy现在已经在handle_map_node_event中设置好了
+			# 准备敌人数据
 			var enemy_data_for_scene = null
 			if current_enemy:
 				if current_enemy is Enemy:
@@ -881,7 +781,8 @@ func _on_map_node_selected(node_type, node_data):
 					# 如果已经是字典，直接使用
 					enemy_data_for_scene = current_enemy
 			else:
-				print("GameManager:警告：current_enemy没有在handle_map_node_event中设置")
+				print("GameManager: 警告 - current_enemy没有在handle_map_node_event中设置")
+			
 			# 如果仍没有敌人数据，则创建一个默认的
 			if enemy_data_for_scene == null:
 				print("GameManager: 警告 - 没有找到敌人数据，使用默认值")
@@ -890,18 +791,60 @@ func _on_map_node_selected(node_type, node_data):
 				else:
 					enemy_data_for_scene = create_default_enemy(node_type == 2)
 			
-			# 显示自动模式的敌人选择场景  
-			_show_enemy_select_scene(false, true, enemy_data_for_scene)  
+			# 显示敌人选择场景
+			await _show_enemy_select_scene(false, true, enemy_data_for_scene)
 		
 		3:  # SHOP  
 			print("GameManager: 准备显示商店场景")
-			# 隐藏地图场景 
-			if map_scene:
-				print("GameManager: 隐藏地图场景")
-				map_scene.visible = false
+			# 显示商店场景
+			await _show_shop_scene()
 			
-			# 显示商店场景  
-			_show_shop_scene()
+		4:  # REST
+			print("GameManager: 处理休息点，增加玩家生命值")
+			# 恢复玩家生命值
+			if player_stats:
+				var healing_amount = 20
+				if node_data and node_data.has("healing_amount"):
+					healing_amount = node_data.healing_amount
+				
+				player_stats.heal(healing_amount)
+				print("GameManager: 玩家恢复了", healing_amount, "点生命值")
+			
+			# 显示休息效果后返回地图
+			await get_tree().create_timer(1.0).timeout
+			# 无需切换场景，因为我们仍在地图上
+			
+		5:  # TREASURE
+			print("GameManager: 处理宝藏点，增加玩家金币")
+			# 增加玩家金币
+			if player_stats:
+				var gold_amount = 25
+				if node_data and node_data.has("min_gold") and node_data.has("max_gold"):
+					var min_gold = node_data.min_gold
+					var max_gold = node_data.max_gold
+					gold_amount = randi() % (max_gold - min_gold + 1) + min_gold
+				
+				player_stats.currency += gold_amount
+				print("GameManager: 玩家获得了", gold_amount, "金币")
+			
+			# 显示获取宝藏效果后返回地图
+			await get_tree().create_timer(1.0).timeout
+			# 无需切换场景，因为我们仍在地图上
+			
+		6:  # EVENT
+			print("GameManager: 处理事件点")
+			# 随机事件逻辑
+			trigger_random_event()
+			
+			# 显示事件效果后返回地图
+			await get_tree().create_timer(1.0).timeout
+			# 无需切换场景，因为我们仍在地图上
+	
+	# 确保地图状态在节点处理后被正确更新和显示
+	if map_scene and map_scene.has_method("update_after_node_event"):
+		map_scene.update_after_node_event(node_type)
+	
+	print("GameManager: 地图节点处理完成")
 
 # 地图完成处理  
 func _on_map_completed():  
@@ -909,9 +852,6 @@ func _on_map_completed():
 	
 	# 更新当前层级  
 	current_floor_level += 1  
-	
-	# 移除当前地图场景并创建新的  
-	remove_scene("NodeMapScene")  
 	
 	# 切换到新的地图场景  
 	var success = await switch_to_scene(node_map_scene)  
@@ -928,28 +868,22 @@ func _on_map_completed():
 func _show_enemy_select_scene(from_shop: bool = false, auto_mode: bool = true, enemy_data = null):  
 	print("GameManager: 显示敌人选择场景")  
 	
-	# 获取Main节点
-	var main_node = get_tree().root.get_node_or_null("Main")
-	if not main_node:
-		push_error("GameManager: 无法找到Main节点")
+	# 使用统一的场景切换方法
+	var success = await switch_to_scene(enemy_select_scene)
+	if not success:
+		push_error("GameManager: 无法切换到敌人选择场景")
 		return
 	
-	print("GameManager: 移除之前可能存在的敌人选择场景")
-	remove_scene("EnemySelectScene")
-	
-	# 等待一帧确保场景已移除
+	# 等待一帧确保场景已完全加载
 	await get_tree().process_frame
 	
-	# 使用统一的添加子场景方法  
-	var enemy_select_instance = await add_subscene(main_node, enemy_select_scene, "EnemySelectScene")  
-	if not enemy_select_instance:  
-		push_error("无法创建敌人选择场景")  
-		return  
+	# 获取敌人选择场景实例
+	var enemy_select_instance = get_scene("EnemySelectScene")
+	if not enemy_select_instance:
+		push_error("GameManager: 无法获取敌人选择场景")
+		return
 	
-	# 等待一帧确保场景已完全添加到场景树中
-	await get_tree().process_frame
-	
-	# 初始化场景并连接信号  
+	# 初始化场景
 	if enemy_select_instance.has_method("initialize"):
 		enemy_select_instance.initialize(from_shop, auto_mode, enemy_data)
 	else:
@@ -962,8 +896,11 @@ func _show_enemy_select_scene(from_shop: bool = false, auto_mode: bool = true, e
 		enemy_select_instance.disconnect("return_requested", _on_return_to_map)
 	
 	# 重新连接信号
-	enemy_select_instance.enemy_selected.connect(_on_enemy_selected)  
-	enemy_select_instance.return_requested.connect(_on_return_to_map)  
+	enemy_select_instance.enemy_selected.connect(_on_enemy_selected)
+	enemy_select_instance.return_requested.connect(_on_return_to_map)
+	
+	# 确保敌人选择场景可见
+	enemy_select_instance.visible = true
 	
 	print("GameManager: 敌人选择场景初始化完成，信号已连接")
 
@@ -971,38 +908,34 @@ func _show_enemy_select_scene(from_shop: bool = false, auto_mode: bool = true, e
 func _show_shop_scene():  
 	print("GameManager: 显示商店场景")  
 	
-	# 获取Main节点
-	var main_node = get_tree().root.get_node_or_null("Main")
-	if not main_node:
-		push_error("GameManager: 无法找到Main节点")
+	# 使用统一的场景切换方法
+	var success = await switch_to_scene(shop_scene)
+	if not success:
+		push_error("GameManager: 无法切换到商店场景")
 		return
 	
-	# 确保移除之前可能存在的商店场景
-	remove_scene("ShopScene")
-	
-	# 等待一帧确保场景已移除
+	# 等待一帧确保场景已完全加载
 	await get_tree().process_frame
 	
-	# 使用统一的添加子场景方法  
-	var shop_instance = await add_subscene(main_node, shop_scene, "ShopScene")  
-	if not shop_instance:  
-		push_error("无法创建商店场景")  
-		return  
-	
-	# 等待一帧确保场景已完全添加
-	await get_tree().process_frame
+	# 获取商店场景实例
+	var shop_instance = get_scene("ShopScene")
+	if not shop_instance:
+		push_error("GameManager: 无法获取商店场景")
+		return
 	
 	# 断开可能已存在的信号连接
 	if shop_instance.is_connected("leave_shop_requested", _on_return_to_map):
 		shop_instance.disconnect("leave_shop_requested", _on_return_to_map)
-		
-	# 连接商店信号，修正信号名称与shop_scene.gd中定义的一致
-	shop_instance.connect("leave_shop_requested", _on_return_to_map)  
+	if shop_instance.is_connected("shop_enemy_select", _on_shop_enemy_select):
+		shop_instance.disconnect("shop_enemy_select", _on_shop_enemy_select)
+	
+	# 连接信号
+	shop_instance.connect("leave_shop_requested", _on_return_to_map)
 	
 	# 如果需要添加从商店中选择敌人的功能，需确保ShopScene中定义了此信号
-	if shop_instance.has_signal("shop_enemy_select") and not shop_instance.is_connected("shop_enemy_select", _on_shop_enemy_select):
+	if shop_instance.has_signal("shop_enemy_select"):
 		shop_instance.connect("shop_enemy_select", _on_shop_enemy_select)
-		
+	
 	print("GameManager: 商店场景创建完成，信号已连接")
 
 # 当选择敌人后  
@@ -1020,101 +953,30 @@ func _on_enemy_selected(enemy_data):
 		"\n - 生命值:", enemy_data.health if enemy_data.has("health") else "未知",
 		"\n - 所需分数:", enemy_data.required_score if enemy_data.has("required_score") else "未知")
 	
-	# 获取Main节点
-	var main_node = get_tree().root.get_node_or_null("Main")
-	if not main_node:
-		push_error("GameManager: 无法找到Main节点")
+	# 使用统一的场景切换方法
+	var success = await switch_to_scene(battle_scene)
+	if not success:
+		push_error("GameManager: 无法切换到战斗场景")
 		return
 	
-	# 移除敌人选择场景  
-	remove_scene("EnemySelectScene")  
-	
-	# 延迟创建游戏场景，确保旧场景已清理完毕  
-	await get_tree().process_frame  
-	
-	print("GameManager: 创建战斗场景，敌人: ", enemy_data.name if enemy_data.has("name") else "未知敌人")  
-	
-	# 使用统一的添加子场景方法  
-	var game_instance = await add_subscene(main_node, battle_scene, "GameScene")  
-	if not game_instance:  
-		push_error("无法创建战斗场景")  
-		return  
-	
-	# 确保UI更新  
-	await get_tree().process_frame  
-	
-	# 获取游戏管理器并设置敌人  
-	var battle_game_manager = game_instance.get_node_or_null("GameManager")  
-	if battle_game_manager == null:  
-		push_error("无法获取GameManager节点")
-		# 尝试查找其他可能的节点名称
-		battle_game_manager = game_instance.get_node_or_null("BattleManager")
-		if battle_game_manager == null:
-			for child in game_instance.get_children():
-				print("GameScene子节点:", child.name)
-			return  
-	
-	# 设置敌人数据  
-	print("GameManager: 设置敌人数据: ", enemy_data.name if enemy_data.has("name") else "未知敌人")
-	battle_game_manager.set_enemy_data(enemy_data)  
-	
-	# 断开可能已存在的信号连接
-	if battle_game_manager.has_signal("game_over") and battle_game_manager.is_connected("game_over", _on_game_over):
-		battle_game_manager.disconnect("game_over", _on_game_over)
-		
-	if battle_game_manager.has_signal("enemy_defeated") and battle_game_manager.is_connected("enemy_defeated", _on_enemy_defeated):
-		battle_game_manager.disconnect("enemy_defeated", _on_enemy_defeated)
-		
-	if battle_game_manager.has_signal("enter_shop_requested") and battle_game_manager.is_connected("enter_shop_requested", _on_return_to_map):
-		battle_game_manager.disconnect("enter_shop_requested", _on_return_to_map)
-		
-	if battle_game_manager.has_signal("return_to_game_requested") and battle_game_manager.is_connected("return_to_game_requested", _on_return_to_map):
-		battle_game_manager.disconnect("return_to_game_requested", _on_return_to_map)
-	
-	# 连接游戏信号
-	battle_game_manager.game_over.connect(_on_game_over)
-	battle_game_manager.enemy_defeated.connect(_on_enemy_defeated)
-	battle_game_manager.enter_shop_requested.connect(_on_return_to_map)
-	battle_game_manager.return_to_game_requested.connect(_on_return_to_map)
-	
-	print("GameManager: 战斗场景准备完成")
+	# 等待一帧确保场景已完全加载
+	await get_tree().process_frame
 
 # 从其他场景返回地图  
 func _on_return_to_map():  
 	print("GameManager: 收到返回地图请求")  
 	
-	# 移除所有临时场景  
-	var scenes_to_remove = ["GameScene", "ShopScene", "EnemySelectScene", "RewardScene"]  
-	for scene_name in scenes_to_remove:
-		if get_scene(scene_name):
-			print("GameManager: 移除临时场景:", scene_name)
-			remove_scene(scene_name)
-	
-	# 等待一帧确保场景已移除
-	await get_tree().process_frame
-	
-	# 尝试显示已有的地图场景  
-	var map_scene = get_scene("NodeMapScene")
-	if map_scene:
-		print("GameManager: 找到现有地图场景，设为可见")
-		map_scene.visible = true
-		
-		# 尝试更新地图状态
-		if current_map_state and map_scene.has_method("load_map_state"):
-			print("GameManager: 更新地图状态")
-			map_scene.load_map_state()
-		
-		return
-	
-	# 如果没有找到地图场景，创建新的地图场景  
-	print("GameManager: 未找到地图场景，创建新的地图场景")
+	# 使用统一的场景切换方法
 	var success = await switch_to_scene(node_map_scene)
 	if not success:  
 		push_error("GameManager: 无法切换到地图场景")  
 		return  
 	
+	# 等待一帧确保场景已完全加载
+	await get_tree().process_frame
+	
 	# 获取新创建的地图场景
-	map_scene = get_scene("NodeMapScene")
+	var map_scene = get_scene("NodeMapScene")
 	if not map_scene:
 		push_error("GameManager: 创建地图场景后未找到地图场景节点")
 		return
@@ -1133,6 +995,13 @@ func _on_return_to_map():
 	if current_map_state and map_scene.has_method("load_map_state"):
 		print("GameManager: 加载地图状态")
 		map_scene.load_map_state(current_map_state)
+	else:
+		print("GameManager: 警告 - 没有地图状态可加载或地图场景没有load_map_state方法")
+		
+	# 强制更新地图场景显示
+	map_scene.visible = true
+	if map_scene.has_method("update_after_state_load"):
+		map_scene.update_after_state_load()
 	
 	print("GameManager: 地图场景已显示并初始化")
 
@@ -1143,15 +1012,8 @@ func _on_game_over(win: bool):
 		# 胜利处理已在_on_enemy_defeated中完成  
 	else:  
 		print("GameManager: 玩家失败!")  
-		
-		# 移除游戏场景  
-		remove_scene("GameScene")  
-		
-		# 等待一帧确保场景已移除
-		await get_tree().process_frame
-		
 		# 失败后重置地图  
-		_reset_current_floor_map()  
+		_reset_current_floor_map()
 
 # 敌人击败处理  
 func _on_enemy_defeated():  
@@ -1159,22 +1021,6 @@ func _on_enemy_defeated():
 	
 	# 处理奖励计算  
 	process_victory_rewards()  
-	
-	# 获取Main节点
-	var main_node = get_tree().root.get_node_or_null("Main")
-	if not main_node:
-		push_error("GameManager: 无法找到Main节点")
-		return
-	
-	# 获取当前游戏场景  
-	var battle_scene_instance = get_scene("GameScene")  
-	if battle_scene_instance:  
-		print("GameManager: 找到游戏场景，隐藏它")  
-		battle_scene_instance.visible = false
-	else:
-		print("GameManager: 警告 - 未找到游戏场景")
-	
-	print("GameManager: 准备创建奖励场景")
 	
 	# 获取奖励数据  
 	var reward_data = {}  
@@ -1193,57 +1039,17 @@ func _on_enemy_defeated():
 		print("警告: 游戏管理器中没有有效的敌人对象")  
 		reward_data = {"currency": 50}  
 	
-	# 验证奖励场景资源是否加载成功  
-	if reward_scene == null:  
-		print("严重错误: 奖励场景资源未成功加载")  
-		return  
+	# 延迟显示奖励场景，确保战斗场景有时间显示胜利效果
+	await get_tree().create_timer(1.0).timeout
 	
-	# 确保移除之前可能存在的奖励场景
-	remove_scene("RewardScene")
-	
-	# 等待一帧确保场景已移除
-	await get_tree().process_frame
-	
-	# 使用统一的添加子场景方法  
-	var reward_instance = await add_subscene(main_node, reward_scene, "RewardScene")  
-	if not reward_instance:  
-		push_error("无法创建奖励场景")  
-		return  
-	
-	await get_tree().process_frame  
-	
-	# 设置奖励数据  
-	if reward_instance.has_method("set_reward_data"):
-		reward_instance.set_reward_data(reward_data)
-	else:
-		print("GameManager: 警告 - 奖励场景没有set_reward_data方法")
-	
-	# 断开可能已存在的信号连接
-	if reward_instance.is_connected("return_to_map_requested", _on_return_to_map):
-		reward_instance.disconnect("return_to_map_requested", _on_return_to_map)
-	
-	# 连接返回地图信号  
-	reward_instance.return_to_map_requested.connect(_on_return_to_map)  
-	
-	print("GameManager: 奖励场景准备完成，奖励数据:", reward_data)
+	# 使用统一的奖励场景显示函数
+	await show_reward_scene(reward_data)
 
 # 重置当前楼层地图（在战斗失败后调用）  
 func _reset_current_floor_map():  
 	print("GameManager: 重置当前楼层地图")  
 	
-	# 获取Main节点
-	var main_node = get_tree().root.get_node_or_null("Main")
-	if not main_node:
-		push_error("GameManager: 无法找到Main节点")
-		return
-	
-	# 移除现有地图场景（如果存在）
-	remove_scene("NodeMapScene")
-	
-	# 等待一帧确保旧场景已移除
-	await get_tree().process_frame
-	
-	# 切换到新的地图场景  
+	# 使用统一的场景切换方法
 	var success = await switch_to_scene(node_map_scene)  
 	if not success:
 		push_error("GameManager: 无法切换到新地图场景")
@@ -1274,31 +1080,81 @@ func _on_shop_enemy_select():
 #------------------------------------------------------------------------------  
 # 测试和调试功能  
 #------------------------------------------------------------------------------  
+# 游戏胜利时的处理
+func _on_battle_enemy_defeated():
+	print("GameManager: 收到战斗管理器发来的敌人被击败信号")
+	
+	# 发出自己的敌人被击败信号
+	emit_signal("enemy_defeated")
+	
+	# 处理胜利奖励
+	process_victory_rewards()
+	
+	# 确保当前场景是BattleScene
+	if current_main_scene != "BattleScene":
+		print("GameManager警告: 当前场景不是BattleScene，跳过后续处理")
+		return
+		
+	print("GameManager: 准备在1秒后显示奖励场景")
+	
+	# 延迟切换到奖励场景
+	await get_tree().create_timer(1.0).timeout
+	
+	print("GameManager: 开始切换到奖励场景")
+	
+	# 从current_enemy获取奖励数据
+	var reward_amount = 20
+	reward_amount = current_enemy.rewards.currency
+	
+	print("GameManager: 显示奖励场景，获得奖励:", reward_amount)
+	show_reward_scene({"currency": reward_amount})
+
 # 这个函数用于测试奖励场景  
 func force_show_reward_scene(currency_amount = 10):  
-	print("强制显示奖励场景，货币:", currency_amount)  
+	print("GameManager: 强制显示奖励场景，货币:", currency_amount)  
 	
-	# 隐藏其他场景  
-	var scenes_to_hide = ["GameScene", "ShopScene", "EnemySelectScene"]  
-	for scene_name in scenes_to_hide:  
-		set_scene_visibility(scene_name, false)  
+	# 调用通用的奖励场景显示函数
+	show_reward_scene({"currency": currency_amount})
+
+# 通用的奖励场景显示函数
+func show_reward_scene(reward_data = null):
+	print("GameManager: 显示奖励场景")
 	
-	# 测试奖励场景显示  
-	var reward_data = {"currency": currency_amount}  
+	# 如果没有提供奖励数据，使用默认值
+	if reward_data == null:
+		reward_data = {"currency": 10}
+		print("GameManager: 使用默认奖励数据")
 	
-	# 使用统一的添加子场景方法  
-	var parent = get_tree().current_scene  
-	var reward_instance = await add_subscene(parent, reward_scene, "RewardScene")  
-	if not reward_instance:  
-		push_error("无法创建奖励场景")  
-		return  
+	# 使用统一的场景切换方法
+	var success = await switch_to_scene(reward_scene)
+	if not success:
+		push_error("GameManager: 无法切换到奖励场景")
+		return
 	
-	await get_tree().process_frame  
+	# 等待一帧确保场景已完全加载
+	await get_tree().process_frame
+	
+	# 获取奖励场景实例
+	var reward_instance = get_scene("RewardScene")
+	if not reward_instance:
+		push_error("GameManager: 无法获取奖励场景")
+		return
 	
 	# 设置奖励数据  
-	reward_instance.set_reward_data(reward_data)  
+	if reward_instance.has_method("set_reward_data"):
+		print("GameManager: 设置奖励数据到场景:", reward_data)
+		reward_instance.set_reward_data(reward_data)
+	else:
+		push_error("GameManager: 奖励场景没有set_reward_data方法")
+	
+	# 断开可能已存在的信号连接
+	if reward_instance.is_connected("return_to_map_requested", _on_return_to_map):
+		reward_instance.disconnect("return_to_map_requested", _on_return_to_map)
 	
 	# 连接返回地图信号  
 	reward_instance.return_to_map_requested.connect(_on_return_to_map)  
 	
-	print("测试奖励场景已显示")  
+	# 确保奖励场景可见
+	reward_instance.visible = true
+	
+	print("GameManager: 奖励场景准备完成，等待用户交互")

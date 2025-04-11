@@ -190,3 +190,50 @@ func randomize_worn_parameters(min_intensity := 0.1, max_intensity := 0.7):
 	
 	# 更新自定义参数
 	_update_custom_parameters() 
+
+# 公开方法：强制更新着色器参数
+func update_shader_parameters():
+	_update_custom_parameters()
+
+# 公开方法：重新应用当前效果
+func apply_effect():
+	# 首先重新查找所有需要应用效果的精灵节点
+	_worn_sprites.clear()
+	_find_worn_sprites(self)
+	
+	# 强制刷新父节点下的所有卡牌精灵
+	var parent = get_parent()
+	if parent:
+		_find_worn_sprites(parent)
+	
+	# 然后根据当前预设重新应用效果
+	_update_preset()
+	print("应用老旧效果: %d个节点, 预设=%d" % [_worn_sprites.size(), preset])
+
+# 公开方法：获取各种参数值
+func get_worn_amount():
+	return worn_amount
+
+func get_edge_worn():
+	return edge_worn
+
+func get_stain_amount():
+	return stain_amount
+
+func get_dust_amount():
+	return dust_amount
+
+func get_crease_amount():
+	return crease_amount
+
+func get_color_fade():
+	return color_fade
+
+func get_yellowing():
+	return yellowing
+
+func get_edge_darkness():
+	return edge_darkness
+
+func get_randomness():
+	return randomness 

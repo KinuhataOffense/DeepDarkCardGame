@@ -6,4 +6,5 @@ extends CardUI
 
 func _ready():
 	super()
-	label.text = card_data.nice_name
+	if card_data:
+		label.text = card_data.nice_name

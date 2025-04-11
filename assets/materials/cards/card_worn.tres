@@ -1,7 +1,8 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bsdkqtlh82wy6"]
 
-[ext_resource type="Shader" path="res://assets/shaders/card_worn.gdshader" id="1_xwyp3"]
-[ext_resource type="Texture2D" path="res://assets/textures/noise/noise_damage.png" id="2_4xldw"]
+[ext_resource type="Shader" uid="uid://dfpnay4n6ab10" path="res://shaders/card_worn.gdshader" id="1_xwyp3"]
+[ext_resource type="Texture2D" uid="uid://cmjxdbc2oh5eg" path="res://assets/textures/noise/noise_damage.png" id="2_4xldw"]
+
 
 [resource]
 shader = ExtResource("1_xwyp3")

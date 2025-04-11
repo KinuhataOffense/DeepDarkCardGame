@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 VisualEffectsManager="*res://scripts/core/visual_effects_manager.gd"
+GameManager="*res://scripts/core/game_manager.gd"
+PlayerStats="*res://scripts/core/player_stats.gd"
 
 [display]
 

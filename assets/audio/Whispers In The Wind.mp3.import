@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dyjwqw78q2evw"
+path="res://.godot/imported/Whispers In The Wind.mp3-20a26d54d2544a17db83c491fbf29fe9.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/Whispers In The Wind.mp3"
+dest_files=["res://.godot/imported/Whispers In The Wind.mp3-20a26d54d2544a17db83c491fbf29fe9.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

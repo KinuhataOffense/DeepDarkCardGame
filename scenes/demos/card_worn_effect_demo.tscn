@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://byyq7c3mlrm5w"]
+
+[ext_resource type="Script" uid="uid://drinqtl6p3o55" path="res://scripts/debug/card_worn_effect_demo.gd" id="1_pmotk"]
+[ext_resource type="PackedScene" uid="uid://cmlsueqj3ow61" path="res://scripts/card/styled_card_ui.tscn" id="2_4mxpn"]
+
+[node name="CardWornEffectDemo" type="Node2D"]
+script = ExtResource("1_pmotk")
+card_scene = ExtResource("2_4mxpn")
+card_spacing = Vector2(300, 320)
+
+[node name="Title" type="Label" parent="."]
+offset_left = 500.0
+offset_top = 32.0
+offset_right = 1140.0
+offset_bottom = 80.0
+theme_override_font_sizes/font_size = 28
+text = "卡牌老旧效果演示"
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 300.0
+offset_top = 100.0
+offset_right = 1220.0
+offset_bottom = 126.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "此演示展示了不同程度的卡牌老旧效果，适用于中世纪哥特风格的纸牌游戏"
+horizontal_alignment = 1
+
+[node name="Background" type="ColorRect" parent="."]
+z_index = -1
+offset_right = 1600.0
+offset_bottom = 900.0
+color = Color(0.145098, 0.145098, 0.145098, 1)
+
+[node name="DebugInfo" type="Label" parent="."]
+offset_left = 600.0
+offset_top = 800.0
+offset_right = 1000.0
+offset_bottom = 833.0
+theme_override_colors/font_color = Color(0.788235, 0.788235, 0.788235, 1)
+theme_override_font_sizes/font_size = 14
+text = "如果卡牌没有显示，请检查控制台输出以获取调试信息"
+horizontal_alignment = 1

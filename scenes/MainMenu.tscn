@@ -1,36 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://domr3f0kivnb"]
-
-[ext_resource type="Script" uid="uid://dm87nhuybmyi6" path="res://scripts/core/game_manager.gd" id="4_ow34m"]
-[ext_resource type="Script" uid="uid://cuitqesw4sgw4" path="res://scripts/core/player_stats.gd" id="5_l72w3"]
+[gd_scene load_steps=2 format=3 uid="uid://domr3f0kivnb"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mtydo"]
 font_size = 100
 
-[node name="Main" type="Node2D"]
-
-[node name="GameManager" type="Control" parent="." groups=["persistent"]]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 2015.0
-offset_top = 481.0
-offset_right = 2373.0
-offset_bottom = 648.0
-script = ExtResource("4_ow34m")
-
-[node name="PlayerStats" type="Node" parent="." groups=["persistent"]]
-script = ExtResource("5_l72w3")
-metadata/_custom_type_script = "uid://cuitqesw4sgw4"
-
-[node name="MainMenu" type="Control" parent="."]
+[node name="MainMenu" type="Control"]
 z_index = -1
 layout_mode = 3
 anchors_preset = 0
 offset_left = 11.0
 offset_top = 3.0
-offset_right = 2490.0
-offset_bottom = 1508.0
+offset_right = 1611.0
+offset_bottom = 903.0
 
-[node name="Title" type="Label" parent="MainMenu"]
+[node name="Title" type="Label" parent="."]
 layout_mode = 0
 offset_left = 668.0
 offset_top = 113.0
@@ -39,7 +21,7 @@ offset_bottom = 250.0
 text = "Title"
 label_settings = SubResource("LabelSettings_mtydo")
 
-[node name="Background" type="TextureRect" parent="MainMenu"]
+[node name="Background" type="TextureRect" parent="."]
 z_index = -3
 layout_mode = 0
 offset_left = 143.0
@@ -47,16 +29,18 @@ offset_top = 79.0
 offset_right = 546.0
 offset_bottom = 382.0
 
-[node name="StartButton" type="Button" parent="MainMenu"]
+[node name="StartButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 800.0
 offset_top = 450.0
 offset_right = 808.0
 offset_bottom = 458.0
+text = "开始游戏"
 
-[node name="QuitButton" type="Button" parent="MainMenu"]
+[node name="QuitButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 800.0
 offset_top = 500.0
 offset_right = 808.0
 offset_bottom = 508.0
+text = "退出游戏"
