@@ -10,16 +10,16 @@ config_version=5
 
 [application]
 
-config/name="SimpleCards"
-run/main_scene="uid://domr3f0kivnb"
-config/features=PackedStringArray("4.4", "Mobile")
+config/name="DeepDarkCardGame"
+run/main_scene="res://scenes/MainMenu.tscn"
+config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-VisualEffectsManager="*res://scripts/core/visual_effects_manager.gd"
 GameManager="*res://scripts/core/game_manager.gd"
 PlayerStats="*res://scripts/core/player_stats.gd"
+VisualEffectsManager="*res://scripts/core/visual_effects_manager.gd"
 
 [display]
 
@@ -34,4 +34,4 @@ enabled=PackedStringArray("res://addons/animatedbutton/plugin.cfg")
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
-renderer/rendering_method="mobile"
+renderer/rendering_method="gl_compatibility"

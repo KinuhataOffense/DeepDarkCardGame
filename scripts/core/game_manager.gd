@@ -30,7 +30,9 @@ var score_multiplier: float = 1.0
 var player_data = {  
 	"max_health": 100,  
 	"current_health": 100,  
-	"currency": 100  
+	"currency": 100,
+	"shield": 0,
+	"damage_multiplier": 1.0
 }  
 
 # 地图和商店系统相关变量  
@@ -49,7 +51,18 @@ var current_main_scene = ""
 signal enemy_defeated  
 signal game_over(win)  
 signal enter_shop_requested  
-signal return_to_game_requested  
+signal return_to_game_requested
+signal player_stats_changed(player_data)  
+
+#------------------------------------------------------------------------------  
+# 游戏模式枚举
+enum GameMode {
+	MAP,    # 地图模式
+	ROGUE   # Rogue模式
+}
+
+# 当前游戏模式
+var current_game_mode = GameMode.MAP
 
 #------------------------------------------------------------------------------  
 # 初始化函数  
@@ -61,13 +74,6 @@ func _ready():
 		initialized = true
 		print("GameManager: 初始化完成")
 	
-		# 尝试连接战斗管理器的敌人被击败信号
-		var battle_manager_node = get_tree().root.get_node_or_null("BattleScene/BattleManager")
-		if battle_manager_node:
-			battle_manager_node.connect("enemy_defeated", _on_battle_enemy_defeated)
-			print("GameManager: 已连接BattleManager的enemy_defeated信号")
-		else:
-			print("GameManager: 未找到BattleManager节点")
 	
 		# 连接主菜单按钮信号（如果存在）  
 		var main_menu = get_tree().root.get_node_or_null("MainMenu")
@@ -325,6 +331,12 @@ func set_enemy_data(enemy_data):
 		print("警告：没有敌人数据，使用默认敌人")
 		enemy_data = create_default_enemy(false)
 		return
+	
+	# 如果当前是Rogue模式，确保保存了Rogue场景路径
+	if is_rogue_mode():
+		if not has_meta("last_rogue_scene"):
+			save_rogue_scene_info("res://scenes/rogue/rogue_mode_scene.tscn")
+			print("GameManager: 在设置敌人数据时保存了Rogue场景路径")
 	
 	print(" - 名称:", enemy_data.name if enemy_data.has("name") else "未命名敌人")
 	print(" - 生命值:", enemy_data.health if enemy_data.has("health") else "未指定")
@@ -964,8 +976,77 @@ func _on_enemy_selected(enemy_data):
 
 # 从其他场景返回地图  
 func _on_return_to_map():  
-	print("GameManager: 收到返回地图请求")  
+	print("GameManager: 收到返回地图请求")
 	
+	# 首先检查元数据中的记录，确定前一个场景和是否来自Rogue模式
+	var from_rogue = false
+	var previous_scene = ""
+	
+	if has_meta("reward_from_rogue_mode"):
+		from_rogue = get_meta("reward_from_rogue_mode")
+		print("GameManager: 元数据中的from_rogue =", from_rogue)
+		
+	if has_meta("previous_scene_before_reward"):
+		previous_scene = get_meta("previous_scene_before_reward")
+		print("GameManager: 元数据中的previous_scene =", previous_scene)
+	
+	# 然后尝试从当前场景获取is_from_rogue标记
+	# 这是冗余检查，以防元数据丢失
+	var current_scene = get_current_scene()
+	if current_scene and current_scene.has_method("is_from_rogue") and !from_rogue:
+		from_rogue = current_scene.is_from_rogue()
+		print("GameManager: 从当前场景获取的from_rogue =", from_rogue)
+	
+	# 如果确定是来自Rogue模式，尝试返回到Rogue模式
+	if from_rogue:
+		print("GameManager: 确认奖励来自Rogue模式，处理返回Rogue逻辑")
+		
+		# 1. 尝试使用自动加载的RogueManager
+		var rogue_manager = get_node_or_null("/root/RogueManager")
+		if rogue_manager and rogue_manager.has_method("_on_reward_return_to_map"):
+			print("GameManager: 使用自动加载的RogueManager处理返回")
+			rogue_manager._on_reward_return_to_map()
+			return
+		
+		# 2. 尝试在当前场景树中查找RogueManager
+		print("GameManager: 在场景树中查找RogueManager")
+		for node in get_tree().root.get_children():
+			# 检查节点名称是否与Rogue相关
+			if node.name.begins_with("RogueMode") or node.name.find("Rogue") != -1:
+				print("GameManager: 找到Rogue场景:", node.name)
+				var potential_manager = node.get_node_or_null("RogueManager")
+				if potential_manager and potential_manager.has_method("_on_reward_return_to_map"):
+					print("GameManager: 在场景中找到了RogueManager，调用处理方法")
+					potential_manager._on_reward_return_to_map()
+					return
+		
+		# 3. 如果找不到现有RogueManager，重新加载Rogue模式场景
+		print("GameManager: 未找到RogueManager，尝试重新加载Rogue模式场景")
+		var rogue_mode_scene_res = load("res://scenes/rogue/rogue_mode_scene.tscn")
+		if rogue_mode_scene_res:
+			# 切换到Rogue模式场景
+			var success = await switch_to_scene(rogue_mode_scene_res)
+			if success:
+				print("GameManager: 成功切换回Rogue模式场景")
+				
+				# 等待场景加载
+				await process_one_frame()
+				
+				# 尝试再次获取RogueManager
+				var rogue_scene = get_current_scene()
+				if rogue_scene:
+					var rogue_manager_in_new_scene = rogue_scene.get_node_or_null("RogueManager")
+					if rogue_manager_in_new_scene and rogue_manager_in_new_scene.has_method("_on_reward_return_to_map"):
+						print("GameManager: 在新加载的场景中找到RogueManager，调用处理方法")
+						rogue_manager_in_new_scene._on_reward_return_to_map()
+						return
+			else:
+				push_error("GameManager: 无法切换回Rogue模式场景")
+		else:
+			push_error("GameManager: 无法加载Rogue模式场景资源")
+	
+	# 处理普通返回地图逻辑（非Rogue模式）
+	print("GameManager: 处理普通返回地图逻辑")
 	# 使用统一的场景切换方法
 	var success = await switch_to_scene(node_map_scene)
 	if not success:  
@@ -973,7 +1054,7 @@ func _on_return_to_map():
 		return  
 	
 	# 等待一帧确保场景已完全加载
-	await get_tree().process_frame
+	await process_one_frame()
 	
 	# 获取新创建的地图场景
 	var map_scene = get_scene("NodeMapScene")
@@ -1017,10 +1098,10 @@ func _on_game_over(win: bool):
 
 # 敌人击败处理  
 func _on_enemy_defeated():  
-	print("GameManager: 收到敌人击败信号，开始处理战利品")  
+	print("GameManager: 收到战斗管理器发来的敌人被击败信号")  
 	
-	# 处理奖励计算  
-	process_victory_rewards()  
+	# 处理胜利奖励
+	process_victory_rewards()
 	
 	# 获取奖励数据  
 	var reward_data = {}  
@@ -1106,8 +1187,20 @@ func _on_battle_enemy_defeated():
 	var reward_amount = 20
 	reward_amount = current_enemy.rewards.currency
 	
+	# 检查是否来自Rogue模式
+	var from_rogue_mode = false
+	var current_scene = get_current_scene()
+	if current_scene:
+		var scene_name = current_scene.name
+		if scene_name.begins_with("RogueMode") or scene_name.find("Rogue") != -1:
+			from_rogue_mode = true
+			print("GameManager: 检测到来自Rogue模式")
+	
 	print("GameManager: 显示奖励场景，获得奖励:", reward_amount)
-	show_reward_scene({"currency": reward_amount})
+	show_reward_scene({
+		"currency": reward_amount,
+		"from_rogue_mode": from_rogue_mode
+	})
 
 # 这个函数用于测试奖励场景  
 func force_show_reward_scene(currency_amount = 10):  
@@ -1117,44 +1210,160 @@ func force_show_reward_scene(currency_amount = 10):
 	show_reward_scene({"currency": currency_amount})
 
 # 通用的奖励场景显示函数
-func show_reward_scene(reward_data = null):
-	print("GameManager: 显示奖励场景")
+func show_reward_scene(reward_data: Dictionary):
+	print("GameManager: 显示奖励场景，获得奖励:", reward_data.currency if reward_data.has("currency") else "未知")
 	
-	# 如果没有提供奖励数据，使用默认值
-	if reward_data == null:
-		reward_data = {"currency": 10}
-		print("GameManager: 使用默认奖励数据")
+	# 确保reward_data包含from_rogue_mode
+	if not reward_data.has("from_rogue_mode"):
+		reward_data["from_rogue_mode"] = is_rogue_mode()
 	
-	# 使用统一的场景切换方法
-	var success = await switch_to_scene(reward_scene)
-	if not success:
-		push_error("GameManager: 无法切换到奖励场景")
-		return
+	print("GameManager: 设置奖励数据到场景:", reward_data)
 	
-	# 等待一帧确保场景已完全加载
-	await get_tree().process_frame
+	# 切换到奖励场景
+	switch_to_scene(reward_scene)
+	
+	# 等待一帧确保场景已加载
+	await process_one_frame()
 	
 	# 获取奖励场景实例
-	var reward_instance = get_scene("RewardScene")
-	if not reward_instance:
-		push_error("GameManager: 无法获取奖励场景")
-		return
-	
-	# 设置奖励数据  
-	if reward_instance.has_method("set_reward_data"):
-		print("GameManager: 设置奖励数据到场景:", reward_data)
+	var reward_instance = get_current_scene()
+	if reward_instance:
+		# 设置奖励数据
 		reward_instance.set_reward_data(reward_data)
+		print("GameManager: 明确设置奖励场景from_rogue=", reward_data.from_rogue_mode)
 	else:
-		push_error("GameManager: 奖励场景没有set_reward_data方法")
-	
-	# 断开可能已存在的信号连接
-	if reward_instance.is_connected("return_to_map_requested", _on_return_to_map):
-		reward_instance.disconnect("return_to_map_requested", _on_return_to_map)
-	
-	# 连接返回地图信号  
-	reward_instance.return_to_map_requested.connect(_on_return_to_map)  
-	
-	# 确保奖励场景可见
-	reward_instance.visible = true
+		push_error("GameManager: 无法获取奖励场景实例")
 	
 	print("GameManager: 奖励场景准备完成，等待用户交互")
+
+# 添加获取当前场景的方法
+func get_current_scene():
+	return get_tree().current_scene
+
+# 添加等待一帧的方法
+func process_one_frame():
+	await get_tree().process_frame
+	return true
+
+# 玩家属性相关方法
+
+# 治疗玩家
+func heal_player(amount: int) -> void:
+	player_data["current_health"] = min(player_data["current_health"] + amount, player_data["max_health"])
+	print("Player healed for %d. Current health: %d" % [amount, player_data["current_health"]])
+	emit_signal("player_stats_changed", player_data)
+
+# 增加玩家护盾
+func add_player_shield(amount: int) -> void:
+	player_data["shield"] += amount
+	print("Player gained %d shield. Current shield: %d" % [amount, player_data["shield"]])
+	emit_signal("player_stats_changed", player_data)
+
+# 提升玩家伤害
+func boost_player_damage(multiplier: float) -> void:
+	player_data["damage_multiplier"] *= multiplier
+	print("Player damage boosted by x%.1f. Current multiplier: %.1f" % [multiplier, player_data["damage_multiplier"]])
+	emit_signal("player_stats_changed", player_data)
+
+# 增加玩家金币
+func add_currency(amount: int) -> void:
+	player_data["currency"] += amount
+	if player_stats:
+		player_stats.currency += amount
+	print("Player gained %d currency. Current currency: %d" % [amount, player_data["currency"]])
+	emit_signal("player_stats_changed", player_data)
+
+# 返回Rogue模式的函数 - 从奖励场景调用
+func return_to_rogue_mode():
+	print("GameManager: 返回Rogue模式")
+	
+	# 检查是否有保存的Rogue模式场景
+	if has_meta("last_rogue_scene"):
+		var last_scene = get_meta("last_rogue_scene")
+		print("GameManager: 找到上次的Rogue场景:", last_scene)
+		
+		# 加载Rogue模式场景
+		var rogue_scene = load(last_scene)
+		if rogue_scene:
+			switch_to_scene(rogue_scene)
+			
+			# 等待场景加载
+			await process_one_frame()
+			
+			# 找到RogueManager并通知它从奖励场景返回
+			var current_scene = get_current_scene()
+			if current_scene:
+				var rogue_manager = current_scene.get_node_or_null("RogueManager")
+				if rogue_manager and rogue_manager.has_method("_on_reward_return_to_map"):
+					print("GameManager: 调用RogueManager._on_reward_return_to_map")
+					rogue_manager.call_deferred("_on_reward_return_to_map")
+				else:
+					print("GameManager: 无法找到RogueManager或方法")
+			
+			return true
+		else:
+			push_error("GameManager: 无法加载Rogue场景:", last_scene)
+			# 尝试默认路径
+			rogue_scene = load("res://scenes/rogue/rogue_mode_scene.tscn")
+			if rogue_scene:
+				print("GameManager: 使用默认Rogue场景路径")
+				switch_to_scene(rogue_scene)
+				
+				# 等待场景加载
+				await process_one_frame()
+				
+				# 同样尝试连接RogueManager
+				var current_scene = get_current_scene()
+				if current_scene:
+					var rogue_manager = current_scene.get_node_or_null("RogueManager")
+					if rogue_manager and rogue_manager.has_method("_on_reward_return_to_map"):
+						print("GameManager: 调用RogueManager._on_reward_return_to_map")
+						rogue_manager.call_deferred("_on_reward_return_to_map")
+				
+				return true
+	else:
+		print("GameManager: 没有找到保存的Rogue场景，尝试使用默认路径")
+		var rogue_scene = load("res://scenes/rogue/rogue_mode_scene.tscn")
+		if rogue_scene:
+			switch_to_scene(rogue_scene)
+			
+			# 等待场景加载
+			await process_one_frame()
+			
+			# 同样尝试连接RogueManager
+			var current_scene = get_current_scene()
+			if current_scene:
+				var rogue_manager = current_scene.get_node_or_null("RogueManager")
+				if rogue_manager and rogue_manager.has_method("_on_reward_return_to_map"):
+					print("GameManager: 调用RogueManager._on_reward_return_to_map")
+					rogue_manager.call_deferred("_on_reward_return_to_map")
+			
+			return true
+		else:
+			push_error("GameManager: 无法加载默认Rogue场景")
+	
+	return false
+
+func return_to_rogue():
+	return await return_to_rogue_mode()
+
+func switch_to_rogue_mode():
+	return await return_to_rogue_mode()
+
+# 保存Rogue模式场景信息
+func save_rogue_scene_info(scene_path: String):
+	print("GameManager: 保存Rogue场景信息:", scene_path)
+	set_meta("last_rogue_scene", scene_path)
+
+# 设置游戏模式
+func set_game_mode(mode: GameMode):
+	print("GameManager: 设置游戏模式为", "Rogue模式" if mode == GameMode.ROGUE else "地图模式")
+	current_game_mode = mode
+
+# 获取当前游戏模式
+func get_game_mode() -> GameMode:
+	return current_game_mode
+
+# 检查是否在Rogue模式
+func is_rogue_mode() -> bool:
+	return current_game_mode == GameMode.ROGUE

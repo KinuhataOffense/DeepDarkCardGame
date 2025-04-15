@@ -34,3 +34,22 @@ func set_player_stats(stats):
 	max_health = stats["max_health"]  
 	current_score = stats["current_score"]  	
 	currency = stats["currency"]
+
+# 添加奖励到玩家状态
+func add_rewards(reward_data: Dictionary):
+	if reward_data.has("currency"):
+		currency += reward_data.currency
+		print("PlayerStats: 添加", reward_data.currency, "金币，当前总金币:", currency)
+	
+	if reward_data.has("items"):
+		for item in reward_data.items:
+			# 处理物品奖励，如果需要可以扩展该部分
+			print("PlayerStats: 获得物品:", item.name, "x", item.quantity)
+	
+	if reward_data.has("exp"):
+		# 处理经验值，后续可以添加升级逻辑
+		print("PlayerStats: 获得经验:", reward_data.exp)
+	
+	if reward_data.has("health"):
+		heal(reward_data.health)
+		print("PlayerStats: 恢复生命值:", reward_data.health, "，当前生命值:", health)

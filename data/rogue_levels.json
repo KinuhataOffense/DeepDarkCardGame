@@ -1,0 +1,98 @@
+[
+  {
+    "level_id": "level_1",
+    "level_name": "初火余烬",
+    "level_description": "阴影开始笼罩大地，这里的敌人正在慢慢被初火的残余影响。",
+    "background_image": "res://assets/backgrounds/level_1_bg.png",
+    "enemies_count": 3,
+    "enemy_pool": ["hollow_soldier", "undead_dog", "lost_knight"],
+    "boss_pool": ["capra_demon"],
+    "global_debuff": {
+      "name": "灵魂枯竭",
+      "description": "每回合开始时，随机一张手牌的倍率降低0.2",
+      "effect_type": "reduce_card_multiplier",
+      "effect_value": 0.2
+    },
+    "rewards": {
+      "base_currency": 100,
+      "bonus_per_enemy": 25
+    }
+  },
+  {
+    "level_id": "level_2",
+    "level_name": "大教堂深处",
+    "level_description": "曾经神圣的大教堂现在被黑暗所扭曲，这里的神职人员已经堕落。",
+    "background_image": "res://assets/backgrounds/level_2_bg.png",
+    "enemies_count": 4,
+    "enemy_pool": ["channeler", "silver_knight", "shadow_mage", "hollow_soldier"],
+    "boss_pool": ["bell_gargoyle"],
+    "global_debuff": {
+      "name": "祭祀之咒",
+      "description": "每第三回合，你无法打出魂链组合",
+      "effect_type": "disable_combination",
+      "effect_value": "soul_chain",
+      "trigger_frequency": 3
+    },
+    "rewards": {
+      "base_currency": 150,
+      "bonus_per_enemy": 35
+    }
+  },
+  {
+    "level_id": "level_3",
+    "level_name": "王者灰烬",
+    "level_description": "曾经的王国中心，现在只剩下废墟和迷失的王者。",
+    "background_image": "res://assets/backgrounds/level_3_bg.png",
+    "enemies_count": 4,
+    "enemy_pool": ["silver_knight", "shadow_mage", "bell_gargoyle", "capra_demon"],
+    "boss_pool": ["fallen_king"],
+    "global_debuff": {
+      "name": "时间流逝",
+      "description": "每回合可用行动次数减少1",
+      "effect_type": "reduce_actions",
+      "effect_value": 1
+    },
+    "rewards": {
+      "base_currency": 200,
+      "bonus_per_enemy": 50
+    }
+  },
+  {
+    "level_id": "level_4",
+    "level_name": "龙的巢穴",
+    "level_description": "远古龙族的领地，火焰和灰烬充斥着整个空间。",
+    "background_image": "res://assets/backgrounds/level_4_bg.png",
+    "enemies_count": 5,
+    "enemy_pool": ["bell_gargoyle", "capra_demon", "shadow_mage", "silver_knight", "fallen_king"],
+    "boss_pool": ["elder_dragon"],
+    "global_debuff": {
+      "name": "龙焰灼烧",
+      "description": "每回合结束时，队列中的每张牌都有30%几率被烧毁",
+      "effect_type": "burn_queue_cards",
+      "effect_value": 0.3
+    },
+    "rewards": {
+      "base_currency": 300,
+      "bonus_per_enemy": 75
+    }
+  },
+  {
+    "level_id": "level_5",
+    "level_name": "初火圣殿",
+    "level_description": "初始之火的发源地，这里守护着世界最后的光明。",
+    "background_image": "res://assets/backgrounds/level_5_bg.png",
+    "enemies_count": 5,
+    "enemy_pool": ["capra_demon", "bell_gargoyle", "elder_dragon", "fallen_king", "silver_knight"],
+    "boss_pool": ["gwyn_lord_of_cinder"],
+    "global_debuff": {
+      "name": "余烬枯竭",
+      "description": "所有组合得分减少20%，但王印组合得分增加30%",
+      "effect_type": "modify_combinations",
+      "effect_value": {"all": -0.2, "king_mark": 0.3}
+    },
+    "rewards": {
+      "base_currency": 500,
+      "bonus_per_enemy": 100
+    }
+  }
+] 

@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3v4j2yxocd2l"]
+
+[ext_resource type="Script" uid="uid://cn7288i4ukrns" path="res://scripts/rogue/rogue_enemy_item.gd" id="1_jcwte"]
+
+[node name="RogueEnemyItem" type="Panel"]
+custom_minimum_size = Vector2(780, 60)
+script = ExtResource("1_jcwte")
+
+[node name="EnemyIcon" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 55.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="EnemyName" type="Label" parent="."]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 5.0
+offset_right = 320.0
+offset_bottom = 35.0
+theme_override_font_sizes/font_size = 20
+text = "敌人名称"
+vertical_alignment = 1
+
+[node name="EnemyType" type="Label" parent="."]
+layout_mode = 0
+offset_left = 320.0
+offset_top = 5.0
+offset_right = 420.0
+offset_bottom = 35.0
+theme_override_font_sizes/font_size = 16
+text = "[普通]"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnemyDescription" type="Label" parent="."]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 30.0
+offset_right = 770.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 14
+text = "敌人描述"
+vertical_alignment = 1
+autowrap_mode = 3
